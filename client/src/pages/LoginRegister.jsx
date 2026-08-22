@@ -90,7 +90,7 @@ export default function LoginRegister() {
                 <input
                   type="text"
                   required
-                  placeholder="e.g. Travel Explorer"
+                  placeholder="Enter your full name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   className="w-full pl-10 pr-3 py-3 rounded-xl bg-amber-50/40 border border-amber-200 text-xs font-semibold outline-hidden focus:border-amber-600 text-[#0A192F]"

@@ -5,8 +5,19 @@ const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(() => {
-    const saved = localStorage.getItem('bharat_yatra_user');
-    return saved ? JSON.parse(saved) : null;
+    try {
+      const saved = localStorage.getItem('bharat_yatra_user');
+      if (!saved) return null;
+      const parsed = JSON.parse(saved);
+      if (parsed.id === 'user-default-1' || parsed.email === 'traveler@bharatyatra.com' || parsed.email === 'admin@bharatyatra.com') {
+        localStorage.removeItem('bharat_yatra_user');
+        localStorage.removeItem('bharat_yatra_token');
+        return null;
+      }
+      return parsed;
+    } catch {
+      return null;
+    }
   });
 
   const [favorites, setFavorites] = useState(() => {

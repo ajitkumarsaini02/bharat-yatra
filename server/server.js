@@ -34,8 +34,12 @@ app.get('/', (req, res) => {
   });
 });
 
-// Connect to MongoDB with graceful fallback for offline zero-config demonstration
-mongoose.connect(MONGO_URI)
+mongoose.set('bufferCommands', false);
+
+// Connect to MongoDB with graceful fast fallback
+mongoose.connect(MONGO_URI, {
+  serverSelectionTimeoutMS: 2500
+})
   .then(() => {
     console.log('✅ Connected to MongoDB Database successfully.');
   })

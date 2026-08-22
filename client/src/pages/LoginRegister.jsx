@@ -27,7 +27,7 @@ export default function LoginRegister() {
       }
       navigate('/');
     } catch (err) {
-      setError(err.response?.data?.message || 'Authentication failed. Please check your credentials.');
+      setError(err.response?.data?.message || err.message || 'Authentication failed. Please check your details.');
     } finally {
       setLoading(false);
     }

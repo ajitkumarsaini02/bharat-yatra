@@ -1,11 +1,18 @@
 import axios from 'axios';
 import { destinationsData, cuisineDatabase, transportGuideData } from '../data/mockData';
 
-const API_BASE = import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}/api` : 'http://localhost:5000/api';
+const hasCustomApi = !!import.meta.env.VITE_API_URL;
+const isLocalhost = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+
+const API_BASE = hasCustomApi
+  ? `${import.meta.env.VITE_API_URL.replace(/\/$/, '')}/api`
+  : isLocalhost
+    ? 'http://localhost:5000/api'
+    : '';
 
 const apiClient = axios.create({
-  baseURL: API_BASE,
-  timeout: 8000,
+  baseURL: API_BASE || undefined,
+  timeout: 4000,
   headers: {
     'Content-Type': 'application/json'
   }

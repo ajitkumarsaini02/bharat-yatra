@@ -6,19 +6,12 @@ const AuthContext = createContext(null);
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(() => {
     const saved = localStorage.getItem('bharat_yatra_user');
-    return saved ? JSON.parse(saved) : {
-      id: 'user-default-1',
-      name: 'Travel Explorer',
-      email: 'traveler@bharatyatra.com',
-      role: 'admin',
-      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
-      favorites: ['dest-taj-mahal', 'dest-amer-fort', 'dest-golden-temple']
-    };
+    return saved ? JSON.parse(saved) : null;
   });
 
   const [favorites, setFavorites] = useState(() => {
     const savedFavs = localStorage.getItem('bharat_yatra_favs');
-    return savedFavs ? JSON.parse(savedFavs) : ['dest-taj-mahal', 'dest-amer-fort', 'dest-golden-temple'];
+    return savedFavs ? JSON.parse(savedFavs) : [];
   });
 
   const [savedItineraries, setSavedItineraries] = useState(() => {

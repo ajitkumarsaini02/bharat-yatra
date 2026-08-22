@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { User, Lock, Mail, Sparkles, ShieldCheck } from 'lucide-react';
+import { User, Lock, Mail } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 export default function LoginRegister() {
@@ -27,23 +27,10 @@ export default function LoginRegister() {
       }
       navigate('/');
     } catch (err) {
-      setError(err.response?.data?.message || 'Authentication failed. Please try again.');
+      setError(err.response?.data?.message || 'Authentication failed. Please check your credentials.');
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleQuickDemoLogin = async (role) => {
-    if (role === 'admin') {
-      setEmail('admin@bharatyatra.com');
-      setPassword('admin123');
-      await loginUser('admin@bharatyatra.com', 'admin123');
-    } else {
-      setEmail('traveler@bharatyatra.com');
-      setPassword('user123');
-      await loginUser('traveler@bharatyatra.com', 'user123');
-    }
-    navigate('/');
   };
 
   return (
@@ -150,32 +137,6 @@ export default function LoginRegister() {
             {loading ? 'Processing...' : isLogin ? 'Sign In' : 'Create Account'}
           </button>
         </form>
-
-        {/* 1-Click Quick Demo Login Shortcuts */}
-        <div className="pt-2 border-t border-amber-100 space-y-2">
-          <span className="text-[11px] font-bold text-amber-800/60 uppercase tracking-wider block text-center">
-            Quick 1-Click Demo Login
-          </span>
-          <div className="grid grid-cols-2 gap-2">
-            <button
-              type="button"
-              onClick={() => handleQuickDemoLogin('admin')}
-              className="p-2.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 text-xs font-bold transition flex items-center justify-center gap-1.5"
-            >
-              <ShieldCheck className="w-3.5 h-3.5 text-amber-600" />
-              <span>Admin Demo</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => handleQuickDemoLogin('user')}
-              className="p-2.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 text-xs font-bold transition flex items-center justify-center gap-1.5"
-            >
-              <Sparkles className="w-3.5 h-3.5 text-amber-600" />
-              <span>Traveler Demo</span>
-            </button>
-          </div>
-        </div>
 
       </div>
     </div>

@@ -4,18 +4,8 @@ import User from '../models/User.js';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'bharat_yatra_super_secret_key_2026';
 
-// In-memory fallback users for demo when MongoDB isn't connected
-let inMemoryUsers = [
-  {
-    _id: 'user-demo-1',
-    name: 'Admin Manager',
-    email: 'admin@bharatyatra.com',
-    password: '$2a$10$X8m1wZp7GZf/uV1M171Z.e4qXwB6WnSg.P8pL7V89012345678901', // admin123
-    role: 'admin',
-    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
-    favorites: ['dest-1', 'dest-2', 'dest-5']
-  }
-];
+// In-memory registered users store when MongoDB isn't connected
+let inMemoryUsers = [];
 
 export const register = async (req, res) => {
   try {
@@ -29,7 +19,7 @@ export const register = async (req, res) => {
     try {
       const existingUser = await User.findOne({ email: email.toLowerCase() });
       if (existingUser) {
-        return res.status(400).json({ success: false, message: 'Email already registered' });
+        return res.status(400).json({ success: false, message: 'Email is already registered' });
       }
 
       const newUser = await User.create({
@@ -62,7 +52,7 @@ export const register = async (req, res) => {
       // Fallback in-memory
       const exists = inMemoryUsers.find(u => u.email === email.toLowerCase());
       if (exists) {
-        return res.status(400).json({ success: false, message: 'Email already registered (Demo Mode)' });
+        return res.status(400).json({ success: false, message: 'Email is already registered' });
       }
 
       const mockUser = {
@@ -84,7 +74,7 @@ export const register = async (req, res) => {
 
       return res.status(201).json({
         success: true,
-        message: 'Registration successful (Demo Mode)',
+        message: 'Registration successful',
         token,
         user: {
           id: mockUser._id,
@@ -113,7 +103,7 @@ export const login = async (req, res) => {
       if (user) {
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-          return res.status(400).json({ success: false, message: 'Invalid credentials' });
+          return res.status(400).json({ success: false, message: 'Invalid email or password' });
         }
 
         const token = jwt.sign(
@@ -140,61 +130,36 @@ export const login = async (req, res) => {
       // Proceed to fallback
     }
 
-    // Check in-memory fallback
-    const mockUser = inMemoryUsers.find(u => u.email === email.toLowerCase());
-    if (mockUser) {
-      const isMatch = (password === 'admin123' || await bcrypt.compare(password, mockUser.password));
+    // Check in-memory store
+    const registeredUser = inMemoryUsers.find(u => u.email === email.toLowerCase());
+    if (registeredUser) {
+      const isMatch = await bcrypt.compare(password, registeredUser.password);
       if (!isMatch) {
-        return res.status(400).json({ success: false, message: 'Invalid credentials' });
+        return res.status(400).json({ success: false, message: 'Invalid email or password' });
       }
 
       const token = jwt.sign(
-        { id: mockUser._id, email: mockUser.email, role: mockUser.role, name: mockUser.name },
+        { id: registeredUser._id, email: registeredUser.email, role: registeredUser.role, name: registeredUser.name },
         JWT_SECRET,
         { expiresIn: '7d' }
       );
 
       return res.json({
         success: true,
-        message: 'Login successful (Demo Mode)',
+        message: 'Login successful',
         token,
         user: {
-          id: mockUser._id,
-          name: mockUser.name,
-          email: mockUser.email,
-          role: mockUser.role,
-          avatar: mockUser.avatar,
-          favorites: mockUser.favorites || []
+          id: registeredUser._id,
+          name: registeredUser.name,
+          email: registeredUser.email,
+          role: registeredUser.role,
+          avatar: registeredUser.avatar,
+          favorites: registeredUser.favorites || []
         }
       });
     }
 
-    // Default universal demo login
-    if (email && password) {
-      const defaultUser = {
-        id: 'user-demo-' + Math.random().toString(36).substr(2, 9),
-        name: email.split('@')[0],
-        email: email.toLowerCase(),
-        role: email.includes('admin') ? 'admin' : 'user',
-        avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80',
-        favorites: ['dest-1', 'dest-2']
-      };
-
-      const token = jwt.sign(
-        { id: defaultUser.id, email: defaultUser.email, role: defaultUser.role, name: defaultUser.name },
-        JWT_SECRET,
-        { expiresIn: '7d' }
-      );
-
-      return res.json({
-        success: true,
-        message: 'Logged in successfully (Guest / Demo)',
-        token,
-        user: defaultUser
-      });
-    }
-
-    res.status(400).json({ success: false, message: 'Invalid credentials' });
+    return res.status(400).json({ success: false, message: 'Invalid email or password' });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }

@@ -330,16 +330,7 @@ export const api = {
       }
       return res.data;
     } catch (err) {
-      const mockUser = {
-        id: 'user-demo-' + Date.now(),
-        name: credentials.email.split('@')[0] || 'Demo Explorer',
-        email: credentials.email,
-        role: credentials.email.includes('admin') ? 'admin' : 'user',
-        avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80',
-        favorites: ['dest-1', 'dest-2']
-      };
-      localStorage.setItem('bharat_yatra_token', 'mock_token_' + Date.now());
-      return { success: true, token: 'mock_token', user: mockUser };
+      throw err;
     }
   },
 
@@ -351,16 +342,7 @@ export const api = {
       }
       return res.data;
     } catch (err) {
-      const mockUser = {
-        id: 'user-demo-' + Date.now(),
-        name: userData.name,
-        email: userData.email,
-        role: userData.email.includes('admin') ? 'admin' : 'user',
-        avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80',
-        favorites: []
-      };
-      localStorage.setItem('bharat_yatra_token', 'mock_token_' + Date.now());
-      return { success: true, token: 'mock_token', user: mockUser };
+      throw err;
     }
   }
 };

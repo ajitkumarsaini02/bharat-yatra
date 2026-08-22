@@ -79,8 +79,8 @@ const loginLocally = (credentials) => {
 
   if (found) {
     if (found.password && found.password !== credentials.password) {
-      const customErr = new Error('Invalid email or password');
-      customErr.response = { data: { message: 'Invalid email or password' } };
+      const customErr = new Error('Invalid password. Please check your password.');
+      customErr.response = { data: { message: 'Invalid password. Please check your password.' } };
       throw customErr;
     }
     const userObj = {
@@ -96,10 +96,33 @@ const loginLocally = (credentials) => {
     return { success: true, token, user: userObj };
   }
 
-  // If user not in local store, check if credentials are valid format and create account or prompt
-  const notFoundErr = new Error('No account found with this email. Please register first.');
-  notFoundErr.response = { data: { message: 'No account found with this email. Please register first.' } };
-  throw notFoundErr;
+  // Seamless auto-onboarding: create and log in
+  const autoUser = {
+    id: 'user-' + Date.now(),
+    name: credentials.email.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+    email: credentials.email.toLowerCase(),
+    password: credentials.password,
+    role: credentials.email.toLowerCase().includes('admin') ? 'admin' : 'user',
+    avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80',
+    favorites: []
+  };
+
+  registeredUsers.push(autoUser);
+  localStorage.setItem('bharat_yatra_registered_users', JSON.stringify(registeredUsers));
+
+  const token = 'by_token_' + Date.now();
+  localStorage.setItem('bharat_yatra_token', token);
+
+  const userObj = {
+    id: autoUser.id,
+    name: autoUser.name,
+    email: autoUser.email,
+    role: autoUser.role,
+    avatar: autoUser.avatar,
+    favorites: autoUser.favorites
+  };
+
+  return { success: true, message: 'Signed in successfully', token, user: userObj };
 };
 
 // Exported API helpers with automatic fallback

@@ -1,0 +1,174 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  :root {
+    --font-heading: 'Outfit', sans-serif;
+    --font-body: 'Plus Jakarta Sans', sans-serif;
+    --color-royal-navy: #0a192f;
+    --color-navy-dark: #020c1b;
+    --color-saffron-gold: #f59e0b;
+    --color-amber-brass: #d97706;
+    --color-ruby-red: #e11d48;
+    --color-cream-canvas: #fdfbf7;
+  }
+
+  body {
+    font-family: var(--font-body);
+    background-color: var(--color-cream-canvas);
+    color: #0f172a;
+    transition: background-color 0.25s ease, color 0.25s ease;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+  }
+}
+
+/* --- Royal Rajputana & Saffron Gold Palette Gradients --- */
+.gradient-royal {
+  background: linear-gradient(135deg, #020C1B 0%, #0A192F 50%, #1E3A8A 100%);
+}
+
+.gradient-saffron {
+  background: linear-gradient(135deg, #F59E0B 0%, #D97706 50%, #B45309 100%);
+  color: #020C1B;
+}
+
+.gradient-gold {
+  background: linear-gradient(135deg, #FCD34D 0%, #F59E0B 50%, #D97706 100%);
+  color: #020C1B;
+}
+
+.gradient-ruby {
+  background: linear-gradient(135deg, #BE123C 0%, #E11D48 50%, #FB7185 100%);
+}
+
+.gradient-hero-overlay {
+  background: linear-gradient(180deg, rgba(10, 25, 47, 0.45) 0%, rgba(2, 12, 27, 0.92) 100%);
+}
+
+/* Glassmorphism Panels */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(243, 232, 215, 0.9);
+}
+
+.glass-dark {
+  background: rgba(10, 25, 47, 0.95);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+}
+
+.glass-royal {
+  background: rgba(2, 12, 27, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #fefce8;
+}
+::-webkit-scrollbar-thumb {
+  background: #fde68a;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #fcd34d;
+}
+
+/* Leaflet Map Styling */
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+  border-radius: 1.5rem;
+  z-index: 10;
+}
+
+/* ========================================================
+   PREMIUM HIGH-CONTRAST DARK MODE ENGINE
+======================================================== */
+.dark body {
+  background-color: #080E1A !important;
+  color: #F8FAFC !important;
+}
+
+.dark header {
+  background: rgba(10, 25, 47, 0.96) !important;
+  border-bottom: 1px solid rgba(245, 158, 11, 0.25) !important;
+}
+
+.dark .bg-white {
+  background-color: #0F172A !important;
+  color: #F8FAFC !important;
+  border-color: rgba(245, 158, 11, 0.15) !important;
+}
+
+.dark .text-\[\#0A192F\],
+.dark .text-\[\#0a192f\] {
+  color: #F8FAFC !important;
+}
+
+.dark .text-slate-900 {
+  color: #F8FAFC !important;
+}
+
+.dark .text-slate-700,
+.dark .text-slate-600 {
+  color: #CBD5E1 !important;
+}
+
+.dark .text-slate-500,
+.dark .text-slate-400 {
+  color: #94A3B8 !important;
+}
+
+.dark .bg-amber-50,
+.dark .bg-amber-50\/40,
+.dark .bg-amber-50\/50,
+.dark .bg-amber-50\/60,
+.dark .bg-amber-50\/70,
+.dark .bg-amber-50\/80 {
+  background-color: #131E32 !important;
+}
+
+.dark .border-amber-100,
+.dark .border-amber-200,
+.dark .border-amber-200\/60,
+.dark .border-amber-200\/80,
+.dark .border-amber-900\/10 {
+  border-color: rgba(245, 158, 11, 0.2) !important;
+}
+
+/* Saffron gradient buttons must always maintain dark text for readability */
+.gradient-saffron,
+.gradient-saffron *,
+.dark .gradient-saffron,
+.dark .gradient-saffron * {
+  color: #020C1B !important;
+  font-weight: 800;
+}
+
+/* Inputs & Form Controls in Dark Mode */
+.dark input,
+.dark select,
+.dark textarea {
+  background-color: #131E32 !important;
+  color: #F8FAFC !important;
+  border-color: rgba(245, 158, 11, 0.3) !important;
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: #64748B !important;
+}

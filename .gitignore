@@ -1,0 +1,22 @@
+# Environment Variables & Secrets
+.env
+.env.local
+.env.*.local
+server/.env
+client/.env
+
+# Dependencies
+node_modules/
+*/node_modules/
+
+# Production Builds
+dist/
+*/dist/
+client/dist/
+build/
+
+# Logs & Cache
+*.log
+npm-debug.log*
+.system_generated/
+scratch/

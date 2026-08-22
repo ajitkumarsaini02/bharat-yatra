@@ -1,0 +1,14 @@
+{
+  "name": "bharat-yatra-fullstack",
+  "version": "1.0.0",
+  "description": "Bharat Yatra - Centralized Indian Tourism & AI Trip Planning Platform",
+  "scripts": {
+    "server": "cd server && npm start",
+    "server:dev": "cd server && npm run dev",
+    "client": "cd client && npm run dev",
+    "build": "cd client && npm run build"
+  },
+  "keywords": ["mern", "tourism", "india", "ai-planner", "leaflet", "react", "express", "mongodb"],
+  "author": "Bharat Yatra Team",
+  "license": "MIT"
+}

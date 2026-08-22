@@ -1,5 +1,6 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import mongoose from 'mongoose';
 import User from '../models/User.js';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'bharat_yatra_super_secret_key_2026';

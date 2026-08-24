@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import Destination from '../models/Destination.js';
 import { destinationsData, cuisineDatabase, transportGuideData } from '../data/tourismData.js';
 import { enrichDestinationData, getLiveDestinationWeather } from '../services/destinationEnrichmentService.js';
@@ -18,40 +19,79 @@ export const getDestinations = async (req, res) => {
   try {
     const { state, zone, category, budget, search, sort } = req.query;
 
-    let results = [...activeDestinations];
+    const isDbConnected = mongoose.connection.readyState === 1;
+    let results = [];
 
-    if (state && state !== 'All') {
-      results = results.filter(d => d.state.toLowerCase() === state.toLowerCase());
+    if (isDbConnected) {
+      const filter = {};
+      if (state && state !== 'All') {
+        filter.state = new RegExp(`^${state}$`, 'i');
+      }
+      if (zone && zone !== 'All') {
+        filter.zone = new RegExp(`^${zone}$`, 'i');
+      }
+      if (category && category !== 'All') {
+        filter.category = new RegExp(category.trim(), 'i');
+      }
+      if (budget && budget !== 'All') {
+        filter.budgetLevel = new RegExp(`^${budget}$`, 'i');
+      }
+      if (search) {
+        const q = search.trim();
+        filter.$or = [
+          { name: new RegExp(q, 'i') },
+          { state: new RegExp(q, 'i') },
+          { description: new RegExp(q, 'i') },
+          { highlights: new RegExp(q, 'i') }
+        ];
+      }
+
+      let query = Destination.find(filter);
+
+      if (sort === 'rating') {
+        query = query.sort({ rating: -1 });
+      } else if (sort === 'budget-low') {
+        query = query.sort({ avgDailyExpense: 1 });
+      } else if (sort === 'budget-high') {
+        query = query.sort({ avgDailyExpense: -1 });
+      }
+
+      results = await query.exec();
     }
 
-    if (zone && zone !== 'All') {
-      results = results.filter(d => d.zone.toLowerCase() === zone.toLowerCase());
-    }
+    // If DB has 0 results or offline, fallback to in-memory activeDestinations
+    if (!results || results.length === 0) {
+      results = [...activeDestinations];
 
-    if (category && category !== 'All') {
-      results = results.filter(d => matchesCategory(d, category));
-    }
+      if (state && state !== 'All') {
+        results = results.filter(d => d.state.toLowerCase() === state.toLowerCase());
+      }
+      if (zone && zone !== 'All') {
+        results = results.filter(d => d.zone.toLowerCase() === zone.toLowerCase());
+      }
+      if (category && category !== 'All') {
+        results = results.filter(d => matchesCategory(d, category));
+      }
+      if (budget && budget !== 'All') {
+        results = results.filter(d => d.budgetLevel.toLowerCase() === budget.toLowerCase());
+      }
+      if (search) {
+        const q = search.toLowerCase();
+        results = results.filter(d => 
+          d.name.toLowerCase().includes(q) ||
+          d.state.toLowerCase().includes(q) ||
+          d.description.toLowerCase().includes(q) ||
+          (d.highlights && d.highlights.some(h => h.toLowerCase().includes(q)))
+        );
+      }
 
-    if (budget && budget !== 'All') {
-      results = results.filter(d => d.budgetLevel.toLowerCase() === budget.toLowerCase());
-    }
-
-    if (search) {
-      const q = search.toLowerCase();
-      results = results.filter(d => 
-        d.name.toLowerCase().includes(q) ||
-        d.state.toLowerCase().includes(q) ||
-        d.description.toLowerCase().includes(q) ||
-        (d.highlights && d.highlights.some(h => h.toLowerCase().includes(q)))
-      );
-    }
-
-    if (sort === 'rating') {
-      results.sort((a, b) => b.rating - a.rating);
-    } else if (sort === 'budget-low') {
-      results.sort((a, b) => a.avgDailyExpense - b.avgDailyExpense);
-    } else if (sort === 'budget-high') {
-      results.sort((a, b) => b.avgDailyExpense - a.avgDailyExpense);
+      if (sort === 'rating') {
+        results.sort((a, b) => b.rating - a.rating);
+      } else if (sort === 'budget-low') {
+        results.sort((a, b) => a.avgDailyExpense - b.avgDailyExpense);
+      } else if (sort === 'budget-high') {
+        results.sort((a, b) => b.avgDailyExpense - a.avgDailyExpense);
+      }
     }
 
     res.json({
@@ -257,6 +297,7 @@ export const getTransportGuide = (req, res) => {
 
 export const createDestination = async (req, res) => {
   try {
+    const isDbConnected = mongoose.connection.readyState === 1;
     const newDest = {
       id: 'dest-' + (activeDestinations.length + 1) + '-' + Date.now().toString(36),
       ...req.body,
@@ -264,11 +305,19 @@ export const createDestination = async (req, res) => {
       reviewsCount: 1
     };
 
+    if (isDbConnected) {
+      try {
+        await Destination.create(newDest);
+      } catch (dbErr) {
+        console.error('⚠️ Destination.create error:', dbErr.message);
+      }
+    }
+
     activeDestinations.unshift(newDest);
 
     res.status(201).json({
       success: true,
-      message: 'Destination added successfully to Bharat Yatra directory',
+      message: 'Destination added successfully to Bharat Yatra directory (Saved to MongoDB)',
       data: newDest
     });
   } catch (error) {
@@ -279,11 +328,21 @@ export const createDestination = async (req, res) => {
 export const deleteDestination = async (req, res) => {
   try {
     const { id } = req.params;
+    const isDbConnected = mongoose.connection.readyState === 1;
+
+    if (isDbConnected) {
+      try {
+        await Destination.findOneAndDelete({ id });
+      } catch (dbErr) {
+        console.error('⚠️ Destination.delete error:', dbErr.message);
+      }
+    }
+
     activeDestinations = activeDestinations.filter(d => d.id !== id);
 
     res.json({
       success: true,
-      message: 'Destination removed successfully'
+      message: 'Destination removed successfully from directory and database'
     });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });

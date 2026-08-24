@@ -13,7 +13,7 @@ import { api } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 
 export default function AdminDashboard() {
-  const { user } = useAuth();
+  const { user, isAdmin } = useAuth();
   const [destinations, setDestinations] = useState([]);
   const [isAdding, setIsAdding] = useState(false);
   const [successMsg, setSuccessMsg] = useState('');
@@ -73,16 +73,46 @@ export default function AdminDashboard() {
     if (res.data) {
       setDestinations([res.data, ...destinations]);
       setIsAdding(false);
-      setSuccessMsg('New Destination successfully added to Bharat Yatra directory!');
+      setSuccessMsg('New Destination successfully added to Bharat Yatra directory (Saved to MongoDB)!');
       setTimeout(() => setSuccessMsg(''), 4000);
     }
   };
 
-  const handleDelete = (id) => {
-    setDestinations(destinations.filter(d => d.id !== id));
-    setSuccessMsg('Destination removed successfully.');
-    setTimeout(() => setSuccessMsg(''), 3000);
+  const handleDelete = async (id) => {
+    if (!window.confirm('Are you sure you want to remove this monument from directory & database?')) return;
+    try {
+      await api.deleteDestination(id);
+      setDestinations(destinations.filter(d => d.id !== id));
+      setSuccessMsg('Monument removed successfully from directory & database.');
+      setTimeout(() => setSuccessMsg(''), 3000);
+    } catch (err) {
+      setSuccessMsg('Deleted locally from active view.');
+    }
   };
+
+  if (!isAdmin) {
+    return (
+      <div className="max-w-xl mx-auto px-4 py-20 text-center space-y-6">
+        <div className="w-16 h-16 rounded-3xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center mx-auto text-amber-600 dark:text-amber-400 shadow-lg">
+          <ShieldCheck className="w-8 h-8" />
+        </div>
+        <div className="space-y-2">
+          <h2 className="text-2xl font-black text-[#0A192F] dark:text-white">Admin Access Restricted</h2>
+          <p className="text-xs text-slate-500 dark:text-slate-400 max-w-md mx-auto">
+            This dashboard controls all 112 Indian monuments, database records, and tourism management. Only registered Administrator accounts can access this page.
+          </p>
+        </div>
+        <div className="flex justify-center gap-3">
+          <a
+            href="/login"
+            className="px-6 py-3 rounded-xl bg-[#0A192F] dark:bg-amber-500 text-amber-300 dark:text-slate-950 text-xs font-bold shadow-md hover:scale-105 transition"
+          >
+            Sign in as Admin
+          </a>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">

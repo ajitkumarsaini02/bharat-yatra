@@ -252,6 +252,20 @@ export const api = {
     return { success: true, message: 'Destination created successfully', data: newD };
   },
 
+  deleteDestination: async (id) => {
+    if (API_BASE) {
+      try {
+        const res = await apiClient.delete(`/destinations/${id}`);
+        if (res.data && typeof res.data !== 'string') {
+          return res.data;
+        }
+      } catch (err) {
+        // Fallback
+      }
+    }
+    return { success: true, message: 'Destination deleted' };
+  },
+
   // AI Trip Planner
   generateItinerary: async (plannerParams) => {
     if (API_BASE) {

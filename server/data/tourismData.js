@@ -6265,6 +6265,71 @@ export const destinationsData = [
     }
   },
   {
+    "id": "dest-wildlife-ranthambore-rajasthan",
+    "name": "Ranthambore National Park & Tiger Reserve",
+    "state": "Rajasthan",
+    "zone": "West",
+    "category": "Wildlife & Tiger Reserves",
+    "heroImage": "/monuments/ranthambore-national-park.jpg",
+    "images": [
+      "/monuments/ranthambore-national-park.jpg"
+    ],
+    "tagline": "Royal Bengal Tigers amid 10th-Century UNESCO Hill Fort Ruins",
+    "description": "One of India's premier tiger reserves in Sawai Madhopur, Rajasthan. Famous for daylight sightings of majestic Royal Bengal Tigers roaming freely amongst historic 10th-century Chauhan Rajput fort ruins, lakes, and ancient banyan trees.",
+    "bestTimeToVisit": "October to June (Peak sightings: March to May)",
+    "idealDuration": "2-3 Days",
+    "rating": 4.95,
+    "reviewsCount": 3420,
+    "coordinates": {
+      "lat": 26.0173,
+      "lng": 76.5026
+    },
+    "budgetLevel": "Moderate",
+    "avgDailyExpense": 2800,
+    "highlights": [
+      "Open 4x4 Gypsy Tiger Safari across Zone 1 to 5",
+      "Exploring the 10th-century UNESCO Ranthambore Fort & Trinetra Ganesha Temple",
+      "Sunset birdwatching around Padam Talao and Malik Talao lakes",
+      "Visiting the majestic Jogi Mahal and giant ancient banyan tree"
+    ],
+    "attractions": [
+      {
+        "name": "Ranthambore Tiger Safari (Zones 1-5)",
+        "type": "Wildlife Safari",
+        "entryFee": 1400,
+        "timeNeeded": "3.5 hours"
+      },
+      {
+        "name": "Ranthambore Fort & Trinetra Ganesha Temple",
+        "type": "UNESCO World Heritage Site",
+        "entryFee": 25,
+        "timeNeeded": "2.5 hours"
+      }
+    ],
+    "famousFood": [
+      {
+        "name": "Rajasthani Dal Baati Churma & Gatte Ki Sabzi",
+        "place": "Sawai Madhopur Traditional Dhabas",
+        "desc": "Woodfire baked wheat dough balls with spicy panchmel dal and pure ghee churma"
+      },
+      {
+        "name": "Ker Sangri with Bajra Roti",
+        "place": "Jungle Heritage Resorts",
+        "desc": "Authentic desert berry and bean delicacy cooked with Rajasthani whole spices"
+      }
+    ],
+    "shoppingSpecialties": [
+      "Handmade Rajasthani Wildlife Paintings",
+      "Dastkar Ranthambore Handloom & Block Prints",
+      "Sawai Madhopur Guavas & Khas Perfume"
+    ],
+    "transportation": {
+      "nearestAirport": "Jaipur International Airport (JAI) - 160 km",
+      "nearestRailway": "Sawai Madhopur Junction (SWM) - 11 km (Direct Shatabdi & Superfast connectivity)",
+      "localCommute": "Registered Forest 4x4 Gypsies, Canters & Hotel Cabs"
+    }
+  },
+  {
     "id": "dest-adventure-ladakh-passes",
     "name": "Ladakh (Leh, Pangong & Khardung La)",
     "state": "Ladakh (UT)",

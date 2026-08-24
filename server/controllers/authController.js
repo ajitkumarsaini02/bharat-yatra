@@ -125,43 +125,45 @@ export const login = async (req, res) => {
     if (isDbConnected) {
       try {
         const user = await User.findOne({ email: email.toLowerCase() });
-        if (user) {
-          const isMatch = await bcrypt.compare(password, user.password);
-          if (!isMatch) {
-            return res.status(400).json({ success: false, message: 'Invalid email or password' });
-          }
-
-          const token = jwt.sign(
-            { id: user._id, email: user.email, role: user.role, name: user.name },
-            JWT_SECRET,
-            { expiresIn: '7d' }
-          );
-
-          return res.json({
-            success: true,
-            message: 'Login successful',
-            token,
-            user: {
-              id: user._id,
-              name: user.name,
-              email: user.email,
-              role: user.role,
-              avatar: user.avatar,
-              favorites: user.favorites
-            }
-          });
+        if (!user) {
+          return res.status(404).json({ success: false, message: 'Account not found with this email. Please register first.' });
         }
+
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+          return res.status(400).json({ success: false, message: 'Invalid password. Please check your credentials.' });
+        }
+
+        const token = jwt.sign(
+          { id: user._id, email: user.email, role: user.role, name: user.name },
+          JWT_SECRET,
+          { expiresIn: '7d' }
+        );
+
+        return res.json({
+          success: true,
+          message: 'Login successful',
+          token,
+          user: {
+            id: user._id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+            avatar: user.avatar,
+            favorites: user.favorites || []
+          }
+        });
       } catch (dbErr) {
-        // Fall through
+        console.error('⚠️ MongoDB login query error:', dbErr.message);
       }
     }
 
-    // Check in-memory store
+    // Check in-memory registered users store
     const registeredUser = inMemoryUsers.find(u => u.email === email.toLowerCase());
     if (registeredUser) {
       const isMatch = await bcrypt.compare(password, registeredUser.password);
       if (!isMatch) {
-        return res.status(400).json({ success: false, message: 'Invalid email or password' });
+        return res.status(400).json({ success: false, message: 'Invalid password. Please check your credentials.' });
       }
 
       const token = jwt.sign(
@@ -185,37 +187,9 @@ export const login = async (req, res) => {
       });
     }
 
-    // Auto register and login for seamless UX
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const autoUser = {
-      _id: 'user-' + Date.now(),
-      name: email.split('@')[0],
-      email: email.toLowerCase(),
-      password: hashedPassword,
-      role: email.includes('admin') ? 'admin' : 'user',
-      avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80',
-      favorites: []
-    };
-    inMemoryUsers.push(autoUser);
-
-    const token = jwt.sign(
-      { id: autoUser._id, email: autoUser.email, role: autoUser.role, name: autoUser.name },
-      JWT_SECRET,
-      { expiresIn: '7d' }
-    );
-
-    return res.json({
-      success: true,
-      message: 'Login successful',
-      token,
-      user: {
-        id: autoUser._id,
-        name: autoUser.name,
-        email: autoUser.email,
-        role: autoUser.role,
-        avatar: autoUser.avatar,
-        favorites: autoUser.favorites
-      }
+    return res.status(404).json({
+      success: false,
+      message: 'Account not found with this email. Please click "Register" to create your account.'
     });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });

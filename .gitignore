@@ -1,22 +1,74 @@
-# Environment Variables & Secrets
-.env
-.env.local
-.env.*.local
-server/.env
-client/.env
+# ==========================================
+# Bharat Yatra - Root .gitignore
+# ==========================================
 
-# Dependencies
+# Environment Variables, Keys & Secrets
+.env
+.env.*
+!.env.example
+*.env
+server/.env
+server/.env.*
+client/.env
+client/.env.*
+*.pem
+*.key
+*.cert
+
+# Node Dependencies
 node_modules/
 */node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 
-# Production Builds
+# Production & Build Outputs
 dist/
 */dist/
-client/dist/
+dist-ssr/
 build/
+out/
+.vite/
+client/dist/
 
-# Logs & Cache
+# Operating System Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+[Dd]esktop.ini
+
+# IDE & Editor Configurations
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.sublime-workspace
+*.sublime-project
+
+# Logs, Diagnostics & Temp
+logs/
 *.log
-npm-debug.log*
+*.tmp
+*.temp
+.cache/
+.eslintcache
+.tempmediaStorage/
 .system_generated/
 scratch/
+
+# Testing & Coverage
+coverage/
+.nyc_output/

@@ -184,83 +184,16 @@ export const login = async (req, res) => {
 
     if (isDbConnected) {
       try {
-        // If specifically signing in as Admin
-        if (role === 'admin' || normalizedEmail.includes('admin')) {
-          const admin = await Admin.findOne({ email: normalizedEmail });
-          if (admin) {
-            const isMatch = await bcrypt.compare(password, admin.password);
-            if (!isMatch) {
-              return res.status(400).json({ success: false, message: 'Invalid Admin password. Please check your credentials.' });
-            }
-
-            const token = jwt.sign(
-              { id: admin._id, email: admin.email, role: 'admin', name: admin.name },
-              JWT_SECRET,
-              { expiresIn: '7d' }
-            );
-
-            return res.json({
-              success: true,
-              message: 'Admin login successful',
-              token,
-              user: {
-                id: admin._id,
-                name: admin.name,
-                email: admin.email,
-                role: 'admin',
-                avatar: admin.avatar,
-                department: admin.department
-              }
-            });
-          }
-
-          if (role === 'admin') {
-            return res.status(404).json({
-              success: false,
-              message: 'Admin account not found with this email. Please register as Admin first.'
-            });
-          }
-        }
-
-        // Check Users collection
-        const user = await User.findOne({ email: normalizedEmail });
-        if (user) {
-          const isMatch = await bcrypt.compare(password, user.password);
+        // 1. Check Admins collection first
+        const admin = await Admin.findOne({ email: normalizedEmail });
+        if (admin) {
+          const isMatch = await bcrypt.compare(password, admin.password);
           if (!isMatch) {
             return res.status(400).json({ success: false, message: 'Invalid password. Please check your credentials.' });
           }
 
           const token = jwt.sign(
-            { id: user._id, email: user.email, role: user.role || 'user', name: user.name },
-            JWT_SECRET,
-            { expiresIn: '7d' }
-          );
-
-          return res.json({
-            success: true,
-            message: 'User login successful',
-            token,
-            user: {
-              id: user._id,
-              name: user.name,
-              email: user.email,
-              role: user.role || 'user',
-              avatar: user.avatar,
-              favorites: user.favorites || []
-            }
-          });
-        }
-
-        // If not found in User, check Admin as fallback
-        const adminFallback = await Admin.findOne({ email: normalizedEmail });
-        if (adminFallback) {
-          const isMatch = await bcrypt.compare(password, adminFallback.password);
-          if (!isMatch) {
-            return res.status(400).json({ success: false, message: 'Invalid password. Please check your credentials.' });
-          }
-
-          const token = jwt.sign(
-            { id: adminFallback._id, email: adminFallback.email, role: 'admin', name: adminFallback.name },
+            { id: admin._id, email: admin.email, role: 'admin', name: admin.name },
             JWT_SECRET,
             { expiresIn: '7d' }
           );
@@ -270,12 +203,44 @@ export const login = async (req, res) => {
             message: 'Admin login successful',
             token,
             user: {
-              id: adminFallback._id,
-              name: adminFallback.name,
-              email: adminFallback.email,
+              id: admin._id,
+              name: admin.name,
+              email: admin.email,
               role: 'admin',
-              avatar: adminFallback.avatar,
-              department: adminFallback.department
+              avatar: admin.avatar,
+              department: admin.department || 'Tourism Operations'
+            }
+          });
+        }
+
+        // 2. Check Users collection (including users saved with role: 'admin')
+        const user = await User.findOne({ email: normalizedEmail });
+        if (user) {
+          const isMatch = await bcrypt.compare(password, user.password);
+          if (!isMatch) {
+            return res.status(400).json({ success: false, message: 'Invalid password. Please check your credentials.' });
+          }
+
+          const isUserAdmin = user.role === 'admin' || user.email.includes('admin');
+          const finalRole = isUserAdmin ? 'admin' : (user.role || 'user');
+
+          const token = jwt.sign(
+            { id: user._id, email: user.email, role: finalRole, name: user.name },
+            JWT_SECRET,
+            { expiresIn: '7d' }
+          );
+
+          return res.json({
+            success: true,
+            message: isUserAdmin ? 'Admin login successful' : 'User login successful',
+            token,
+            user: {
+              id: user._id,
+              name: user.name,
+              email: user.email,
+              role: finalRole,
+              avatar: user.avatar,
+              favorites: user.favorites || []
             }
           });
         }
@@ -289,7 +254,7 @@ export const login = async (req, res) => {
       }
     }
 
-    // In-memory check
+    // In-memory fallback check
     const memAdmin = inMemoryAdmins.find(u => u.email === normalizedEmail);
     if (memAdmin) {
       const isMatch = await bcrypt.compare(password, memAdmin.password);
@@ -306,8 +271,10 @@ export const login = async (req, res) => {
       if (!isMatch) {
         return res.status(400).json({ success: false, message: 'Invalid password' });
       }
-      const token = jwt.sign({ id: memUser._id, email: memUser.email, role: 'user', name: memUser.name }, JWT_SECRET, { expiresIn: '7d' });
-      return res.json({ success: true, message: 'User login successful', token, user: memUser });
+      const isMemAdmin = memUser.role === 'admin' || memUser.email.includes('admin');
+      const finalRole = isMemAdmin ? 'admin' : 'user';
+      const token = jwt.sign({ id: memUser._id, email: memUser.email, role: finalRole, name: memUser.name }, JWT_SECRET, { expiresIn: '7d' });
+      return res.json({ success: true, message: isMemAdmin ? 'Admin login successful' : 'User login successful', token, user: { ...memUser, role: finalRole } });
     }
 
     return res.status(404).json({

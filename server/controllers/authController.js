@@ -317,7 +317,7 @@ export const getProfile = async (req, res) => {
 };
 
 /**
- * Toggle Favorite Destination for Logged-In User in MongoDB Atlas
+ * Toggle Favorite Destination for Logged-In User/Admin in MongoDB Atlas
  */
 export const toggleFavorite = async (req, res) => {
   try {
@@ -326,26 +326,39 @@ export const toggleFavorite = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Please provide destinationId' });
     }
 
+    const destIdStr = String(destinationId);
     const userId = req.user?.id;
+    const userEmail = req.user?.email;
     const isDbConnected = mongoose.connection.readyState === 1;
 
-    if (isDbConnected && userId && mongoose.Types.ObjectId.isValid(userId)) {
+    if (isDbConnected && (userId || userEmail)) {
       try {
-        const user = await User.findById(userId);
-        if (user) {
-          const exists = user.favorites.includes(destinationId);
-          if (exists) {
-            user.favorites = user.favorites.filter(id => id !== destinationId);
-          } else {
-            user.favorites.push(destinationId);
-          }
-          await user.save();
+        let account = null;
+        if (userId && mongoose.Types.ObjectId.isValid(userId)) {
+          account = await User.findById(userId) || await Admin.findById(userId);
+        }
+        if (!account && userEmail) {
+          account = await User.findOne({ email: userEmail.toLowerCase() }) || 
+                    await Admin.findOne({ email: userEmail.toLowerCase() });
+        }
 
-          console.log(`✅ MongoDB Atlas: User "${user.email}" favorites updated:`, user.favorites);
+        if (account) {
+          if (!Array.isArray(account.favorites)) {
+            account.favorites = [];
+          }
+          const exists = account.favorites.includes(destIdStr);
+          if (exists) {
+            account.favorites = account.favorites.filter(id => id !== destIdStr);
+          } else {
+            account.favorites.push(destIdStr);
+          }
+          await account.save();
+
+          console.log(`✅ MongoDB Atlas: Account "${account.email}" favorites updated (${account.favorites.length} total):`, account.favorites);
           return res.json({
             success: true,
             message: exists ? 'Removed from favorites' : 'Added to favorites',
-            favorites: user.favorites,
+            favorites: account.favorites,
             isFavorite: !exists
           });
         }
@@ -357,7 +370,8 @@ export const toggleFavorite = async (req, res) => {
     res.json({
       success: true,
       message: 'Favorites updated locally',
-      favorites: [destinationId]
+      favorites: [destIdStr],
+      isFavorite: true
     });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -370,15 +384,26 @@ export const toggleFavorite = async (req, res) => {
 export const getFavorites = async (req, res) => {
   try {
     const userId = req.user?.id;
+    const userEmail = req.user?.email;
     const isDbConnected = mongoose.connection.readyState === 1;
 
-    if (isDbConnected && userId && mongoose.Types.ObjectId.isValid(userId)) {
+    if (isDbConnected && (userId || userEmail)) {
       try {
-        const user = await User.findById(userId).select('favorites');
-        if (user) {
+        let account = null;
+        if (userId && mongoose.Types.ObjectId.isValid(userId)) {
+          account = await User.findById(userId).select('favorites') || 
+                    await Admin.findById(userId).select('favorites');
+        }
+        if (!account && userEmail) {
+          account = await User.findOne({ email: userEmail.toLowerCase() }).select('favorites') || 
+                    await Admin.findOne({ email: userEmail.toLowerCase() }).select('favorites');
+        }
+
+        if (account) {
           return res.json({
             success: true,
-            favorites: user.favorites || []
+            count: account.favorites?.length || 0,
+            favorites: account.favorites || []
           });
         }
       } catch (dbErr) {
@@ -388,6 +413,7 @@ export const getFavorites = async (req, res) => {
 
     res.json({
       success: true,
+      count: 0,
       favorites: []
     });
   } catch (error) {

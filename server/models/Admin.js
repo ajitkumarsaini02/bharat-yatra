@@ -32,7 +32,14 @@ const adminSchema = new mongoose.Schema({
   department: {
     type: String,
     default: 'Tourism Operations & Content'
-  }
+  },
+  favorites: [{
+    type: String
+  }],
+  savedItineraries: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Itinerary'
+  }]
 }, { timestamps: true });
 
 export default mongoose.model('Admin', adminSchema);

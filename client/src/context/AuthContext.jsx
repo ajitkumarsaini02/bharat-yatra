@@ -80,22 +80,27 @@ export const AuthProvider = ({ children }) => {
   }, [savedItineraries]);
 
   const toggleFavorite = async (destId) => {
+    if (!destId) return;
+    const strId = String(destId);
+
     setFavorites(prev => {
-      if (prev.includes(destId)) {
-        return prev.filter(id => id !== destId);
-      } else {
-        return [...prev, destId];
-      }
+      const current = Array.isArray(prev) ? prev.map(String) : [];
+      const exists = current.includes(strId);
+      const next = exists ? current.filter(id => id !== strId) : [...current, strId];
+      localStorage.setItem('bharat_yatra_favs', JSON.stringify(next));
+      return next;
     });
 
     if (user) {
       try {
-        const res = await api.toggleFavorite(destId);
-        if (res.favorites) {
-          setFavorites(res.favorites);
+        const res = await api.toggleFavorite(strId);
+        if (res && res.favorites && Array.isArray(res.favorites)) {
+          const stringified = res.favorites.map(String);
+          setFavorites(stringified);
+          localStorage.setItem('bharat_yatra_favs', JSON.stringify(stringified));
         }
       } catch (err) {
-        console.error('Toggle favorite error:', err);
+        console.error('Toggle favorite API error:', err);
       }
     }
   };

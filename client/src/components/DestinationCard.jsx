@@ -26,13 +26,14 @@ const fallbackImageMap = {
 export default function DestinationCard({ destination }) {
   const navigate = useNavigate();
   const { favorites, toggleFavorite } = useAuth();
-  const isFav = favorites.includes(destination.id);
+  const destId = destination.id || destination._id;
+  const isFav = favorites.some(fav => String(fav) === String(destination.id) || (destination._id && String(fav) === String(destination._id)));
   const [imgSrc, setImgSrc] = useState(destination.heroImage);
 
   // Sync state whenever destination changes
   useEffect(() => {
     setImgSrc(destination.heroImage);
-  }, [destination.heroImage, destination.id]);
+  }, [destination.heroImage, destination.id, destination._id]);
 
   const handleImageError = () => {
     const matchedKey = Object.keys(fallbackImageMap).find(k => destination.id?.includes(k) || destination.heroImage?.includes(k));
@@ -40,7 +41,7 @@ export default function DestinationCard({ destination }) {
   };
 
   const handleCardClick = (e) => {
-    navigate(`/destination/${destination.id}`);
+    navigate(`/destination/${destId}`);
   };
 
   return (
@@ -75,7 +76,7 @@ export default function DestinationCard({ destination }) {
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
-            toggleFavorite(destination.id);
+            toggleFavorite(destId);
           }}
           className={`absolute top-3.5 right-3.5 p-2.5 rounded-full backdrop-blur-md transition-all duration-200 active:scale-90 cursor-pointer shadow-lg ${
             isFav 

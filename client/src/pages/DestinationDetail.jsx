@@ -246,7 +246,12 @@ export default function DestinationDetail() {
     );
   }
 
-  const isFav = favorites.includes(destination.id);
+  const activeDestId = destination.id || destination._id || id;
+  const isFav = favorites.some(fav => 
+    String(fav) === String(destination.id) || 
+    (destination._id && String(fav) === String(destination._id)) || 
+    String(fav) === String(id)
+  );
   const wiki = destination.wikiData;
   const heritage = destination.heritageData;
 
@@ -277,8 +282,8 @@ export default function DestinationDetail() {
         {/* Wishlist Button */}
         <div className="absolute top-6 right-4 sm:right-8 z-10">
           <button
-            onClick={() => toggleFavorite(destination.id)}
-            className={`p-3 rounded-full backdrop-blur-md transition-transform duration-200 active:scale-90 ${
+            onClick={() => toggleFavorite(activeDestId)}
+            className={`p-3 rounded-full backdrop-blur-md transition-transform duration-200 active:scale-90 cursor-pointer ${
               isFav 
                 ? 'bg-rose-500 text-white shadow-lg shadow-rose-500/40' 
                 : 'bg-white/80 text-[#0A192F] hover:bg-white hover:text-rose-500'

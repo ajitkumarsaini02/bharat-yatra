@@ -1,15 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Heart, Bookmark, Trash2, Sparkles } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { destinationsData } from '../data/mockData';
+import { api } from '../services/api';
 import DestinationCard from '../components/DestinationCard';
 
 export default function FavoritesWishlist() {
   const { favorites, savedItineraries, removeItinerary } = useAuth();
   const [activeTab, setActiveTab] = useState('destinations');
+  const [allDestinations, setAllDestinations] = useState(destinationsData);
 
-  const favoriteDestinations = destinationsData.filter(d => favorites.includes(d.id));
+  useEffect(() => {
+    const loadDests = async () => {
+      try {
+        const res = await api.getDestinations();
+        if (res && res.data && res.data.length > 0) {
+          setAllDestinations(res.data);
+        }
+      } catch {
+        setAllDestinations(destinationsData);
+      }
+    };
+    loadDests();
+  }, []);
+
+  const favoriteDestinations = allDestinations.filter(d => 
+    favorites.some(fav => String(fav) === String(d.id) || (d._id && String(fav) === String(d._id)))
+  );
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
@@ -59,7 +77,7 @@ export default function FavoritesWishlist() {
           {favoriteDestinations.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {favoriteDestinations.map((dest) => (
-                <DestinationCard key={dest.id} destination={dest} />
+                <DestinationCard key={dest.id || dest._id} destination={dest} />
               ))}
             </div>
           ) : (

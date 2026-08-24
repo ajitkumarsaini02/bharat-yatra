@@ -84,8 +84,8 @@ export const AuthProvider = ({ children }) => {
     setSavedItineraries(prev => prev.filter(item => item.id !== id));
   };
 
-  const loginUser = async (email, password) => {
-    const res = await api.login({ email, password });
+  const loginUser = async (email, password, role = 'user') => {
+    const res = await api.login({ email, password, role });
     if (res.user) {
       setUser(res.user);
       if (res.user.favorites) {

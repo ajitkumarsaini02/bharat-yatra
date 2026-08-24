@@ -25,10 +25,10 @@ export default function LoginRegister() {
 
     try {
       if (isLogin) {
-        const res = await loginUser(email.trim(), password);
-        setSuccessMsg('Signed in successfully!');
+        const res = await loginUser(email.trim(), password, role);
+        setSuccessMsg(`Signed in successfully as ${res?.user?.role === 'admin' ? 'Administrator' : 'Traveler'}!`);
         setTimeout(() => {
-          if (res?.user?.role === 'admin') {
+          if (res?.user?.role === 'admin' || role === 'admin') {
             navigate('/admin');
           } else {
             navigate('/');
@@ -58,22 +58,42 @@ export default function LoginRegister() {
         
         {/* Logo & Header */}
         <div className="text-center space-y-2">
-          <div className="w-12 h-12 rounded-2xl gradient-saffron flex items-center justify-center mx-auto shadow-md shadow-amber-500/25">
-            <div className="w-6 h-6 rounded-full border-2 border-white flex items-center justify-center">
-              <div className="w-2 h-2 rounded-full bg-[#0A192F]"></div>
-            </div>
+          <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mx-auto shadow-md transition-colors ${
+            role === 'admin' 
+              ? 'bg-amber-600 text-white shadow-amber-600/30' 
+              : 'gradient-saffron shadow-amber-500/25'
+          }`}>
+            {role === 'admin' ? (
+              <ShieldCheck className="w-7 h-7 text-white" />
+            ) : (
+              <div className="w-6 h-6 rounded-full border-2 border-white flex items-center justify-center">
+                <div className="w-2 h-2 rounded-full bg-[#0A192F]"></div>
+              </div>
+            )}
           </div>
+          
           <h2 className="text-2xl font-black text-[#0A192F] dark:text-slate-100 tracking-tight">
-            {isLogin ? 'Sign In to Bharat Yatra' : 'Create an Account'}
+            {isLogin
+              ? role === 'admin'
+                ? 'Sign In to Admin Portal'
+                : 'Sign In as Traveler'
+              : role === 'admin'
+                ? 'Create Administrator Account'
+                : 'Create Traveler Account'}
           </h2>
+          
           <p className="text-xs text-slate-500 dark:text-slate-400">
             {isLogin
-              ? 'Sign in with your registered User or Admin credentials.'
-              : 'Register as a Traveler or Platform Administrator.'}
+              ? role === 'admin'
+                ? 'Access Bharat Yatra content management & 112+ monuments database.'
+                : 'Access saved AI itineraries, budget planner, and wishlist.'
+              : role === 'admin'
+                ? 'Register a new administrator for tourism directory management.'
+                : 'Join Bharat Yatra to create custom itineraries and discover India.'}
           </p>
         </div>
 
-        {/* Tab Switcher */}
+        {/* Tab Switcher (Sign In vs Register) */}
         <div className="flex bg-amber-50/80 dark:bg-slate-800 p-1.5 rounded-2xl border border-amber-100 dark:border-slate-700">
           <button
             type="button"
@@ -110,41 +130,39 @@ export default function LoginRegister() {
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           
-          {/* Role Picker for Register */}
-          {!isLogin && (
-            <div className="space-y-1.5">
-              <label className="text-xs font-bold text-amber-900/70 dark:text-slate-300 uppercase block">
-                Account Type
-              </label>
-              <div className="grid grid-cols-2 gap-2">
-                <button
-                  type="button"
-                  onClick={() => setRole('user')}
-                  className={`p-3 rounded-xl border text-xs font-bold flex flex-col items-center justify-center gap-1.5 transition cursor-pointer ${
-                    role === 'user'
-                      ? 'bg-amber-500/15 border-amber-500 text-amber-900 dark:text-amber-300 shadow-xs'
-                      : 'bg-slate-50 dark:bg-slate-800/40 border-slate-200 dark:border-slate-700 text-slate-500 hover:border-slate-300'
-                  }`}
-                >
-                  <Compass className="w-5 h-5 text-emerald-500" />
-                  <span>Traveler (User)</span>
-                </button>
+          {/* Role Picker for BOTH Sign In & Register */}
+          <div className="space-y-1.5">
+            <label className="text-xs font-bold text-amber-900/70 dark:text-slate-300 uppercase block">
+              {isLogin ? 'Select Sign In Role' : 'Select Account Type'}
+            </label>
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={() => { setRole('user'); setError(''); }}
+                className={`p-3 rounded-xl border text-xs font-bold flex flex-col items-center justify-center gap-1.5 transition cursor-pointer ${
+                  role === 'user'
+                    ? 'bg-amber-500/15 border-amber-500 text-amber-900 dark:text-amber-300 shadow-xs font-black'
+                    : 'bg-slate-50 dark:bg-slate-800/40 border-slate-200 dark:border-slate-700 text-slate-500 hover:border-slate-300'
+                }`}
+              >
+                <Compass className="w-5 h-5 text-emerald-500" />
+                <span>Traveler (User)</span>
+              </button>
 
-                <button
-                  type="button"
-                  onClick={() => setRole('admin')}
-                  className={`p-3 rounded-xl border text-xs font-bold flex flex-col items-center justify-center gap-1.5 transition cursor-pointer ${
-                    role === 'admin'
-                      ? 'bg-amber-500/15 border-amber-500 text-amber-900 dark:text-amber-300 shadow-xs'
-                      : 'bg-slate-50 dark:bg-slate-800/40 border-slate-200 dark:border-slate-700 text-slate-500 hover:border-slate-300'
-                  }`}
-                >
-                  <ShieldCheck className="w-5 h-5 text-amber-600 dark:text-amber-400" />
-                  <span>Admin (Manager)</span>
-                </button>
-              </div>
+              <button
+                type="button"
+                onClick={() => { setRole('admin'); setError(''); }}
+                className={`p-3 rounded-xl border text-xs font-bold flex flex-col items-center justify-center gap-1.5 transition cursor-pointer ${
+                  role === 'admin'
+                    ? 'bg-amber-500/15 border-amber-500 text-amber-900 dark:text-amber-300 shadow-xs font-black'
+                    : 'bg-slate-50 dark:bg-slate-800/40 border-slate-200 dark:border-slate-700 text-slate-500 hover:border-slate-300'
+                }`}
+              >
+                <ShieldCheck className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+                <span>Admin (Manager)</span>
+              </button>
             </div>
-          )}
+          </div>
 
           {!isLogin && (
             <div>
@@ -156,7 +174,7 @@ export default function LoginRegister() {
                 <input
                   type="text"
                   required
-                  placeholder="Enter your full name"
+                  placeholder={role === 'admin' ? 'Admin Full Name' : 'Enter your full name'}
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   className="w-full pl-10 pr-3 py-3 rounded-xl bg-amber-50/40 dark:bg-slate-800/60 border border-amber-200 dark:border-slate-700 text-xs font-semibold outline-hidden focus:border-amber-600 text-[#0A192F] dark:text-slate-100"
@@ -167,14 +185,14 @@ export default function LoginRegister() {
 
           <div>
             <label className="text-xs font-bold text-amber-900/70 dark:text-slate-300 uppercase block mb-1">
-              Email Address
+              {role === 'admin' ? 'Admin Email Address' : 'Email Address'}
             </label>
             <div className="relative">
               <Mail className="w-4 h-4 text-amber-600 absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
                 type="email"
                 required
-                placeholder="your.email@example.com"
+                placeholder={role === 'admin' ? 'admin@bharatyatra.com' : 'your.email@example.com'}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full pl-10 pr-3 py-3 rounded-xl bg-amber-50/40 dark:bg-slate-800/60 border border-amber-200 dark:border-slate-700 text-xs font-semibold outline-hidden focus:border-amber-600 text-[#0A192F] dark:text-slate-100"
@@ -199,7 +217,7 @@ export default function LoginRegister() {
             </div>
           </div>
 
-          {/* Admin Secret Passcode Field for Admin Register */}
+          {/* Admin Secret Passcode Field only for Admin Register */}
           {!isLogin && role === 'admin' && (
             <div>
               <div className="flex items-center justify-between mb-1">
@@ -212,7 +230,7 @@ export default function LoginRegister() {
                 <KeyRound className="w-4 h-4 text-amber-600 absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
                   type="text"
-                  placeholder="Enter admin passcode"
+                  placeholder="bharat_admin_2026"
                   value={adminSecretKey}
                   onChange={(e) => setAdminSecretKey(e.target.value)}
                   className="w-full pl-10 pr-3 py-3 rounded-xl bg-amber-50/40 dark:bg-slate-800/60 border border-amber-200 dark:border-slate-700 text-xs font-semibold outline-hidden focus:border-amber-600 text-[#0A192F] dark:text-slate-100"
@@ -224,13 +242,21 @@ export default function LoginRegister() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3.5 rounded-xl bg-[#0A192F] dark:bg-amber-500 text-amber-300 dark:text-slate-950 font-bold text-xs hover:bg-[#020C1B] dark:hover:bg-amber-400 transition shadow-md disabled:opacity-50 cursor-pointer"
+            className={`w-full py-3.5 rounded-xl text-xs font-bold transition shadow-md disabled:opacity-50 cursor-pointer ${
+              role === 'admin'
+                ? 'bg-amber-600 hover:bg-amber-700 text-white dark:bg-amber-500 dark:text-slate-950 dark:hover:bg-amber-400'
+                : 'bg-[#0A192F] hover:bg-[#020C1B] text-amber-300 dark:bg-amber-500 dark:text-slate-950 dark:hover:bg-amber-400'
+            }`}
           >
             {loading
               ? 'Processing...'
               : isLogin
-                ? 'Sign In'
-                : `Create ${role === 'admin' ? 'Admin' : 'Traveler'} Account`}
+                ? role === 'admin'
+                  ? 'Sign In to Admin Portal'
+                  : 'Sign In as Traveler'
+                : role === 'admin'
+                  ? 'Create Administrator Account'
+                  : 'Create Traveler Account'}
           </button>
         </form>
 

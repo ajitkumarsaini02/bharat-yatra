@@ -174,7 +174,7 @@ export const register = async (req, res) => {
 
 export const login = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, role } = req.body;
     if (!email || !password) {
       return res.status(400).json({ success: false, message: 'Please provide email and password' });
     }
@@ -184,36 +184,45 @@ export const login = async (req, res) => {
 
     if (isDbConnected) {
       try {
-        // 1. Check Admins collection first
-        const admin = await Admin.findOne({ email: normalizedEmail });
-        if (admin) {
-          const isMatch = await bcrypt.compare(password, admin.password);
-          if (!isMatch) {
-            return res.status(400).json({ success: false, message: 'Invalid password. Please check your credentials.' });
+        // If specifically signing in as Admin
+        if (role === 'admin' || normalizedEmail.includes('admin')) {
+          const admin = await Admin.findOne({ email: normalizedEmail });
+          if (admin) {
+            const isMatch = await bcrypt.compare(password, admin.password);
+            if (!isMatch) {
+              return res.status(400).json({ success: false, message: 'Invalid Admin password. Please check your credentials.' });
+            }
+
+            const token = jwt.sign(
+              { id: admin._id, email: admin.email, role: 'admin', name: admin.name },
+              JWT_SECRET,
+              { expiresIn: '7d' }
+            );
+
+            return res.json({
+              success: true,
+              message: 'Admin login successful',
+              token,
+              user: {
+                id: admin._id,
+                name: admin.name,
+                email: admin.email,
+                role: 'admin',
+                avatar: admin.avatar,
+                department: admin.department
+              }
+            });
           }
 
-          const token = jwt.sign(
-            { id: admin._id, email: admin.email, role: 'admin', name: admin.name },
-            JWT_SECRET,
-            { expiresIn: '7d' }
-          );
-
-          return res.json({
-            success: true,
-            message: 'Admin login successful',
-            token,
-            user: {
-              id: admin._id,
-              name: admin.name,
-              email: admin.email,
-              role: 'admin',
-              avatar: admin.avatar,
-              department: admin.department
-            }
-          });
+          if (role === 'admin') {
+            return res.status(404).json({
+              success: false,
+              message: 'Admin account not found with this email. Please register as Admin first.'
+            });
+          }
         }
 
-        // 2. Check Users collection
+        // Check Users collection
         const user = await User.findOne({ email: normalizedEmail });
         if (user) {
           const isMatch = await bcrypt.compare(password, user.password);
@@ -242,6 +251,35 @@ export const login = async (req, res) => {
           });
         }
 
+        // If not found in User, check Admin as fallback
+        const adminFallback = await Admin.findOne({ email: normalizedEmail });
+        if (adminFallback) {
+          const isMatch = await bcrypt.compare(password, adminFallback.password);
+          if (!isMatch) {
+            return res.status(400).json({ success: false, message: 'Invalid password. Please check your credentials.' });
+          }
+
+          const token = jwt.sign(
+            { id: adminFallback._id, email: adminFallback.email, role: 'admin', name: adminFallback.name },
+            JWT_SECRET,
+            { expiresIn: '7d' }
+          );
+
+          return res.json({
+            success: true,
+            message: 'Admin login successful',
+            token,
+            user: {
+              id: adminFallback._id,
+              name: adminFallback.name,
+              email: adminFallback.email,
+              role: 'admin',
+              avatar: adminFallback.avatar,
+              department: adminFallback.department
+            }
+          });
+        }
+
         return res.status(404).json({
           success: false,
           message: 'Account not found with this email. Please register first.'
@@ -259,7 +297,7 @@ export const login = async (req, res) => {
         return res.status(400).json({ success: false, message: 'Invalid password' });
       }
       const token = jwt.sign({ id: memAdmin._id, email: memAdmin.email, role: 'admin', name: memAdmin.name }, JWT_SECRET, { expiresIn: '7d' });
-      return res.json({ success: true, message: 'Login successful', token, user: memAdmin });
+      return res.json({ success: true, message: 'Admin login successful', token, user: memAdmin });
     }
 
     const memUser = inMemoryUsers.find(u => u.email === normalizedEmail);
@@ -269,12 +307,12 @@ export const login = async (req, res) => {
         return res.status(400).json({ success: false, message: 'Invalid password' });
       }
       const token = jwt.sign({ id: memUser._id, email: memUser.email, role: 'user', name: memUser.name }, JWT_SECRET, { expiresIn: '7d' });
-      return res.json({ success: true, message: 'Login successful', token, user: memUser });
+      return res.json({ success: true, message: 'User login successful', token, user: memUser });
     }
 
     return res.status(404).json({
       success: false,
-      message: 'Account not found with this email. Please click "Register" to create your account.'
+      message: 'Account not found with this email. Please register first.'
     });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });

@@ -18,27 +18,35 @@
 * **Beaches, Wildlife & Hill Stations:** Goa, Andaman, Munnar, Jim Corbett, Kaziranga, Ladakh Pangong Circuit.
 * **Rich Metadata:** GPS coordinates, daily average budgets, ideal duration, best time to visit, regional foods, and transport connectivity.
 
-### 🤖 2. AI-Assisted Personalized Trip Planner
-* Generates custom **1 to 7 day itineraries** tailored by destination, traveler persona (Solo, Couple, Family, Friends), and budget style (Budget, Moderate, Luxury).
-* Structured morning, afternoon, and evening slots with timings, estimated costs, and local insider tips.
-* Integrated dynamic packing checklist and daily budget distribution breakdown.
+### 🤖 2. Autonomous AI Destination Generator & Trip Planner
+* **AI Monument Creator:** Enter any monument or city name (e.g. *"Ranthambore National Park"* or *"Khajuraho"*); the AI engine autonomously researches Wikipedia, Wikimedia Commons, OpenStreetMap Geocoding, and culinary databases to generate full verified records in seconds.
+* **Personalized Day-Wise Trip Planner:** Generates custom **1 to 7 day itineraries** tailored by destination, traveler persona (Solo, Couple, Family, Friends), and budget style (Budget, Moderate, Luxury), saved directly to MongoDB Atlas.
 
-### 💰 3. Smart Travel Budget Estimator
+### 🏨 3. Verified Hotels, Heritage Stays & Accommodations
+* **Curated Accommodations:** Every monument page showcases recommended Luxury Heritage Resorts, Boutique Haveli stays, and Budget Backpackers homestays with price per night, ratings, amenities, and direct booking links.
+* **Admin Hotel Manager:** Administrators can add, edit, or customize hotel options per destination.
+
+### 📸 4. High-Definition Verified Tourism Photography
+* **Multi-Tier Visual Archive:** Guaranteed 6+ high-resolution verified photographs for all 112+ monuments from Wikimedia Commons, Archaeological Survey of India (ASI) records, and Incredible India archives.
+* **Interactive Lightbox:** Fullscreen photo preview with photographer credits and creative commons licenses.
+
+### 🗺️ 5. Advanced GIS Interactive Map (4 Tile Layers)
+* **Live GIS Mapping:** Real-time OpenStreetMap integration with dynamic pin clustering across Northern, Southern, Western, Eastern, and North-Eastern zones.
+* **4 Tile Layer Modes:** Switch between CartoDB Voyager (Street), Standard OpenStreetMap, CartoDB Dark Matter (Night), and Esri HD Satellite view.
+* **Quick-Jump Monument Ticker:** Click any monument ticker to smoothly animate and fly the map camera to the monument's exact coordinates.
+
+### 💰 6. Smart Travel Budget Estimator
 * Dynamic budget forecasting categorized into Stay, Food, Local Commute, Sightseeing Tickets, and Shopping/Buffer.
 * Real-time expense sliders with money-saving travel hacks and seasonal cost optimization tips.
 
-### 🗺️ 4. Interactive GIS Tourism Map
-* Interactive OpenStreetMap & Leaflet integration with pinpoint markers for every state and zone across India.
-* Filter monuments dynamically by zone (North, South, West, East, North-East) or category.
-
-### 🍱 5. Regional Cuisine & 🚆 IRCTC Transport Hub
+### 🍱 7. Regional Cuisine & 🚆 IRCTC Transport Hub
 * State-wise authentic culinary guides with famous traditional thalis, street food, and iconic local eateries.
 * Comprehensive transit advice covering Vande Bharat / IRCTC trains, domestic airports, and local commute options.
 
-### 👑 6. Role-Based Architecture & Admin Portal (`/admin`)
+### 👑 8. Role-Based Architecture & Creator-Protected Admin Portal (`/admin`)
 * **Dedicated Collections:** Independent `users` and `admins` database collections in MongoDB Atlas.
-* **Admin Content Management:** Authenticated administrators can add new monuments, delete records, and force-sync directory data to the live database.
-* **Route Protection:** Protected routes restricting platform management strictly to verified administrators.
+* **Creator-Only Resource Protection:** Administrators can only delete/remove monuments that they personally created.
+* **Route Protection:** Protected routes restricting platform management strictly to verified administrators (`bharat_admin_2026`).
 
 ---
 

@@ -44,12 +44,12 @@ export default function DestinationDetail() {
   const [loading, setLoading] = useState(true);
   const [heroImg, setHeroImg] = useState('');
   const [selectedGalleryImg, setSelectedGalleryImg] = useState(null);
-  const { favorites, toggleFavorite } = useAuth();
+  const { user, favorites, toggleFavorite } = useAuth();
 
   // Review form states
   const [newRating, setNewRating] = useState(5);
   const [newComment, setNewComment] = useState('');
-  const [travelMonth, setTravelMonth] = useState('January 2026');
+  const [travelMonth, setTravelMonth] = useState('Recent Visit');
   const [travelerType, setTravelerType] = useState('Solo Traveler');
   const [submittingReview, setSubmittingReview] = useState(false);
   const [reviewSuccess, setReviewSuccess] = useState(false);
@@ -76,6 +76,15 @@ export default function DestinationDetail() {
     setHeroImg(matchedKey ? fallbackImageMap[matchedKey] : fallbackImageMap.default);
   };
 
+  const handleLikeReview = async (revId) => {
+    try {
+      await api.likeReview(revId);
+      setReviews(prev => prev.map(r => (r._id === revId ? { ...r, likes: (r.likes || 0) + 1 } : r)));
+    } catch (err) {
+      console.error('Like review error:', err);
+    }
+  };
+
   const handleReviewSubmit = async (e) => {
     e.preventDefault();
     if (!newComment.trim()) return;
@@ -83,16 +92,17 @@ export default function DestinationDetail() {
     setSubmittingReview(true);
     const newRev = {
       destinationId: id,
-      userName: 'Fellow Traveler',
+      userName: user?.name || 'Travel Enthusiast',
+      userAvatar: user?.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80',
       rating: newRating,
       comment: newComment.trim(),
-      travelMonth,
-      travelerType,
+      travelMonth: travelMonth || 'Recent Visit',
+      travelerType: travelerType || 'Solo Traveler',
       likes: 0
     };
 
     const res = await api.addReview(newRev);
-    if (res.success && res.data) {
+    if (res.data) {
       setReviews([res.data, ...reviews]);
       setNewComment('');
       setReviewSuccess(true);
@@ -262,10 +272,10 @@ export default function DestinationDetail() {
           <div className="lg:col-span-2 space-y-10">
             
             {/* Overview & Wikipedia Verified Summary */}
-            <div className="p-6 sm:p-8 rounded-3xl bg-white border border-amber-900/10 shadow-xs space-y-4">
+            <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-slate-900 border border-amber-900/10 dark:border-slate-800 shadow-xs space-y-4">
               <div className="flex items-center justify-between">
-                <h2 className="text-xl sm:text-2xl font-black text-[#0A192F] flex items-center gap-2">
-                  <BookOpen className="w-5 h-5 text-amber-600" />
+                <h2 className="text-xl sm:text-2xl font-black text-[#0A192F] dark:text-slate-100 flex items-center gap-2">
+                  <BookOpen className="w-5 h-5 text-amber-600 dark:text-amber-400" />
                   <span>About & Historical Overview</span>
                 </h2>
                 {wiki?.wikipediaUrl && (
@@ -273,7 +283,7 @@ export default function DestinationDetail() {
                     href={wiki.wikipediaUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-xs text-amber-700 hover:text-amber-900 flex items-center gap-1 font-semibold underline"
+                    className="text-xs text-amber-700 dark:text-amber-400 hover:text-amber-900 dark:hover:text-amber-300 flex items-center gap-1 font-semibold underline"
                   >
                     <span>Wikipedia</span>
                     <ExternalLink className="w-3 h-3" />
@@ -281,17 +291,17 @@ export default function DestinationDetail() {
                 )}
               </div>
 
-              <p className="text-sm sm:text-base text-slate-700 leading-relaxed font-normal">
+              <p className="text-sm sm:text-base text-slate-700 dark:text-slate-300 leading-relaxed font-normal">
                 {wiki?.extract || destination.description}
               </p>
 
               {/* Highlights Chips */}
               {destination.highlights && destination.highlights.length > 0 && (
-                <div className="pt-4 border-t border-amber-100/60 space-y-2">
-                  <span className="text-xs font-bold text-amber-900 uppercase tracking-wider block">Key Highlights:</span>
+                <div className="pt-4 border-t border-amber-100/60 dark:border-slate-800 space-y-2">
+                  <span className="text-xs font-bold text-amber-800 dark:text-amber-400 uppercase tracking-wider block">Key Highlights:</span>
                   <div className="flex flex-wrap gap-2">
                     {destination.highlights.map((h, i) => (
-                      <span key={i} className="px-3 py-1 rounded-xl bg-amber-50 border border-amber-200 text-xs font-semibold text-amber-900">
+                      <span key={i} className="px-3.5 py-1.5 rounded-xl bg-amber-50/80 dark:bg-amber-950/50 border border-amber-300/60 dark:border-amber-500/30 text-xs font-semibold text-amber-900 dark:text-amber-300 shadow-xs">
                         ✨ {h}
                       </span>
                     ))}
@@ -329,13 +339,13 @@ export default function DestinationDetail() {
 
             {/* Wikimedia Commons Verified Photo Gallery */}
             {gallery && gallery.length > 0 && (
-              <div className="p-6 sm:p-8 rounded-3xl bg-white border border-amber-900/10 shadow-xs space-y-4">
+              <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-slate-900 border border-amber-900/10 dark:border-slate-800 shadow-xs space-y-4">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-xl font-bold text-[#0A192F] flex items-center gap-2">
-                    <Eye className="w-5 h-5 text-amber-600" />
+                  <h3 className="text-xl font-bold text-[#0A192F] dark:text-slate-100 flex items-center gap-2">
+                    <Eye className="w-5 h-5 text-amber-600 dark:text-amber-400" />
                     <span>Verified Tourism Photography</span>
                   </h3>
-                  <span className="text-[11px] font-semibold text-slate-600">Source: Wikimedia Commons</span>
+                  <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">Source: Wikimedia Commons</span>
                 </div>
 
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
@@ -343,7 +353,7 @@ export default function DestinationDetail() {
                     <div
                       key={idx}
                       onClick={() => setSelectedGalleryImg(img)}
-                      className="group relative h-36 rounded-2xl overflow-hidden cursor-pointer border border-amber-200/60 bg-amber-50 hover:shadow-md transition"
+                      className="group relative h-36 rounded-2xl overflow-hidden cursor-pointer border border-amber-200/60 dark:border-slate-700 bg-amber-50 dark:bg-slate-800 hover:shadow-md transition"
                     >
                       <img
                         src={img.imageUrl}
@@ -362,25 +372,25 @@ export default function DestinationDetail() {
 
             {/* Nearby Tourist Attractions (Geoapify / OpenStreetMap) */}
             {nearby && nearby.length > 0 && (
-              <div className="p-6 sm:p-8 rounded-3xl bg-white border border-amber-900/10 shadow-xs space-y-4">
+              <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-slate-900 border border-amber-900/10 dark:border-slate-800 shadow-xs space-y-4">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-xl font-bold text-[#0A192F] flex items-center gap-2">
-                    <Compass className="w-5 h-5 text-amber-600" />
+                  <h3 className="text-xl font-bold text-[#0A192F] dark:text-slate-100 flex items-center gap-2">
+                    <Compass className="w-5 h-5 text-amber-600 dark:text-amber-400" />
                     <span>Nearby Tourist Attractions (~25 km)</span>
                   </h3>
-                  <span className="text-[11px] font-semibold text-slate-600">Geoapify Places API</span>
+                  <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">Geoapify Places API</span>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {nearby.slice(0, 6).map((item, idx) => (
-                    <div key={idx} className="p-3.5 rounded-2xl bg-amber-50/60 border border-amber-200/60 flex items-start justify-between gap-2">
+                    <div key={idx} className="p-3.5 rounded-2xl bg-amber-50/60 dark:bg-slate-800/60 border border-amber-200/60 dark:border-slate-700 flex items-start justify-between gap-2">
                       <div>
-                        <h4 className="text-xs font-bold text-slate-900 line-clamp-1">{item.name}</h4>
-                        <span className="text-[11px] font-medium text-amber-800 block">{item.category}</span>
-                        {item.address && <p className="text-[10px] text-slate-600 line-clamp-1 mt-0.5">{item.address}</p>}
+                        <h4 className="text-xs font-bold text-slate-900 dark:text-slate-100 line-clamp-1">{item.name}</h4>
+                        <span className="text-[11px] font-medium text-amber-800 dark:text-amber-400 block">{item.category}</span>
+                        {item.address && <p className="text-[10px] text-slate-600 dark:text-slate-400 line-clamp-1 mt-0.5">{item.address}</p>}
                       </div>
                       {item.distanceKm && (
-                        <span className="px-2 py-0.5 rounded-full bg-amber-200/80 text-amber-950 font-mono text-[10px] font-bold flex-shrink-0">
+                        <span className="px-2 py-0.5 rounded-full bg-amber-200/80 dark:bg-amber-950 text-amber-950 dark:text-amber-300 font-mono text-[10px] font-bold flex-shrink-0 border dark:border-amber-500/30">
                           {item.distanceKm}
                         </span>
                       )}
@@ -392,29 +402,29 @@ export default function DestinationDetail() {
 
             {/* Attractions & Entry Tickets Table */}
             {destination.attractions && destination.attractions.length > 0 && (
-              <div className="p-6 sm:p-8 rounded-3xl bg-white border border-amber-900/10 shadow-xs space-y-4">
-                <h3 className="text-xl font-bold text-[#0A192F] flex items-center gap-2">
-                  <Landmark className="w-5 h-5 text-amber-600" />
+              <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-slate-900 border border-amber-900/10 dark:border-slate-800 shadow-xs space-y-4">
+                <h3 className="text-xl font-bold text-[#0A192F] dark:text-slate-100 flex items-center gap-2">
+                  <Landmark className="w-5 h-5 text-amber-600 dark:text-amber-400" />
                   <span>Key Monuments & Ticket Prices</span>
                 </h3>
 
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-xs border-collapse">
                     <thead>
-                      <tr className="border-b border-amber-200 text-amber-900">
+                      <tr className="border-b border-amber-200 dark:border-slate-800 text-amber-900 dark:text-amber-300">
                         <th className="py-2.5 font-bold">Attraction</th>
                         <th className="py-2.5 font-bold">Type</th>
                         <th className="py-2.5 font-bold">Time Needed</th>
                         <th className="py-2.5 font-bold text-right">Entry Fee</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-amber-100/70">
+                    <tbody className="divide-y divide-amber-100/70 dark:divide-slate-800">
                       {destination.attractions.map((att, i) => (
-                        <tr key={i} className="hover:bg-amber-50/40">
-                          <td className="py-2.5 font-bold text-slate-800">{att.name}</td>
-                          <td className="py-2.5 text-slate-600">{att.type}</td>
-                          <td className="py-2.5 text-slate-600">{att.timeNeeded}</td>
-                          <td className="py-2.5 font-extrabold text-[#0A192F] text-right">
+                        <tr key={i} className="hover:bg-amber-50/40 dark:hover:bg-slate-800/40">
+                          <td className="py-2.5 font-bold text-slate-800 dark:text-slate-200">{att.name}</td>
+                          <td className="py-2.5 text-slate-600 dark:text-slate-400">{att.type}</td>
+                          <td className="py-2.5 text-slate-600 dark:text-slate-400">{att.timeNeeded}</td>
+                          <td className="py-2.5 font-extrabold text-[#0A192F] dark:text-amber-300 text-right">
                             {att.entryFee === 0 ? 'Free' : `₹${att.entryFee}`}
                           </td>
                         </tr>
@@ -427,21 +437,21 @@ export default function DestinationDetail() {
 
             {/* Regional Cuisine & Iconic Street Food Spots */}
             {destination.famousFood && destination.famousFood.length > 0 && (
-              <div className="p-6 sm:p-8 rounded-3xl bg-white border border-amber-900/10 shadow-xs space-y-4">
-                <h3 className="text-xl font-bold text-[#0A192F] flex items-center gap-2">
-                  <UtensilsCrossed className="w-5 h-5 text-amber-600" />
+              <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-slate-900 border border-amber-900/10 dark:border-slate-800 shadow-xs space-y-4">
+                <h3 className="text-xl font-bold text-[#0A192F] dark:text-slate-100 flex items-center gap-2">
+                  <UtensilsCrossed className="w-5 h-5 text-amber-600 dark:text-amber-400" />
                   <span>Famous Food & Iconic Eateries</span>
                 </h3>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {destination.famousFood.map((food, i) => (
-                    <div key={i} className="p-4 rounded-2xl bg-amber-50/50 border border-amber-200/60 space-y-1">
+                    <div key={i} className="p-4 rounded-2xl bg-amber-50/50 dark:bg-slate-800/60 border border-amber-200/60 dark:border-slate-700 space-y-1">
                       <div className="flex items-center justify-between">
-                        <span className="text-sm font-bold text-slate-900">{food.name}</span>
-                        <span className="text-[11px] px-2 py-0.5 rounded-full bg-amber-200 text-amber-900 font-semibold">Must Try</span>
+                        <span className="text-sm font-bold text-slate-900 dark:text-slate-100">{food.name}</span>
+                        <span className="text-[11px] px-2 py-0.5 rounded-full bg-amber-200 dark:bg-amber-950 text-amber-900 dark:text-amber-300 font-semibold border dark:border-amber-500/30">Must Try</span>
                       </div>
-                      <p className="text-xs text-amber-900 font-medium">📍 {food.place}</p>
-                      <p className="text-xs text-slate-600 leading-relaxed">{food.desc}</p>
+                      <p className="text-xs text-amber-800 dark:text-amber-400 font-medium">📍 {food.place}</p>
+                      <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">{food.desc}</p>
                     </div>
                   ))}
                 </div>
@@ -449,25 +459,25 @@ export default function DestinationDetail() {
             )}
 
             {/* User Reviews Section */}
-            <div className="p-6 sm:p-8 rounded-3xl bg-white border border-amber-900/10 shadow-xs space-y-6">
+            <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-slate-900 border border-amber-900/10 dark:border-slate-800 shadow-xs space-y-6">
               <div className="flex items-center justify-between">
-                <h3 className="text-xl font-bold text-[#0A192F] flex items-center gap-2">
+                <h3 className="text-xl font-bold text-[#0A192F] dark:text-slate-100 flex items-center gap-2">
                   <Star className="w-5 h-5 text-amber-500 fill-amber-500" />
                   <span>Traveler Reviews ({reviews.length})</span>
                 </h3>
               </div>
 
               {/* Review Submission Form */}
-              <form onSubmit={handleReviewSubmit} className="p-5 rounded-2xl bg-amber-50/50 border border-amber-200 space-y-4">
-                <h4 className="text-xs font-bold text-amber-950 uppercase tracking-wider">Leave your travel review:</h4>
+              <form onSubmit={handleReviewSubmit} className="p-5 rounded-2xl bg-amber-50/50 dark:bg-slate-800/60 border border-amber-200 dark:border-slate-700 space-y-4">
+                <h4 className="text-xs font-bold text-amber-900 dark:text-amber-300 uppercase tracking-wider">Leave your travel review:</h4>
                 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <div>
-                    <label className="text-[11px] font-semibold text-slate-700 block mb-1">Rating</label>
+                    <label className="text-[11px] font-semibold text-slate-700 dark:text-slate-300 block mb-1">Rating</label>
                     <select
                       value={newRating}
                       onChange={(e) => setNewRating(Number(e.target.value))}
-                      className="w-full p-2.5 rounded-xl bg-white border border-amber-300 text-xs font-semibold outline-hidden"
+                      className="w-full p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-amber-300 dark:border-slate-700 text-xs font-semibold outline-hidden text-[#0A192F] dark:text-slate-100"
                     >
                       <option value={5}>⭐⭐⭐⭐⭐ (5/5 Excellent)</option>
                       <option value={4}>⭐⭐⭐⭐ (4/5 Very Good)</option>
@@ -478,11 +488,11 @@ export default function DestinationDetail() {
                   </div>
 
                   <div>
-                    <label className="text-[11px] font-semibold text-slate-700 block mb-1">Traveler Persona</label>
+                    <label className="text-[11px] font-semibold text-slate-700 dark:text-slate-300 block mb-1">Traveler Persona</label>
                     <select
                       value={travelerType}
                       onChange={(e) => setTravelerType(e.target.value)}
-                      className="w-full p-2.5 rounded-xl bg-white border border-amber-300 text-xs font-semibold outline-hidden"
+                      className="w-full p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-amber-300 dark:border-slate-700 text-xs font-semibold outline-hidden text-[#0A192F] dark:text-slate-100"
                     >
                       <option value="Solo Traveler">Solo Traveler</option>
                       <option value="Couples Trip">Couples Trip</option>
@@ -492,13 +502,13 @@ export default function DestinationDetail() {
                   </div>
 
                   <div>
-                    <label className="text-[11px] font-semibold text-slate-700 block mb-1">Visit Period</label>
+                    <label className="text-[11px] font-semibold text-slate-700 dark:text-slate-300 block mb-1">Visit Period</label>
                     <input
                       type="text"
                       value={travelMonth}
                       onChange={(e) => setTravelMonth(e.target.value)}
                       placeholder="e.g. Dec 2025"
-                      className="w-full p-2.5 rounded-xl bg-white border border-amber-300 text-xs font-semibold outline-hidden"
+                      className="w-full p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-amber-300 dark:border-slate-700 text-xs font-semibold outline-hidden text-[#0A192F] dark:text-slate-100"
                     />
                   </div>
                 </div>
@@ -509,14 +519,14 @@ export default function DestinationDetail() {
                     value={newComment}
                     onChange={(e) => setNewComment(e.target.value)}
                     placeholder="Share your insider tips, entry timing tricks, or photography spots..."
-                    className="w-full p-3 rounded-xl bg-white border border-amber-300 text-xs text-slate-800 outline-hidden"
+                    className="w-full p-3 rounded-xl bg-white dark:bg-slate-900 border border-amber-300 dark:border-slate-700 text-xs text-slate-800 dark:text-slate-100 outline-hidden"
                     required
                   />
                 </div>
 
                 <div className="flex items-center justify-between">
                   {reviewSuccess ? (
-                    <span className="text-xs font-bold text-emerald-600 flex items-center gap-1">
+                    <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
                       <CheckCircle className="w-4 h-4" />
                       <span>Review submitted successfully!</span>
                     </span>
@@ -536,21 +546,35 @@ export default function DestinationDetail() {
               {/* Reviews List */}
               <div className="space-y-3">
                 {reviews.map((rev, idx) => (
-                  <div key={rev._id || idx} className="p-4 rounded-2xl border border-amber-100 bg-white space-y-1.5">
+                  <div key={rev._id || idx} className="p-4 rounded-2xl border border-amber-100 dark:border-slate-800 bg-white dark:bg-slate-900 space-y-1.5">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-slate-900">{rev.userName}</span>
+                      <span className="text-xs font-bold text-slate-900 dark:text-slate-100">{rev.userName}</span>
                       <div className="flex items-center gap-1 text-amber-500">
                         {Array.from({ length: rev.rating || 5 }).map((_, i) => (
                           <Star key={i} className="w-3 h-3 fill-amber-400" />
                         ))}
                       </div>
                     </div>
-                    <div className="flex items-center gap-2 text-[10px] text-slate-600 font-medium">
+                    <div className="flex items-center gap-2 text-[10px] text-slate-600 dark:text-slate-400 font-medium">
                       <span>{rev.travelerType || 'Traveler'}</span>
                       <span>•</span>
                       <span>{rev.travelMonth || 'Recent'}</span>
                     </div>
-                    <p className="text-xs text-slate-700 leading-relaxed pt-1">{rev.comment}</p>
+                    <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed pt-1">{rev.comment}</p>
+                    <div className="pt-2 flex justify-end">
+                      <button
+                        type="button"
+                        onClick={() => handleLikeReview(rev._id)}
+                        className="text-[11px] font-bold text-slate-500 hover:text-amber-600 dark:text-slate-400 dark:hover:text-amber-400 flex items-center gap-1.5 transition cursor-pointer"
+                      >
+                        <span>👍 Helpful</span>
+                        {rev.likes > 0 && (
+                          <span className="px-1.5 py-0.5 rounded-full bg-amber-100 dark:bg-slate-800 text-amber-900 dark:text-amber-300 font-mono text-[10px]">
+                            {rev.likes}
+                          </span>
+                        )}
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -586,39 +610,39 @@ export default function DestinationDetail() {
             </div>
 
             {/* Transit & Commute Info */}
-            <div className="p-6 rounded-3xl bg-white border border-amber-900/10 shadow-xs space-y-4">
-              <h4 className="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
-                <Train className="w-4 h-4 text-amber-600" />
+            <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-amber-900/10 dark:border-slate-800 shadow-xs space-y-4">
+              <h4 className="text-sm font-bold text-slate-900 dark:text-slate-100 uppercase tracking-wider flex items-center gap-2">
+                <Train className="w-4 h-4 text-amber-600 dark:text-amber-400" />
                 <span>How to Reach</span>
               </h4>
 
               <div className="space-y-3 text-xs">
                 {destination.transportation?.nearestAirport && (
                   <div className="flex items-start gap-2.5">
-                    <Plane className="w-4 h-4 text-slate-500 mt-0.5 flex-shrink-0" />
+                    <Plane className="w-4 h-4 text-slate-500 dark:text-slate-400 mt-0.5 flex-shrink-0" />
                     <div>
-                      <span className="font-bold text-slate-800 block">Airport</span>
-                      <span className="text-slate-600">{destination.transportation.nearestAirport}</span>
+                      <span className="font-bold text-slate-800 dark:text-slate-200 block">Airport</span>
+                      <span className="text-slate-600 dark:text-slate-400">{destination.transportation.nearestAirport}</span>
                     </div>
                   </div>
                 )}
 
                 {destination.transportation?.nearestRailway && (
                   <div className="flex items-start gap-2.5">
-                    <Train className="w-4 h-4 text-slate-500 mt-0.5 flex-shrink-0" />
+                    <Train className="w-4 h-4 text-slate-500 dark:text-slate-400 mt-0.5 flex-shrink-0" />
                     <div>
-                      <span className="font-bold text-slate-800 block">Railway</span>
-                      <span className="text-slate-600">{destination.transportation.nearestRailway}</span>
+                      <span className="font-bold text-slate-800 dark:text-slate-200 block">Railway</span>
+                      <span className="text-slate-600 dark:text-slate-400">{destination.transportation.nearestRailway}</span>
                     </div>
                   </div>
                 )}
 
                 {destination.transportation?.localCommute && (
                   <div className="flex items-start gap-2.5">
-                    <Car className="w-4 h-4 text-slate-500 mt-0.5 flex-shrink-0" />
+                    <Car className="w-4 h-4 text-slate-500 dark:text-slate-400 mt-0.5 flex-shrink-0" />
                     <div>
-                      <span className="font-bold text-slate-800 block">Local Commute</span>
-                      <span className="text-slate-600">{destination.transportation.localCommute}</span>
+                      <span className="font-bold text-slate-800 dark:text-slate-200 block">Local Commute</span>
+                      <span className="text-slate-600 dark:text-slate-400">{destination.transportation.localCommute}</span>
                     </div>
                   </div>
                 )}
@@ -627,14 +651,14 @@ export default function DestinationDetail() {
 
             {/* Shopping & Local Crafts */}
             {destination.shoppingSpecialties && destination.shoppingSpecialties.length > 0 && (
-              <div className="p-6 rounded-3xl bg-white border border-amber-900/10 shadow-xs space-y-3">
-                <h4 className="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
-                  <ShoppingBag className="w-4 h-4 text-amber-600" />
+              <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-amber-900/10 dark:border-slate-800 shadow-xs space-y-3">
+                <h4 className="text-sm font-bold text-slate-900 dark:text-slate-100 uppercase tracking-wider flex items-center gap-2">
+                  <ShoppingBag className="w-4 h-4 text-amber-600 dark:text-amber-400" />
                   <span>Souvenirs & Crafts</span>
                 </h4>
                 <div className="flex flex-wrap gap-1.5">
                   {destination.shoppingSpecialties.map((shop, i) => (
-                    <span key={i} className="px-2.5 py-1 rounded-xl bg-amber-50 border border-amber-200 text-xs font-semibold text-amber-900">
+                    <span key={i} className="px-2.5 py-1 rounded-xl bg-amber-50 dark:bg-amber-950/50 border border-amber-200 dark:border-amber-500/30 text-xs font-semibold text-amber-900 dark:text-amber-300">
                       🛍️ {shop}
                     </span>
                   ))}

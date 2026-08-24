@@ -348,3 +348,26 @@ export const deleteDestination = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+/**
+ * AI Destination Generator & Auto-populate endpoint
+ */
+export const generateAIDestination = async (req, res) => {
+  try {
+    const { name } = req.body;
+    if (!name || !name.trim()) {
+      return res.status(400).json({ success: false, message: 'Please provide a monument or destination name' });
+    }
+
+    const { generateDestinationWithAI } = await import('../services/aiDestinationGenerator.js');
+    const aiData = await generateDestinationWithAI(name.trim());
+
+    res.json({
+      success: true,
+      message: `AI generated complete metadata for ${aiData.name}`,
+      data: aiData
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message || 'AI Generation failed' });
+  }
+};

@@ -49,6 +49,8 @@ export async function geocodePlace(placeName) {
     return {
       success: true,
       data: {
+        lat: parseFloat(hit.lat),
+        lng: parseFloat(hit.lon),
         latitude: parseFloat(hit.lat),
         longitude: parseFloat(hit.lon),
         displayName: hit.display_name,

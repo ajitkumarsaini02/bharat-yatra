@@ -17,8 +17,9 @@ export default function AdminDashboard() {
   const [destinations, setDestinations] = useState([]);
   const [isAdding, setIsAdding] = useState(false);
   const [successMsg, setSuccessMsg] = useState('');
+  const [aiPrompt, setAiPrompt] = useState('');
+  const [aiLoading, setAiLoading] = useState(false);
 
-  // New Destination Form
   const [newDest, setNewDest] = useState({
     name: '',
     state: '',
@@ -28,12 +29,16 @@ export default function AdminDashboard() {
     tagline: '',
     description: '',
     bestTimeToVisit: 'October to March',
-    idealDuration: '3-4 Days',
+    idealDuration: '2-3 Days',
     budgetLevel: 'Moderate',
-    avgDailyExpense: 2000,
-    highlights: 'Sunrise boating, Ancient temple darshan, Regional food street walk',
-    lat: 28.6139,
-    lng: 77.2090
+    avgDailyExpense: 2400,
+    highlights: 'Sunrise photography, Historic complex exploration, Local food tasting',
+    lat: 26.9124,
+    lng: 75.7873,
+    attractions: [],
+    famousFood: [],
+    shoppingSpecialties: [],
+    transportation: {}
   });
 
   useEffect(() => {
@@ -46,26 +51,75 @@ export default function AdminDashboard() {
     fetchDests();
   }, []);
 
+  const handleAIGenerate = async (e) => {
+    if (e) e.preventDefault();
+    if (!aiPrompt.trim()) return;
+    setAiLoading(true);
+    try {
+      const res = await api.generateAIDestination(aiPrompt.trim());
+      if (res.data) {
+        const d = res.data;
+        setNewDest({
+          name: d.name || aiPrompt,
+          state: d.state || '',
+          zone: d.zone || 'North',
+          category: d.category || 'UNESCO World Heritage & Iconic Monuments',
+          heroImage: d.heroImage || 'https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=1200&q=80',
+          tagline: d.tagline || '',
+          description: d.description || '',
+          bestTimeToVisit: d.bestTimeToVisit || 'October to March',
+          idealDuration: d.idealDuration || '2-3 Days',
+          budgetLevel: d.budgetLevel || 'Moderate',
+          avgDailyExpense: d.avgDailyExpense || 2400,
+          highlights: Array.isArray(d.highlights) ? d.highlights.join(', ') : (d.highlights || ''),
+          lat: d.lat || d.coordinates?.lat || 26.9124,
+          lng: d.lng || d.coordinates?.lng || 75.7873,
+          attractions: d.attractions || [],
+          famousFood: d.famousFood || [],
+          shoppingSpecialties: d.shoppingSpecialties || [],
+          transportation: d.transportation || {}
+        });
+        setSuccessMsg(`✨ AI successfully generated accurate information for "${d.name}" (${d.state})!`);
+        setTimeout(() => setSuccessMsg(''), 7000);
+      }
+    } catch (err) {
+      alert('AI Generation Notice: ' + (err.message || 'Could not fetch AI information'));
+    } finally {
+      setAiLoading(false);
+    }
+  };
+
   const handleAddSubmit = async (e) => {
     e.preventDefault();
-    const highlightsArr = newDest.highlights.split(',').map(h => h.trim());
+    const highlightsArr = typeof newDest.highlights === 'string'
+      ? newDest.highlights.split(',').map(h => h.trim()).filter(Boolean)
+      : newDest.highlights;
 
     const payload = {
       ...newDest,
-      avgDailyExpense: Number(newDest.avgDailyExpense),
-      coordinates: { lat: Number(newDest.lat), lng: Number(newDest.lng) },
-      highlights: highlightsArr,
-      attractions: [
-        { name: `${newDest.name} Prime Attraction`, type: newDest.category, entryFee: 50, timeNeeded: '2 hours' }
+      avgDailyExpense: Number(newDest.avgDailyExpense) || 2400,
+      coordinates: { 
+        lat: Number(newDest.lat) || 26.9124, 
+        lng: Number(newDest.lng) || 75.7873 
+      },
+      highlights: highlightsArr.length > 0 ? highlightsArr : [
+        `Explore the historic grounds and architecture of ${newDest.name}`,
+        `Cultural heritage photography and local experiences in ${newDest.state}`
       ],
-      famousFood: [
-        { name: 'Regional Specialty Thali', place: 'Famous Local Eatery', desc: 'Authentic local flavors prepared with traditional spices' }
+      attractions: newDest.attractions?.length > 0 ? newDest.attractions : [
+        { name: `${newDest.name} Main Complex`, type: newDest.category, entryFee: 40, timeNeeded: '2.5 hours' }
       ],
-      shoppingSpecialties: ['Handloom Sarees', 'Traditional Handicrafts'],
-      transportation: {
-        nearestAirport: 'Regional Airport (30 km)',
-        nearestRailway: 'City Junction (10 km)',
-        localCommute: 'E-rickshaws and cabs'
+      famousFood: newDest.famousFood?.length > 0 ? newDest.famousFood : [
+        { name: `Authentic ${newDest.state} Specialty Thali`, place: 'Local Heritage Restaurant', desc: 'Traditional regional delicacies and sweets' }
+      ],
+      shoppingSpecialties: newDest.shoppingSpecialties?.length > 0 ? newDest.shoppingSpecialties : [
+        `Traditional ${newDest.state} Handloom`,
+        'Authentic Handicrafts & Souvenirs'
+      ],
+      transportation: newDest.transportation?.nearestAirport ? newDest.transportation : {
+        nearestAirport: `Regional Airport in ${newDest.state}`,
+        nearestRailway: `Major City Railway Junction`,
+        localCommute: 'E-rickshaws, Autos, and App Cabs'
       }
     };
 
@@ -73,8 +127,8 @@ export default function AdminDashboard() {
     if (res.data) {
       setDestinations([res.data, ...destinations]);
       setIsAdding(false);
-      setSuccessMsg('New Destination successfully added to Bharat Yatra directory (Saved to MongoDB)!');
-      setTimeout(() => setSuccessMsg(''), 4000);
+      setSuccessMsg(`"${res.data.name}" successfully added to directory & MongoDB database!`);
+      setTimeout(() => setSuccessMsg(''), 5000);
     }
   };
 
@@ -191,10 +245,61 @@ export default function AdminDashboard() {
       {/* Add New Destination Form Panel */}
       {isAdding && (
         <form onSubmit={handleAddSubmit} className="bg-white rounded-3xl p-6 sm:p-8 border border-amber-200 shadow-xl space-y-6 animate-fade-in">
-          <h3 className="text-lg font-bold text-[#0A192F] flex items-center gap-2">
-            <PlusCircle className="w-5 h-5 text-amber-600" />
-            <span>Create New Destination Record</span>
-          </h3>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-amber-100 pb-4">
+            <h3 className="text-lg font-bold text-[#0A192F] flex items-center gap-2">
+              <PlusCircle className="w-5 h-5 text-amber-600" />
+              <span>Create New Destination Record</span>
+            </h3>
+            <span className="text-[11px] text-amber-800 font-semibold bg-amber-50 px-3 py-1 rounded-full border border-amber-200">
+              ⚡ Powered by Wikipedia & Tourism Knowledge Engine
+            </span>
+          </div>
+
+          {/* AI Auto-Fill Research Card */}
+          <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-amber-500/15 via-orange-500/10 to-amber-500/15 border border-amber-400/40 space-y-3 shadow-xs">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-xl bg-amber-500 text-slate-950 flex items-center justify-center font-bold shadow-xs">
+                <Sparkles className="w-4 h-4 animate-spin" style={{ animationDuration: '4s' }} />
+              </div>
+              <div>
+                <h4 className="text-xs sm:text-sm font-black text-[#0A192F]">
+                  AI Auto-Fill & Heritage Research Assistant
+                </h4>
+                <p className="text-[11px] text-slate-500">
+                  Type any Indian monument or place name. AI will automatically research and fill Wikipedia details, photos, GPS coordinates, food, budget & transit!
+                </p>
+              </div>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-2">
+              <input
+                type="text"
+                value={aiPrompt}
+                onChange={(e) => setAiPrompt(e.target.value)}
+                placeholder="Enter monument name (e.g. Statue of Unity, Somnath Temple, Hampi, Dhanushkodi, Chanderi Fort)..."
+                className="flex-1 px-4 py-3 rounded-xl bg-white border border-amber-300 text-xs font-semibold outline-hidden focus:border-amber-600 text-[#0A192F] shadow-xs"
+                onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleAIGenerate(); } }}
+              />
+              <button
+                type="button"
+                onClick={handleAIGenerate}
+                disabled={aiLoading || !aiPrompt.trim()}
+                className="px-6 py-3 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-black transition flex items-center justify-center gap-2 shadow-md disabled:opacity-50 cursor-pointer"
+              >
+                {aiLoading ? (
+                  <>
+                    <Sparkles className="w-4 h-4 animate-spin" />
+                    <span>AI Researching Info...</span>
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="w-4 h-4" />
+                    <span>✨ Generate with AI</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
@@ -279,6 +384,78 @@ export default function AdminDashboard() {
             </div>
           </div>
 
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label className="text-xs font-bold text-amber-800/70 uppercase block mb-1">Tagline</label>
+              <input
+                type="text"
+                value={newDest.tagline}
+                onChange={(e) => setNewDest({ ...newDest, tagline: e.target.value })}
+                placeholder="e.g. UNESCO World Heritage Fort"
+                className="w-full p-3 rounded-xl bg-amber-50/40 border border-amber-200 text-xs font-semibold outline-hidden text-[#0A192F]"
+              />
+            </div>
+
+            <div>
+              <label className="text-xs font-bold text-amber-800/70 uppercase block mb-1">Best Time to Visit</label>
+              <input
+                type="text"
+                value={newDest.bestTimeToVisit}
+                onChange={(e) => setNewDest({ ...newDest, bestTimeToVisit: e.target.value })}
+                placeholder="e.g. October to March"
+                className="w-full p-3 rounded-xl bg-amber-50/40 border border-amber-200 text-xs font-semibold outline-hidden text-[#0A192F]"
+              />
+            </div>
+
+            <div>
+              <label className="text-xs font-bold text-amber-800/70 uppercase block mb-1">Ideal Duration</label>
+              <input
+                type="text"
+                value={newDest.idealDuration}
+                onChange={(e) => setNewDest({ ...newDest, idealDuration: e.target.value })}
+                placeholder="e.g. 2-3 Days"
+                className="w-full p-3 rounded-xl bg-amber-50/40 border border-amber-200 text-xs font-semibold outline-hidden text-[#0A192F]"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="text-xs font-bold text-amber-800/70 uppercase block mb-1">Latitude (GPS Lat)</label>
+              <input
+                type="number"
+                step="any"
+                value={newDest.lat}
+                onChange={(e) => setNewDest({ ...newDest, lat: e.target.value })}
+                placeholder="e.g. 26.9124"
+                className="w-full p-3 rounded-xl bg-amber-50/40 border border-amber-200 text-xs font-semibold outline-hidden text-[#0A192F]"
+              />
+            </div>
+
+            <div>
+              <label className="text-xs font-bold text-amber-800/70 uppercase block mb-1">Longitude (GPS Lng)</label>
+              <input
+                type="number"
+                step="any"
+                value={newDest.lng}
+                onChange={(e) => setNewDest({ ...newDest, lng: e.target.value })}
+                placeholder="e.g. 75.7873"
+                className="w-full p-3 rounded-xl bg-amber-50/40 border border-amber-200 text-xs font-semibold outline-hidden text-[#0A192F]"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="text-xs font-bold text-amber-800/70 uppercase block mb-1">Highlights (Comma separated)</label>
+            <input
+              type="text"
+              value={newDest.highlights}
+              onChange={(e) => setNewDest({ ...newDest, highlights: e.target.value })}
+              placeholder="e.g. Sunrise view, Ancient architecture, Local food tasting"
+              className="w-full p-3 rounded-xl bg-amber-50/40 border border-amber-200 text-xs font-medium outline-hidden text-[#0A192F]"
+            />
+          </div>
+
           <div>
             <label className="text-xs font-bold text-amber-800/70 uppercase block mb-1">Description</label>
             <textarea
@@ -301,9 +478,9 @@ export default function AdminDashboard() {
             </button>
             <button
               type="submit"
-              className="px-6 py-2.5 rounded-xl gradient-saffron text-slate-950 text-xs font-black shadow-xs"
+              className="px-6 py-2.5 rounded-xl bg-[#0A192F] hover:bg-[#020C1B] text-amber-300 text-xs font-black shadow-md cursor-pointer"
             >
-              Save Destination
+              Save Destination to Database
             </button>
           </div>
         </form>

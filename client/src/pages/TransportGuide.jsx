@@ -44,35 +44,35 @@ export default function TransportGuide() {
       {/* Guide Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {guides.map((item, idx) => (
-          <div key={idx} className="bg-white rounded-3xl p-6 sm:p-8 border border-amber-900/10 shadow-lg space-y-6 flex flex-col justify-between">
+          <div key={idx} className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-amber-900/10 dark:border-slate-800 shadow-lg space-y-6 flex flex-col justify-between">
             
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <div className="w-12 h-12 rounded-2xl bg-amber-50/70 border border-amber-200 flex items-center justify-center shadow-xs">
+                <div className="w-12 h-12 rounded-2xl bg-amber-50/70 dark:bg-slate-800 border border-amber-200 dark:border-slate-700 flex items-center justify-center shadow-xs">
                   {getModeIcon(item.icon)}
                 </div>
-                <span className="px-3 py-1 rounded-full bg-amber-50 text-amber-900 text-xs font-bold border border-amber-200">
+                <span className="px-3 py-1 rounded-full bg-amber-50 dark:bg-amber-950/60 text-amber-900 dark:text-amber-300 text-xs font-bold border border-amber-200 dark:border-amber-500/30">
                   {item.badge}
                 </span>
               </div>
 
               <div>
-                <h3 className="text-xl font-bold text-[#0A192F]">{item.title}</h3>
-                <span className="text-xs font-bold text-amber-700">{item.mode}</span>
-                <p className="text-xs sm:text-sm text-slate-600 mt-2 leading-relaxed">
+                <h3 className="text-xl font-bold text-[#0A192F] dark:text-slate-100">{item.title}</h3>
+                <span className="text-xs font-bold text-amber-700 dark:text-amber-400">{item.mode}</span>
+                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 mt-2 leading-relaxed">
                   {item.description}
                 </p>
               </div>
 
               {/* Train Classes if available */}
               {item.classes && (
-                <div className="space-y-2 pt-2 border-t border-amber-100">
-                  <span className="text-[11px] font-bold text-amber-800/70 uppercase tracking-wider block">Railway Coach Categories:</span>
+                <div className="space-y-2 pt-2 border-t border-amber-100 dark:border-slate-800">
+                  <span className="text-[11px] font-bold text-amber-800 dark:text-amber-400 uppercase tracking-wider block">Railway Coach Categories:</span>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                     {item.classes.map((c, i) => (
-                      <div key={i} className="p-2.5 bg-amber-50/40 rounded-xl border border-amber-100">
-                        <strong className="text-[#0A192F] block">{c.name}</strong>
-                        <span className="text-[11px] text-slate-500">{c.desc}</span>
+                      <div key={i} className="p-2.5 bg-amber-50/40 dark:bg-slate-800 rounded-xl border border-amber-100 dark:border-slate-700">
+                        <strong className="text-[#0A192F] dark:text-slate-100 block">{c.name}</strong>
+                        <span className="text-[11px] text-slate-500 dark:text-slate-400">{c.desc}</span>
                       </div>
                     ))}
                   </div>
@@ -81,12 +81,12 @@ export default function TransportGuide() {
 
               {/* Tips Checklist */}
               {item.tips && (
-                <div className="space-y-2 pt-2 border-t border-amber-100">
-                  <span className="text-[11px] font-bold text-amber-800/70 uppercase tracking-wider block">Essential Travel Tips:</span>
-                  <ul className="space-y-1.5 text-xs text-slate-600">
+                <div className="space-y-2 pt-2 border-t border-amber-100 dark:border-slate-800">
+                  <span className="text-[11px] font-bold text-amber-800 dark:text-amber-400 uppercase tracking-wider block">Essential Travel Tips:</span>
+                  <ul className="space-y-1.5 text-xs text-slate-600 dark:text-slate-300">
                     {item.tips.map((tip, i) => (
                       <li key={i} className="flex items-start gap-2">
-                        <CheckCircle className="w-4 h-4 text-emerald-600 mt-0.5 flex-shrink-0" />
+                        <CheckCircle className="w-4 h-4 text-emerald-600 dark:text-emerald-400 mt-0.5 flex-shrink-0" />
                         <span>{tip}</span>
                       </li>
                     ))}

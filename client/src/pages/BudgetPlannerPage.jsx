@@ -59,21 +59,21 @@ export default function BudgetPlannerPage() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         
         {/* Left Inputs Panel (5 cols) */}
-        <div className="lg:col-span-5 bg-white rounded-3xl p-6 sm:p-8 border border-amber-900/10 shadow-xl space-y-6">
-          <h3 className="text-lg font-bold text-[#0A192F] flex items-center gap-2">
-            <Calculator className="w-5 h-5 text-amber-700" />
+        <div className="lg:col-span-5 bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-amber-900/10 dark:border-slate-800 shadow-xl space-y-6">
+          <h3 className="text-lg font-bold text-[#0A192F] dark:text-slate-100 flex items-center gap-2">
+            <Calculator className="w-5 h-5 text-amber-600 dark:text-amber-400" />
             <span>Trip Parameters</span>
           </h3>
 
           {/* Destination */}
           <div>
-            <label className="text-xs font-bold text-amber-900 uppercase tracking-wider block mb-2">
+            <label className="text-xs font-bold text-amber-800 dark:text-amber-400 uppercase tracking-wider block mb-2">
               Select Destination
             </label>
             <select
               value={destination}
               onChange={(e) => setDestination(e.target.value)}
-              className="w-full p-3.5 rounded-2xl bg-amber-50/40 border border-amber-200 text-xs sm:text-sm font-bold text-[#0A192F] outline-hidden focus:border-amber-600"
+              className="w-full p-3.5 rounded-2xl bg-amber-50/40 dark:bg-slate-800 border border-amber-200 dark:border-slate-700 text-xs sm:text-sm font-bold text-[#0A192F] dark:text-slate-100 outline-hidden focus:border-amber-600"
             >
               {destinationsData.map((d) => (
                 <option key={d.id} value={d.name}>
@@ -86,10 +86,10 @@ export default function BudgetPlannerPage() {
           {/* Number of Travelers */}
           <div>
             <div className="flex justify-between items-center mb-2">
-              <label className="text-xs font-bold text-amber-900 uppercase tracking-wider">
+              <label className="text-xs font-bold text-amber-800 dark:text-amber-400 uppercase tracking-wider">
                 Number of Travelers
               </label>
-              <span className="text-sm font-extrabold text-[#0A192F] font-mono">{travelersCount} Person{travelersCount > 1 ? 's' : ''}</span>
+              <span className="text-sm font-extrabold text-[#0A192F] dark:text-amber-300 font-mono">{travelersCount} Person{travelersCount > 1 ? 's' : ''}</span>
             </div>
             <input
               type="range"
@@ -97,7 +97,7 @@ export default function BudgetPlannerPage() {
               max="8"
               value={travelersCount}
               onChange={(e) => setTravelersCount(Number(e.target.value))}
-              className="w-full h-2 bg-amber-100 rounded-lg appearance-none cursor-pointer accent-amber-600"
+              className="w-full h-2 bg-amber-100 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-amber-600"
             />
             <div className="flex justify-between text-[10px] text-slate-400 font-semibold mt-1">
               <span>1 (Solo)</span>
@@ -110,10 +110,10 @@ export default function BudgetPlannerPage() {
           {/* Duration in Days */}
           <div>
             <div className="flex justify-between items-center mb-2">
-              <label className="text-xs font-bold text-amber-900 uppercase tracking-wider">
+              <label className="text-xs font-bold text-amber-800 dark:text-amber-400 uppercase tracking-wider">
                 Trip Duration (Days)
               </label>
-              <span className="text-sm font-extrabold text-[#0A192F] font-mono">{durationDays} Days</span>
+              <span className="text-sm font-extrabold text-[#0A192F] dark:text-amber-300 font-mono">{durationDays} Days</span>
             </div>
             <input
               type="range"
@@ -121,7 +121,7 @@ export default function BudgetPlannerPage() {
               max="14"
               value={durationDays}
               onChange={(e) => setDurationDays(Number(e.target.value))}
-              className="w-full h-2 bg-amber-100 rounded-lg appearance-none cursor-pointer accent-amber-600"
+              className="w-full h-2 bg-amber-100 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-amber-600"
             />
             <div className="flex justify-between text-[10px] text-slate-400 font-semibold mt-1">
               <span>1 Day</span>
@@ -132,7 +132,7 @@ export default function BudgetPlannerPage() {
 
           {/* Travel Tier */}
           <div>
-            <label className="text-xs font-bold text-amber-900 uppercase tracking-wider block mb-2">
+            <label className="text-xs font-bold text-amber-800 dark:text-amber-400 uppercase tracking-wider block mb-2">
               Comfort & Accommodation Tier
             </label>
             <div className="grid grid-cols-2 gap-2">
@@ -146,14 +146,14 @@ export default function BudgetPlannerPage() {
                   key={tier.id}
                   type="button"
                   onClick={() => setTravelTier(tier.id)}
-                  className={`p-3 rounded-2xl text-left transition border ${
+                  className={`p-3 rounded-2xl text-left transition border cursor-pointer ${
                     travelTier === tier.id
-                      ? 'bg-amber-50 border-amber-400 text-amber-950 shadow-xs'
-                      : 'bg-amber-50/40 border-amber-100 hover:bg-amber-50'
+                      ? 'bg-amber-50 dark:bg-amber-950/60 border-amber-400 dark:border-amber-500/40 text-amber-950 dark:text-amber-300 shadow-xs'
+                      : 'bg-amber-50/40 dark:bg-slate-800 border-amber-100 dark:border-slate-700 hover:bg-amber-50 dark:hover:bg-slate-700'
                   }`}
                 >
-                  <span className="text-xs font-bold text-[#0A192F] block">{tier.label}</span>
-                  <span className="text-[10px] text-slate-500 block mt-0.5">{tier.sub}</span>
+                  <span className="text-xs font-bold text-[#0A192F] dark:text-slate-100 block">{tier.label}</span>
+                  <span className="text-[10px] text-slate-500 dark:text-slate-400 block mt-0.5">{tier.sub}</span>
                 </button>
               ))}
             </div>
@@ -161,7 +161,7 @@ export default function BudgetPlannerPage() {
 
           {/* Transit Mode */}
           <div>
-            <label className="text-xs font-bold text-amber-900 uppercase tracking-wider block mb-2">
+            <label className="text-xs font-bold text-amber-800 dark:text-amber-400 uppercase tracking-wider block mb-2">
               Intercity Transit Mode
             </label>
             <div className="grid grid-cols-3 gap-2">
@@ -176,10 +176,10 @@ export default function BudgetPlannerPage() {
                     key={mode.id}
                     type="button"
                     onClick={() => setTransitMode(mode.id)}
-                    className={`py-2.5 px-3 rounded-xl flex flex-col items-center gap-1 text-xs font-bold transition border ${
+                    className={`py-2.5 px-3 rounded-xl flex flex-col items-center gap-1 text-xs font-bold transition border cursor-pointer ${
                       transitMode === mode.id
-                        ? 'bg-[#0A192F] text-amber-300 border-[#0A192F] shadow-xs'
-                        : 'bg-amber-50/50 text-slate-700 border-amber-100 hover:bg-amber-100/60'
+                        ? 'bg-[#0A192F] dark:bg-amber-500 text-amber-300 dark:text-slate-950 border-[#0A192F] dark:border-amber-500 shadow-xs'
+                        : 'bg-amber-50/50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-amber-100 dark:border-slate-700 hover:bg-amber-100/60 dark:hover:bg-slate-700'
                     }`}
                   >
                     <Icon className="w-4 h-4" />
@@ -261,14 +261,14 @@ export default function BudgetPlannerPage() {
           )}
 
           {/* Money Saving Hacks */}
-          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-amber-900/10 shadow-xs space-y-4">
-            <h3 className="text-base font-bold text-[#0A192F] flex items-center gap-2">
+          <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-amber-900/10 dark:border-slate-800 shadow-xs space-y-4">
+            <h3 className="text-base font-bold text-[#0A192F] dark:text-slate-100 flex items-center gap-2">
               <Lightbulb className="w-5 h-5 text-amber-500" />
               <span>Smart Budget Saving Tips for India</span>
             </h3>
             <ul className="space-y-2.5">
               {budgetResult?.moneySavingTips?.map((tip, i) => (
-                <li key={i} className="flex items-start gap-2 text-xs text-slate-600">
+                <li key={i} className="flex items-start gap-2 text-xs text-slate-600 dark:text-slate-300">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-1.5 flex-shrink-0"></span>
                   <span>{tip}</span>
                 </li>

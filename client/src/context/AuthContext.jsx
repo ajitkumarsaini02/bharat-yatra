@@ -44,9 +44,28 @@ export const AuthProvider = ({ children }) => {
     return savedItin ? JSON.parse(savedItin) : [];
   });
 
+  // Sync favorites and itineraries from MongoDB Atlas on user login
   useEffect(() => {
     if (user) {
       localStorage.setItem('bharat_yatra_user', JSON.stringify(user));
+      // Fetch fresh favorites and saved itineraries from MongoDB Atlas
+      const fetchUserDataFromDb = async () => {
+        try {
+          const [favRes, itinRes] = await Promise.allSettled([
+            api.getFavorites(),
+            api.getSavedItineraries()
+          ]);
+          if (favRes.status === 'fulfilled' && favRes.value?.favorites) {
+            setFavorites(favRes.value.favorites);
+          }
+          if (itinRes.status === 'fulfilled' && itinRes.value?.data) {
+            setSavedItineraries(itinRes.value.data);
+          }
+        } catch (e) {
+          console.log('Using cached local storage for user data');
+        }
+      };
+      fetchUserDataFromDb();
     } else {
       localStorage.removeItem('bharat_yatra_user');
     }
@@ -60,7 +79,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem('bharat_yatra_saved_itineraries', JSON.stringify(savedItineraries));
   }, [savedItineraries]);
 
-  const toggleFavorite = (destId) => {
+  const toggleFavorite = async (destId) => {
     setFavorites(prev => {
       if (prev.includes(destId)) {
         return prev.filter(id => id !== destId);
@@ -68,20 +87,47 @@ export const AuthProvider = ({ children }) => {
         return [...prev, destId];
       }
     });
+
+    if (user) {
+      try {
+        const res = await api.toggleFavorite(destId);
+        if (res.favorites) {
+          setFavorites(res.favorites);
+        }
+      } catch (err) {
+        console.error('Toggle favorite error:', err);
+      }
+    }
   };
 
-  const saveItinerary = (itinerary) => {
-    const itemWithId = {
-      ...itinerary,
-      savedAt: new Date().toISOString(),
-      id: 'saved-itin-' + Date.now()
-    };
-    setSavedItineraries(prev => [itemWithId, ...prev]);
-    return itemWithId;
+  const saveItinerary = async (itinerary) => {
+    try {
+      const res = await api.saveItinerary(itinerary);
+      const saved = res.data || {
+        ...itinerary,
+        savedAt: new Date().toISOString(),
+        id: 'saved-itin-' + Date.now()
+      };
+      setSavedItineraries(prev => [saved, ...prev.filter(i => (i.id || i._id) !== (saved.id || saved._id))]);
+      return saved;
+    } catch (err) {
+      const fallbackItem = {
+        ...itinerary,
+        savedAt: new Date().toISOString(),
+        id: 'saved-itin-' + Date.now()
+      };
+      setSavedItineraries(prev => [fallbackItem, ...prev]);
+      return fallbackItem;
+    }
   };
 
-  const removeItinerary = (id) => {
-    setSavedItineraries(prev => prev.filter(item => item.id !== id));
+  const removeItinerary = async (id) => {
+    try {
+      await api.deleteItinerary(id);
+    } catch (err) {
+      console.error('Delete itinerary error:', err);
+    }
+    setSavedItineraries(prev => prev.filter(item => (item.id || item._id) !== id));
   };
 
   const loginUser = async (email, password, role = 'user') => {

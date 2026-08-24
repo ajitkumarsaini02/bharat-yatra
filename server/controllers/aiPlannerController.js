@@ -1,3 +1,6 @@
+import mongoose from 'mongoose';
+import Itinerary from '../models/Itinerary.js';
+import User from '../models/User.js';
 import { destinationsData } from '../data/tourismData.js';
 
 // Comprehensive knowledge base for AI Trip Generation tailored to Indian destinations
@@ -212,6 +215,159 @@ export const generateItinerary = async (req, res) => {
     res.json({
       success: true,
       data: generatedItinerary
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// In-memory fallback for saved itineraries
+let inMemorySavedItineraries = [];
+
+/**
+ * Save Generated AI Itinerary to MongoDB Atlas
+ */
+export const saveItinerary = async (req, res) => {
+  try {
+    const itineraryData = req.body;
+    if (!itineraryData || !itineraryData.title || !itineraryData.destination) {
+      return res.status(400).json({ success: false, message: 'Invalid itinerary data to save' });
+    }
+
+    const isDbConnected = mongoose.connection.readyState === 1;
+
+    if (isDbConnected) {
+      try {
+        const userId = req.user?.id || req.body.userId || null;
+        const newItin = await Itinerary.create({
+          title: itineraryData.title,
+          destination: itineraryData.destination,
+          durationDays: itineraryData.durationDays || 3,
+          travelerType: itineraryData.travelerType || 'Solo',
+          travelStyle: itineraryData.travelStyle || 'Moderate',
+          interests: itineraryData.interests || [],
+          startingCity: itineraryData.startingCity || 'Delhi',
+          totalEstimatedCost: itineraryData.totalEstimatedCost || 0,
+          costBreakdown: itineraryData.costBreakdown || {},
+          days: itineraryData.days || [],
+          packingChecklist: itineraryData.packingChecklist || [],
+          localTips: itineraryData.localTips || [],
+          createdBy: userId,
+          isPublic: true
+        });
+
+        // Link to user if logged in
+        if (userId) {
+          await User.findByIdAndUpdate(userId, {
+            $addToSet: { savedItineraries: newItin._id }
+          });
+        }
+
+        console.log(`✅ Saved AI Itinerary "${newItin.title}" to MongoDB Atlas!`);
+        return res.status(201).json({
+          success: true,
+          message: 'Itinerary saved successfully to MongoDB Atlas database',
+          data: {
+            ...newItin.toObject(),
+            id: newItin._id.toString()
+          }
+        });
+      } catch (dbErr) {
+        console.error('⚠️ MongoDB Itinerary save error:', dbErr.message);
+      }
+    }
+
+    // In-Memory Fallback
+    const fallbackItin = {
+      _id: 'itin-' + Date.now(),
+      id: 'itin-' + Date.now(),
+      ...itineraryData,
+      savedAt: new Date().toISOString(),
+      createdAt: new Date().toISOString()
+    };
+    inMemorySavedItineraries.unshift(fallbackItin);
+
+    res.status(201).json({
+      success: true,
+      message: 'Itinerary saved successfully',
+      data: fallbackItin
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+/**
+ * Get Saved AI Itineraries from MongoDB Atlas
+ */
+export const getSavedItineraries = async (req, res) => {
+  try {
+    const isDbConnected = mongoose.connection.readyState === 1;
+    const userId = req.user?.id || req.query.userId;
+
+    if (isDbConnected) {
+      try {
+        const query = userId ? { createdBy: userId } : {};
+        const itins = await Itinerary.find(query).sort({ createdAt: -1 });
+
+        const mapped = itins.map(it => ({
+          ...it.toObject(),
+          id: it._id.toString(),
+          savedAt: it.createdAt
+        }));
+
+        return res.json({
+          success: true,
+          count: mapped.length,
+          data: mapped
+        });
+      } catch (dbErr) {
+        console.error('⚠️ MongoDB Itinerary get error:', dbErr.message);
+      }
+    }
+
+    res.json({
+      success: true,
+      count: inMemorySavedItineraries.length,
+      data: inMemorySavedItineraries
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+/**
+ * Delete Saved Itinerary from MongoDB Atlas
+ */
+export const deleteSavedItinerary = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const isDbConnected = mongoose.connection.readyState === 1;
+
+    if (isDbConnected) {
+      try {
+        if (mongoose.Types.ObjectId.isValid(id)) {
+          await Itinerary.findByIdAndDelete(id);
+          if (req.user?.id) {
+            await User.findByIdAndUpdate(req.user.id, {
+              $pull: { savedItineraries: id }
+            });
+          }
+        }
+        return res.json({
+          success: true,
+          message: 'Itinerary deleted from MongoDB Atlas database'
+        });
+      } catch (dbErr) {
+        console.error('⚠️ MongoDB Itinerary delete error:', dbErr.message);
+      }
+    }
+
+    inMemorySavedItineraries = inMemorySavedItineraries.filter(it => it.id !== id && it._id !== id);
+
+    res.json({
+      success: true,
+      message: 'Itinerary deleted successfully'
     });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });

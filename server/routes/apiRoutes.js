@@ -1,6 +1,6 @@
 import express from 'express';
 import mongoose from 'mongoose';
-import { register, login, getProfile } from '../controllers/authController.js';
+import { register, login, getProfile, toggleFavorite, getFavorites } from '../controllers/authController.js';
 import { 
   getDestinations, 
   getDestinationById, 
@@ -13,19 +13,22 @@ import {
   getDestinationImages,
   getDestinationWeather,
   getDestinationNearby,
-  enrichSingleDestination
+  enrichSingleDestination,
+  generateAIDestination
 } from '../controllers/destinationController.js';
-import { generateItinerary } from '../controllers/aiPlannerController.js';
+import { generateItinerary, saveItinerary, getSavedItineraries, deleteSavedItinerary } from '../controllers/aiPlannerController.js';
 import { calculateBudget } from '../controllers/budgetController.js';
 import { getReviewsByDestination, addReview, likeReview } from '../controllers/reviewController.js';
 import { verifyToken, verifyAdmin } from '../middleware/auth.js';
 
 const router = express.Router();
 
-// --- Auth Routes ---
+// --- Auth & Favorites Routes ---
 router.post('/auth/register', register);
 router.post('/auth/login', login);
 router.get('/auth/profile', verifyToken, getProfile);
+router.post('/auth/favorites/toggle', verifyToken, toggleFavorite);
+router.get('/auth/favorites', verifyToken, getFavorites);
 
 // --- Extended External Search & Proximity Discovery Routes ---
 router.get('/destinations/search', searchExternalDestinations);
@@ -35,6 +38,7 @@ router.get('/destinations/nearby', getNearbyDestinations);
 router.get('/destinations', getDestinations);
 router.get('/destinations/:id', getDestinationById);
 router.post('/destinations', createDestination);
+router.post('/destinations/ai-generate', generateAIDestination);
 router.delete('/destinations/:id', deleteDestination);
 
 // --- Destination Enrichment Sub-Endpoints ---
@@ -47,6 +51,9 @@ router.post('/admin/destinations/:id/enrich', verifyToken, enrichSingleDestinati
 
 // --- AI Planner Routes ---
 router.post('/planner/generate', generateItinerary);
+router.post('/planner/save', saveItinerary);
+router.get('/planner/saved', getSavedItineraries);
+router.delete('/planner/saved/:id', deleteSavedItinerary);
 
 // --- Budget Calculator Routes ---
 router.post('/budget/calculate', calculateBudget);

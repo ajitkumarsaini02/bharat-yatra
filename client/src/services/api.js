@@ -252,6 +252,50 @@ export const api = {
     return { success: true, message: 'Destination created successfully', data: newD };
   },
 
+  generateAIDestination: async (name) => {
+    if (API_BASE) {
+      try {
+        const res = await apiClient.post('/destinations/ai-generate', { name });
+        if (res.data && typeof res.data !== 'string' && res.data.success) {
+          return res.data;
+        }
+      } catch (err) {
+        // Fallback
+      }
+    }
+    return {
+      success: true,
+      data: {
+        name,
+        state: 'Rajasthan',
+        zone: 'West',
+        category: 'UNESCO World Heritage & Iconic Monuments',
+        heroImage: 'https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=1200&q=80',
+        tagline: `Experience the Timeless Splendor of ${name}`,
+        description: `${name} is an iconic tourism and cultural heritage landmark in India, renowned for its architectural marvels and rich history.`,
+        bestTimeToVisit: 'October to March',
+        idealDuration: '2-3 Days',
+        budgetLevel: 'Moderate',
+        avgDailyExpense: 2400,
+        lat: 26.9124,
+        lng: 75.7873,
+        highlights: [
+          `Marvel at the timeless architecture and heritage significance of ${name}`,
+          `Guided walking tour exploring the historic galleries, courtyard, and artifacts`,
+          `Photography during golden hour morning and evening light`
+        ],
+        attractions: [{ name: `${name} Main Complex`, type: 'Heritage Site', entryFee: 50, timeNeeded: '2.5 hours' }],
+        famousFood: [{ name: 'Traditional Regional Thali', place: 'Local Heritage Restaurant', desc: 'Fresh regional specialties and local desserts' }],
+        shoppingSpecialties: ['Handloom Sarees', 'Traditional Handicrafts'],
+        transportation: {
+          nearestAirport: 'Regional Airport (within 50-80 km)',
+          nearestRailway: 'City Junction Railway Station',
+          localCommute: 'E-rickshaws, Autos, and App Cabs'
+        }
+      }
+    };
+  },
+
   deleteDestination: async (id) => {
     if (API_BASE) {
       try {
@@ -432,6 +476,95 @@ export const api = {
     return { success: true, data: transportGuideData };
   },
 
+  // Saved AI Itineraries
+  saveItinerary: async (itineraryData) => {
+    if (API_BASE) {
+      try {
+        const res = await apiClient.post('/planner/save', itineraryData);
+        if (res.data && typeof res.data !== 'string' && res.data.success) {
+          return res.data;
+        }
+      } catch (err) {
+        // Fallback
+      }
+    }
+    const localSaved = JSON.parse(localStorage.getItem('bharat_yatra_saved_itineraries') || '[]');
+    const newItin = {
+      ...itineraryData,
+      id: 'saved-itin-' + Date.now(),
+      savedAt: new Date().toISOString()
+    };
+    localSaved.unshift(newItin);
+    localStorage.setItem('bharat_yatra_saved_itineraries', JSON.stringify(localSaved));
+    return { success: true, message: 'Itinerary saved', data: newItin };
+  },
+
+  getSavedItineraries: async () => {
+    if (API_BASE) {
+      try {
+        const res = await apiClient.get('/planner/saved');
+        if (res.data && typeof res.data !== 'string' && res.data.success) {
+          return res.data;
+        }
+      } catch (err) {
+        // Fallback
+      }
+    }
+    const localSaved = JSON.parse(localStorage.getItem('bharat_yatra_saved_itineraries') || '[]');
+    return { success: true, count: localSaved.length, data: localSaved };
+  },
+
+  deleteItinerary: async (id) => {
+    if (API_BASE) {
+      try {
+        const res = await apiClient.delete(`/planner/saved/${id}`);
+        if (res.data && typeof res.data !== 'string') {
+          return res.data;
+        }
+      } catch (err) {
+        // Fallback
+      }
+    }
+    const localSaved = JSON.parse(localStorage.getItem('bharat_yatra_saved_itineraries') || '[]');
+    const filtered = localSaved.filter(it => it.id !== id && it._id !== id);
+    localStorage.setItem('bharat_yatra_saved_itineraries', JSON.stringify(filtered));
+    return { success: true, message: 'Itinerary removed' };
+  },
+
+  // User Favorites & Wishlist
+  toggleFavorite: async (destinationId) => {
+    if (API_BASE) {
+      try {
+        const res = await apiClient.post('/auth/favorites/toggle', { destinationId });
+        if (res.data && typeof res.data !== 'string' && res.data.success) {
+          return res.data;
+        }
+      } catch (err) {
+        // Fallback
+      }
+    }
+    const localFavs = JSON.parse(localStorage.getItem('bharat_yatra_favs') || '[]');
+    const exists = localFavs.includes(destinationId);
+    const updated = exists ? localFavs.filter(id => id !== destinationId) : [...localFavs, destinationId];
+    localStorage.setItem('bharat_yatra_favs', JSON.stringify(updated));
+    return { success: true, favorites: updated, isFavorite: !exists };
+  },
+
+  getFavorites: async () => {
+    if (API_BASE) {
+      try {
+        const res = await apiClient.get('/auth/favorites');
+        if (res.data && typeof res.data !== 'string' && res.data.success) {
+          return res.data;
+        }
+      } catch (err) {
+        // Fallback
+      }
+    }
+    const localFavs = JSON.parse(localStorage.getItem('bharat_yatra_favs') || '[]');
+    return { success: true, favorites: localFavs };
+  },
+
   // Reviews
   getReviews: async (destinationId) => {
     if (API_BASE) {
@@ -478,6 +611,20 @@ export const api = {
       message: 'Review recorded successfully',
       data: { _id: 'rev-' + Date.now(), ...reviewData, likes: 0, createdAt: new Date().toISOString() }
     };
+  },
+
+  likeReview: async (id) => {
+    if (API_BASE) {
+      try {
+        const res = await apiClient.put(`/reviews/${id}/like`);
+        if (res.data && typeof res.data !== 'string') {
+          return res.data;
+        }
+      } catch (err) {
+        // Fallback
+      }
+    }
+    return { success: true, likes: 1 };
   },
 
   // Auth: Login

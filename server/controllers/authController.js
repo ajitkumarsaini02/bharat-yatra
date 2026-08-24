@@ -315,3 +315,82 @@ export const getProfile = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
+/**
+ * Toggle Favorite Destination for Logged-In User in MongoDB Atlas
+ */
+export const toggleFavorite = async (req, res) => {
+  try {
+    const { destinationId } = req.body;
+    if (!destinationId) {
+      return res.status(400).json({ success: false, message: 'Please provide destinationId' });
+    }
+
+    const userId = req.user?.id;
+    const isDbConnected = mongoose.connection.readyState === 1;
+
+    if (isDbConnected && userId && mongoose.Types.ObjectId.isValid(userId)) {
+      try {
+        const user = await User.findById(userId);
+        if (user) {
+          const exists = user.favorites.includes(destinationId);
+          if (exists) {
+            user.favorites = user.favorites.filter(id => id !== destinationId);
+          } else {
+            user.favorites.push(destinationId);
+          }
+          await user.save();
+
+          console.log(`✅ MongoDB Atlas: User "${user.email}" favorites updated:`, user.favorites);
+          return res.json({
+            success: true,
+            message: exists ? 'Removed from favorites' : 'Added to favorites',
+            favorites: user.favorites,
+            isFavorite: !exists
+          });
+        }
+      } catch (dbErr) {
+        console.error('⚠️ MongoDB favorites update error:', dbErr.message);
+      }
+    }
+
+    res.json({
+      success: true,
+      message: 'Favorites updated locally',
+      favorites: [destinationId]
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+/**
+ * Get User Favorites from MongoDB Atlas
+ */
+export const getFavorites = async (req, res) => {
+  try {
+    const userId = req.user?.id;
+    const isDbConnected = mongoose.connection.readyState === 1;
+
+    if (isDbConnected && userId && mongoose.Types.ObjectId.isValid(userId)) {
+      try {
+        const user = await User.findById(userId).select('favorites');
+        if (user) {
+          return res.json({
+            success: true,
+            favorites: user.favorites || []
+          });
+        }
+      } catch (dbErr) {
+        console.error('⚠️ MongoDB favorites get error:', dbErr.message);
+      }
+    }
+
+    res.json({
+      success: true,
+      favorites: []
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};

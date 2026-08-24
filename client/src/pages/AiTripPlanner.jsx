@@ -96,9 +96,9 @@ export default function AiTripPlanner() {
     handleGenerate();
   }, []);
 
-  const handleSaveToProfile = () => {
+  const handleSaveToProfile = async () => {
     if (generatedItinerary) {
-      saveItinerary(generatedItinerary);
+      await saveItinerary(generatedItinerary);
       setIsSaved(true);
     }
   };
@@ -121,9 +121,9 @@ export default function AiTripPlanner() {
       </div>
 
       {/* Generator Configuration Form */}
-      <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-xl border border-amber-900/10 space-y-6">
-        <h3 className="text-lg font-bold text-[#0A192F] flex items-center gap-2">
-          <Compass className="w-5 h-5 text-amber-700" />
+      <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 shadow-xl border border-amber-900/10 dark:border-slate-800 space-y-6">
+        <h3 className="text-lg font-bold text-[#0A192F] dark:text-slate-100 flex items-center gap-2">
+          <Compass className="w-5 h-5 text-amber-600 dark:text-amber-400" />
           <span>Customize Your Journey Preferences</span>
         </h3>
 
@@ -131,13 +131,13 @@ export default function AiTripPlanner() {
           
           {/* Destination Selector */}
           <div>
-            <label className="text-xs font-bold text-amber-900 uppercase tracking-wider block mb-2">
+            <label className="text-xs font-bold text-amber-800 dark:text-amber-400 uppercase tracking-wider block mb-2">
               Destination City
             </label>
             <select
               value={selectedDestination}
               onChange={(e) => setSelectedDestination(e.target.value)}
-              className="w-full p-3.5 rounded-2xl bg-amber-50/40 border border-amber-200 text-xs sm:text-sm font-bold text-[#0A192F] outline-hidden focus:border-amber-600"
+              className="w-full p-3.5 rounded-2xl bg-amber-50/40 dark:bg-slate-800 border border-amber-200 dark:border-slate-700 text-xs sm:text-sm font-bold text-[#0A192F] dark:text-slate-100 outline-hidden focus:border-amber-600"
             >
               {destinationsData.map((d) => (
                 <option key={d.id} value={d.name}>
@@ -149,7 +149,7 @@ export default function AiTripPlanner() {
 
           {/* Starting City */}
           <div>
-            <label className="text-xs font-bold text-amber-900 uppercase tracking-wider block mb-2">
+            <label className="text-xs font-bold text-amber-800 dark:text-amber-400 uppercase tracking-wider block mb-2">
               Departing From
             </label>
             <input
@@ -157,13 +157,13 @@ export default function AiTripPlanner() {
               value={startingCity}
               onChange={(e) => setStartingCity(e.target.value)}
               placeholder="e.g. New Delhi, Mumbai, Bengaluru"
-              className="w-full p-3.5 rounded-2xl bg-amber-50/40 border border-amber-200 text-xs sm:text-sm font-bold text-[#0A192F] outline-hidden focus:border-amber-600"
+              className="w-full p-3.5 rounded-2xl bg-amber-50/40 dark:bg-slate-800 border border-amber-200 dark:border-slate-700 text-xs sm:text-sm font-bold text-[#0A192F] dark:text-slate-100 outline-hidden focus:border-amber-600"
             />
           </div>
 
           {/* Trip Duration */}
           <div>
-            <label className="text-xs font-bold text-amber-900 uppercase tracking-wider block mb-2">
+            <label className="text-xs font-bold text-amber-800 dark:text-amber-400 uppercase tracking-wider block mb-2">
               Trip Duration ({daysCount} Days)
             </label>
             <div className="flex items-center space-x-2 pt-2">
@@ -174,8 +174,8 @@ export default function AiTripPlanner() {
                   onClick={() => setDaysCount(num)}
                   className={`flex-1 py-2 rounded-xl text-xs font-bold transition ${
                     daysCount === num
-                      ? 'bg-[#0A192F] text-amber-300 shadow-xs'
-                      : 'bg-amber-50/60 text-slate-700 hover:bg-amber-100/60 border border-amber-200/60'
+                      ? 'bg-[#0A192F] dark:bg-amber-500 text-amber-300 dark:text-slate-950 shadow-xs'
+                      : 'bg-amber-50/60 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-amber-100/60 dark:hover:bg-slate-700 border border-amber-200/60 dark:border-slate-700'
                   }`}
                 >
                   {num}D
@@ -186,13 +186,13 @@ export default function AiTripPlanner() {
 
           {/* Traveler Persona */}
           <div>
-            <label className="text-xs font-bold text-amber-900 uppercase tracking-wider block mb-2">
+            <label className="text-xs font-bold text-amber-800 dark:text-amber-400 uppercase tracking-wider block mb-2">
               Traveler Persona
             </label>
             <select
               value={travelerType}
               onChange={(e) => setTravelerType(e.target.value)}
-              className="w-full p-3.5 rounded-2xl bg-amber-50/40 border border-amber-200 text-xs sm:text-sm font-bold text-[#0A192F] outline-hidden focus:border-amber-600"
+              className="w-full p-3.5 rounded-2xl bg-amber-50/40 dark:bg-slate-800 border border-amber-200 dark:border-slate-700 text-xs sm:text-sm font-bold text-[#0A192F] dark:text-slate-100 outline-hidden focus:border-amber-600"
             >
               <option value="Solo Traveler">Solo Explorer</option>
               <option value="Couples Retreat">Couples / Honeymoon</option>
@@ -204,11 +204,11 @@ export default function AiTripPlanner() {
         </div>
 
         {/* Budget Style & Interests */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-4 border-t border-amber-100">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-4 border-t border-amber-100 dark:border-slate-800">
           
           {/* Travel Tier */}
           <div>
-            <label className="text-xs font-bold text-amber-900 uppercase tracking-wider block mb-2">
+            <label className="text-xs font-bold text-amber-800 dark:text-amber-400 uppercase tracking-wider block mb-2">
               Budget Style & Comfort
             </label>
             <div className="grid grid-cols-3 gap-2">
@@ -220,7 +220,7 @@ export default function AiTripPlanner() {
                   className={`py-2.5 rounded-xl text-xs font-bold transition ${
                     travelStyle === style
                       ? 'gradient-saffron text-slate-950 font-black shadow-xs'
-                      : 'bg-amber-50/60 text-slate-700 hover:bg-amber-100/60 border border-amber-200/60'
+                      : 'bg-amber-50/60 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-amber-100/60 dark:hover:bg-slate-700 border border-amber-200/60 dark:border-slate-700'
                   }`}
                 >
                   {style}
@@ -231,7 +231,7 @@ export default function AiTripPlanner() {
 
           {/* Interests Pills */}
           <div className="lg:col-span-2">
-            <label className="text-xs font-bold text-amber-900 uppercase tracking-wider block mb-2">
+            <label className="text-xs font-bold text-amber-800 dark:text-amber-400 uppercase tracking-wider block mb-2">
               Specific Trip Interests
             </label>
             <div className="flex flex-wrap gap-1.5">
@@ -244,11 +244,11 @@ export default function AiTripPlanner() {
                     onClick={() => handleInterestToggle(interest)}
                     className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
                       selected
-                        ? 'bg-amber-100 border border-amber-300 text-amber-950 font-bold'
-                        : 'bg-amber-50/40 border border-amber-100 text-slate-700 hover:bg-amber-100/60'
+                        ? 'bg-amber-100 dark:bg-amber-950 border border-amber-300 dark:border-amber-500/40 text-amber-950 dark:text-amber-300 font-bold'
+                        : 'bg-amber-50/40 dark:bg-slate-800/60 border border-amber-100 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-amber-100/60'
                     }`}
                   >
-                    {selected ? '✓ ' : '+ '}{interest}
+                    {interest}
                   </button>
                 );
               })}
@@ -257,15 +257,16 @@ export default function AiTripPlanner() {
 
         </div>
 
-        {/* Action Button */}
-        <div className="pt-2 flex justify-end">
+        {/* Generate Button */}
+        <div className="pt-2 flex justify-center">
           <button
+            type="button"
             onClick={handleGenerate}
             disabled={isGenerating}
-            className="w-full sm:w-auto px-8 py-3.5 rounded-2xl gradient-saffron text-slate-950 font-black text-sm hover:opacity-95 transition shadow-lg shadow-amber-500/25 flex items-center justify-center gap-2"
+            className="w-full sm:w-auto px-10 py-4 rounded-2xl gradient-saffron text-slate-950 font-black text-sm uppercase tracking-wider flex items-center justify-center space-x-2 shadow-xl shadow-amber-500/20 hover:scale-[1.02] active:scale-[0.98] transition cursor-pointer disabled:opacity-50"
           >
-            <Sparkles className={`w-4 h-4 text-slate-950 ${isGenerating ? 'animate-spin' : ''}`} />
-            <span>{isGenerating ? 'Synthesizing Itinerary...' : 'Generate AI Itinerary'}</span>
+            <Sparkles className="w-5 h-5 text-slate-950" />
+            <span>{isGenerating ? 'AI Crafting Plan...' : 'Generate AI Day-Wise Itinerary'}</span>
           </button>
         </div>
 
@@ -284,17 +285,17 @@ export default function AiTripPlanner() {
         <div className="space-y-8 animate-fade-in">
           
           {/* Output Action Header */}
-          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-amber-900/10 shadow-lg flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+          <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-amber-900/10 dark:border-slate-800 shadow-lg flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
             <div className="space-y-1">
               <div className="flex items-center gap-2">
-                <span className="px-3 py-0.5 rounded-full bg-amber-50 text-amber-900 text-xs font-bold border border-amber-300">
+                <span className="px-3 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950/60 text-amber-900 dark:text-amber-300 text-xs font-bold border border-amber-300 dark:border-amber-500/30">
                   AI Verified Itinerary
                 </span>
-                <span className="text-xs text-slate-500 font-medium">
+                <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
                   {generatedItinerary.durationDays} Days • {generatedItinerary.travelerType} • {generatedItinerary.travelStyle} Style
                 </span>
               </div>
-              <h2 className="text-2xl sm:text-3xl font-black text-[#0A192F] tracking-tight">
+              <h2 className="text-2xl sm:text-3xl font-black text-[#0A192F] dark:text-slate-100 tracking-tight">
                 {generatedItinerary.title}
               </h2>
             </div>
@@ -304,17 +305,17 @@ export default function AiTripPlanner() {
                 onClick={handleSaveToProfile}
                 className={`flex-1 md:flex-none px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 border ${
                   isSaved
-                    ? 'bg-amber-100 text-amber-900 border-amber-300'
-                    : 'bg-amber-50 text-amber-900 hover:bg-amber-100 border-amber-200'
+                    ? 'bg-amber-100 dark:bg-amber-950 text-amber-900 dark:text-amber-300 border-amber-300 dark:border-amber-500/30'
+                    : 'bg-amber-50 dark:bg-slate-800 text-amber-900 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-slate-700 border-amber-200 dark:border-slate-700'
                 }`}
               >
-                <Bookmark className={`w-4 h-4 ${isSaved ? 'fill-amber-600 text-amber-600' : ''}`} />
+                <Bookmark className={`w-4 h-4 ${isSaved ? 'fill-amber-600 text-amber-600 dark:fill-amber-400 dark:text-amber-400' : ''}`} />
                 <span>{isSaved ? 'Saved to Profile' : 'Save Itinerary'}</span>
               </button>
 
               <button
                 onClick={handlePrint}
-                className="flex-1 md:flex-none px-4 py-2.5 rounded-xl bg-[#0A192F] hover:bg-[#020C1B] text-amber-300 text-xs font-bold transition flex items-center justify-center gap-2 shadow-xs"
+                className="flex-1 md:flex-none px-4 py-2.5 rounded-xl bg-[#0A192F] hover:bg-[#020C1B] text-amber-300 text-xs font-bold transition flex items-center justify-center gap-2 shadow-xs cursor-pointer"
               >
                 <Printer className="w-4 h-4" />
                 <span>Print / PDF</span>
@@ -378,10 +379,10 @@ export default function AiTripPlanner() {
               <button
                 key={day.day}
                 onClick={() => setActiveDayTab(day.day)}
-                className={`px-5 py-3 rounded-2xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 ${
+                className={`px-5 py-3 rounded-2xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all duration-200 cursor-pointer ${
                   activeDayTab === day.day
-                    ? 'bg-[#0A192F] text-amber-300 shadow-md font-bold'
-                    : 'bg-white text-slate-700 hover:bg-amber-50 border border-amber-200/60'
+                    ? 'bg-[#0A192F] dark:bg-amber-500 text-amber-300 dark:text-slate-950 shadow-md font-bold'
+                    : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:bg-amber-50 dark:hover:bg-slate-800 border border-amber-200/60 dark:border-slate-800'
                 }`}
               >
                 Day {day.day} Overview
@@ -396,12 +397,12 @@ export default function AiTripPlanner() {
               {/* Day Theme Banner */}
               <div className="p-4 sm:p-5 rounded-2xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-between">
                 <div>
-                  <span className="text-[10px] uppercase font-bold text-amber-900 tracking-wider">Day Theme</span>
-                  <h4 className="text-base sm:text-lg font-bold text-[#0A192F]">{day.theme}</h4>
+                  <span className="text-[10px] uppercase font-bold text-amber-800 dark:text-amber-400 tracking-wider">Day Theme</span>
+                  <h4 className="text-base sm:text-lg font-bold text-[#0A192F] dark:text-slate-100">{day.theme}</h4>
                 </div>
                 <div className="text-right">
-                  <span className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Daily Estimate</span>
-                  <div className="text-sm sm:text-base font-black text-[#0A192F] font-mono">₹{day.dailyEstimatedCost}</div>
+                  <span className="text-[10px] uppercase font-bold text-slate-500 dark:text-slate-400 tracking-wider">Daily Estimate</span>
+                  <div className="text-sm sm:text-base font-black text-[#0A192F] dark:text-amber-300 font-mono">₹{day.dailyEstimatedCost}</div>
                 </div>
               </div>
 
@@ -409,23 +410,23 @@ export default function AiTripPlanner() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 
                 {/* Morning Slot */}
-                <div className="bg-white rounded-3xl p-6 border border-amber-100 shadow-xs space-y-4 flex flex-col justify-between">
+                <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-amber-100 dark:border-slate-800 shadow-xs space-y-4 flex flex-col justify-between">
                   <div className="space-y-3">
-                    <div className="flex items-center space-x-2 text-amber-700 font-bold text-xs uppercase tracking-wider">
-                      <Sun className="w-4 h-4 text-amber-600" />
+                    <div className="flex items-center space-x-2 text-amber-700 dark:text-amber-400 font-bold text-xs uppercase tracking-wider">
+                      <Sun className="w-4 h-4 text-amber-600 dark:text-amber-400" />
                       <span>Morning (Sunrise & Highlights)</span>
                     </div>
 
                     {day.morning?.map((slot, i) => (
                       <div key={i} className="space-y-2">
-                        <div className="flex items-center gap-1.5 text-xs text-slate-500 font-mono">
-                          <Clock className="w-3.5 h-3.5 text-amber-600" />
+                        <div className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 font-mono">
+                          <Clock className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
                           <span>{slot.time}</span>
                         </div>
-                        <h5 className="font-bold text-[#0A192F] text-sm sm:text-base">{slot.title}</h5>
-                        <p className="text-xs text-slate-600 leading-relaxed">{slot.description}</p>
+                        <h5 className="font-bold text-[#0A192F] dark:text-slate-100 text-sm sm:text-base">{slot.title}</h5>
+                        <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">{slot.description}</p>
                         {slot.insiderTip && (
-                          <div className="p-2.5 rounded-xl bg-amber-50 text-amber-900 text-[11px] font-medium border border-amber-200">
+                          <div className="p-2.5 rounded-xl bg-amber-50 dark:bg-amber-950/40 text-amber-900 dark:text-amber-300 text-[11px] font-medium border border-amber-200 dark:border-amber-500/30">
                             💡 <strong>Tip:</strong> {slot.insiderTip}
                           </div>
                         )}
@@ -433,30 +434,30 @@ export default function AiTripPlanner() {
                     ))}
                   </div>
 
-                  <div className="pt-3 border-t border-amber-100 flex items-center justify-between text-xs">
+                  <div className="pt-3 border-t border-amber-100 dark:border-slate-800 flex items-center justify-between text-xs">
                     <span className="text-slate-400 font-medium">Activity Cost</span>
-                    <strong className="text-[#0A192F] font-mono">₹{day.morning[0]?.estimatedCost || 200}</strong>
+                    <strong className="text-[#0A192F] dark:text-amber-300 font-mono">₹{day.morning[0]?.estimatedCost || 200}</strong>
                   </div>
                 </div>
 
                 {/* Afternoon Slot */}
-                <div className="bg-white rounded-3xl p-6 border border-amber-100 shadow-xs space-y-4 flex flex-col justify-between">
+                <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-amber-100 dark:border-slate-800 shadow-xs space-y-4 flex flex-col justify-between">
                   <div className="space-y-3">
-                    <div className="flex items-center space-x-2 text-orange-700 font-bold text-xs uppercase tracking-wider">
-                      <Utensils className="w-4 h-4 text-orange-600" />
+                    <div className="flex items-center space-x-2 text-orange-600 dark:text-orange-400 font-bold text-xs uppercase tracking-wider">
+                      <Utensils className="w-4 h-4 text-orange-500 dark:text-orange-400" />
                       <span>Afternoon (Cuisine & Heritage)</span>
                     </div>
 
                     {day.afternoon?.map((slot, i) => (
                       <div key={i} className="space-y-2">
-                        <div className="flex items-center gap-1.5 text-xs text-slate-500 font-mono">
-                          <Clock className="w-3.5 h-3.5 text-amber-600" />
+                        <div className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 font-mono">
+                          <Clock className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
                           <span>{slot.time}</span>
                         </div>
-                        <h5 className="font-bold text-[#0A192F] text-sm sm:text-base">{slot.title}</h5>
-                        <p className="text-xs text-slate-600 leading-relaxed">{slot.description}</p>
+                        <h5 className="font-bold text-[#0A192F] dark:text-slate-100 text-sm sm:text-base">{slot.title}</h5>
+                        <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">{slot.description}</p>
                         {slot.insiderTip && (
-                          <div className="p-2.5 rounded-xl bg-orange-50 text-orange-950 text-[11px] font-medium border border-orange-200">
+                          <div className="p-2.5 rounded-xl bg-orange-50 dark:bg-orange-950/40 text-orange-950 dark:text-orange-200 text-[11px] font-medium border border-orange-200 dark:border-orange-500/30">
                             💡 <strong>Tip:</strong> {slot.insiderTip}
                           </div>
                         )}
@@ -464,30 +465,30 @@ export default function AiTripPlanner() {
                     ))}
                   </div>
 
-                  <div className="pt-3 border-t border-amber-100 flex items-center justify-between text-xs">
+                  <div className="pt-3 border-t border-amber-100 dark:border-slate-800 flex items-center justify-between text-xs">
                     <span className="text-slate-400 font-medium">Activity Cost</span>
-                    <strong className="text-[#0A192F] font-mono">₹{day.afternoon[0]?.estimatedCost || 350}</strong>
+                    <strong className="text-[#0A192F] dark:text-amber-300 font-mono">₹{day.afternoon[0]?.estimatedCost || 350}</strong>
                   </div>
                 </div>
 
                 {/* Evening Slot */}
-                <div className="bg-white rounded-3xl p-6 border border-amber-100 shadow-xs space-y-4 flex flex-col justify-between">
+                <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-amber-100 dark:border-slate-800 shadow-xs space-y-4 flex flex-col justify-between">
                   <div className="space-y-3">
-                    <div className="flex items-center space-x-2 text-blue-800 font-bold text-xs uppercase tracking-wider">
-                      <Sunset className="w-4 h-4 text-blue-700" />
+                    <div className="flex items-center space-x-2 text-blue-700 dark:text-blue-400 font-bold text-xs uppercase tracking-wider">
+                      <Sunset className="w-4 h-4 text-blue-600 dark:text-blue-400" />
                       <span>Evening (Sunset & Leisure)</span>
                     </div>
 
                     {day.evening?.map((slot, i) => (
                       <div key={i} className="space-y-2">
-                        <div className="flex items-center gap-1.5 text-xs text-slate-500 font-mono">
-                          <Clock className="w-3.5 h-3.5 text-amber-600" />
+                        <div className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 font-mono">
+                          <Clock className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
                           <span>{slot.time}</span>
                         </div>
-                        <h5 className="font-bold text-[#0A192F] text-sm sm:text-base">{slot.title}</h5>
-                        <p className="text-xs text-slate-600 leading-relaxed">{slot.description}</p>
+                        <h5 className="font-bold text-[#0A192F] dark:text-slate-100 text-sm sm:text-base">{slot.title}</h5>
+                        <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">{slot.description}</p>
                         {slot.insiderTip && (
-                          <div className="p-2.5 rounded-xl bg-blue-50 text-blue-950 text-[11px] font-medium border border-blue-200">
+                          <div className="p-2.5 rounded-xl bg-blue-50 dark:bg-blue-950/40 text-blue-950 dark:text-blue-200 text-[11px] font-medium border border-blue-200 dark:border-blue-500/30">
                             💡 <strong>Tip:</strong> {slot.insiderTip}
                           </div>
                         )}
@@ -495,9 +496,9 @@ export default function AiTripPlanner() {
                     ))}
                   </div>
 
-                  <div className="pt-3 border-t border-amber-100 flex items-center justify-between text-xs">
+                  <div className="pt-3 border-t border-amber-100 dark:border-slate-800 flex items-center justify-between text-xs">
                     <span className="text-slate-400 font-medium">Activity Cost</span>
-                    <strong className="text-[#0A192F] font-mono">₹{day.evening[0]?.estimatedCost || 200}</strong>
+                    <strong className="text-[#0A192F] dark:text-amber-300 font-mono">₹{day.evening[0]?.estimatedCost || 200}</strong>
                   </div>
                 </div>
 
@@ -505,22 +506,22 @@ export default function AiTripPlanner() {
 
               {/* Day Meals Recommended */}
               {day.mealsSuggestion && (
-                <div className="bg-amber-50/70 rounded-2xl p-5 border border-amber-200/80 space-y-3">
-                  <span className="text-xs font-bold text-[#0A192F] uppercase tracking-wider block">
+                <div className="bg-amber-50/70 dark:bg-slate-800/80 rounded-2xl p-5 border border-amber-200/80 dark:border-slate-700 space-y-3">
+                  <span className="text-xs font-bold text-[#0A192F] dark:text-slate-100 uppercase tracking-wider block">
                     Curated Culinary Stops for Day {day.day}
                   </span>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-                    <div className="p-3 bg-white rounded-xl border border-amber-200/60">
-                      <strong className="text-amber-800 block mb-0.5">Breakfast:</strong>
-                      <span className="text-slate-600">{day.mealsSuggestion.breakfast}</span>
+                    <div className="p-3 bg-white dark:bg-slate-900 rounded-xl border border-amber-200/60 dark:border-slate-700">
+                      <strong className="text-amber-800 dark:text-amber-400 block mb-0.5">Breakfast:</strong>
+                      <span className="text-slate-600 dark:text-slate-300">{day.mealsSuggestion.breakfast}</span>
                     </div>
-                    <div className="p-3 bg-white rounded-xl border border-amber-200/60">
-                      <strong className="text-orange-800 block mb-0.5">Lunch:</strong>
-                      <span className="text-slate-600">{day.mealsSuggestion.lunch}</span>
+                    <div className="p-3 bg-white dark:bg-slate-900 rounded-xl border border-amber-200/60 dark:border-slate-700">
+                      <strong className="text-orange-800 dark:text-orange-400 block mb-0.5">Lunch:</strong>
+                      <span className="text-slate-600 dark:text-slate-300">{day.mealsSuggestion.lunch}</span>
                     </div>
-                    <div className="p-3 bg-white rounded-xl border border-amber-200/60">
-                      <strong className="text-blue-800 block mb-0.5">Dinner:</strong>
-                      <span className="text-slate-600">{day.mealsSuggestion.dinner}</span>
+                    <div className="p-3 bg-white dark:bg-slate-900 rounded-xl border border-amber-200/60 dark:border-slate-700">
+                      <strong className="text-blue-800 dark:text-blue-400 block mb-0.5">Dinner:</strong>
+                      <span className="text-slate-600 dark:text-slate-300">{day.mealsSuggestion.dinner}</span>
                     </div>
                   </div>
                 </div>
@@ -533,14 +534,14 @@ export default function AiTripPlanner() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4">
             
             {/* Checklist */}
-            <div className="bg-white rounded-3xl p-6 sm:p-8 border border-amber-100 shadow-xs space-y-4">
-              <h3 className="text-lg font-bold text-[#0A192F] flex items-center gap-2">
-                <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+            <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-amber-100 dark:border-slate-800 shadow-xs space-y-4">
+              <h3 className="text-lg font-bold text-[#0A192F] dark:text-slate-100 flex items-center gap-2">
+                <CheckCircle2 className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
                 <span>Smart Packing Checklist</span>
               </h3>
               <div className="space-y-2">
                 {generatedItinerary.packingChecklist?.map((item, i) => (
-                  <label key={i} className="flex items-start gap-2.5 text-xs text-slate-700 cursor-pointer p-2 rounded-xl hover:bg-amber-50">
+                  <label key={i} className="flex items-start gap-2.5 text-xs text-slate-700 dark:text-slate-300 cursor-pointer p-2 rounded-xl hover:bg-amber-50 dark:hover:bg-slate-800">
                     <input type="checkbox" defaultChecked={i < 2} className="mt-0.5 rounded text-amber-600" />
                     <span>{item}</span>
                   </label>
@@ -549,14 +550,14 @@ export default function AiTripPlanner() {
             </div>
 
             {/* Local Guidelines & Cultural Etiquette */}
-            <div className="bg-white rounded-3xl p-6 sm:p-8 border border-amber-100 shadow-xs space-y-4">
-              <h3 className="text-lg font-bold text-[#0A192F] flex items-center gap-2">
-                <ShieldCheck className="w-5 h-5 text-amber-700" />
+            <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-amber-100 dark:border-slate-800 shadow-xs space-y-4">
+              <h3 className="text-lg font-bold text-[#0A192F] dark:text-slate-100 flex items-center gap-2">
+                <ShieldCheck className="w-5 h-5 text-amber-600 dark:text-amber-400" />
                 <span>Local Etiquette & Safety Tips</span>
               </h3>
               <ul className="space-y-2.5">
                 {generatedItinerary.localTips?.map((tip, i) => (
-                  <li key={i} className="flex items-start gap-2 text-xs text-slate-600">
+                  <li key={i} className="flex items-start gap-2 text-xs text-slate-600 dark:text-slate-400">
                     <span className="w-1.5 h-1.5 rounded-full bg-amber-500 mt-1.5 flex-shrink-0"></span>
                     <span>{tip}</span>
                   </li>

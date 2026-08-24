@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import L from 'leaflet';
 import { 
   MapPin, 
   Calendar, 
@@ -22,7 +24,8 @@ import {
   BookOpen,
   Landmark,
   Compass,
-  Eye
+  Eye,
+  Navigation
 } from 'lucide-react';
 import { api } from '../services/api';
 import { useAuth } from '../context/AuthContext';
@@ -396,6 +399,88 @@ export default function DestinationDetail() {
                       )}
                     </div>
                   ))}
+                </div>
+              </div>
+            )}
+
+            {/* Live Interactive Map Section */}
+            {((destination.lat || destination.coordinates?.lat) && (destination.lng || destination.coordinates?.lng)) && (
+              <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-slate-900 border border-amber-900/10 dark:border-slate-800 shadow-xs space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-xl font-bold text-[#0A192F] dark:text-slate-100 flex items-center gap-2">
+                    <Navigation className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+                    <span>Geographic Location & Live Map</span>
+                  </h3>
+                  <a
+                    href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(destination.name + ', ' + destination.state + ', India')}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-3 py-1.5 rounded-xl bg-amber-50 dark:bg-slate-800 hover:bg-amber-100 dark:hover:bg-slate-700 text-amber-900 dark:text-amber-300 text-xs font-bold transition flex items-center gap-1.5 border border-amber-200/60 dark:border-slate-700"
+                  >
+                    <span>Google Maps Directions</span>
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </a>
+                </div>
+
+                <div className="h-72 w-full rounded-2xl overflow-hidden border border-amber-900/10 dark:border-slate-800 relative z-10">
+                  <MapContainer
+                    center={[
+                      Number(destination.lat || destination.coordinates?.lat || 22.9734),
+                      Number(destination.lng || destination.coordinates?.lng || 78.6569)
+                    ]}
+                    zoom={13}
+                    scrollWheelZoom={false}
+                    className="h-full w-full"
+                  >
+                    <TileLayer
+                      attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    />
+                    <Marker
+                      position={[
+                        Number(destination.lat || destination.coordinates?.lat || 22.9734),
+                        Number(destination.lng || destination.coordinates?.lng || 78.6569)
+                      ]}
+                      icon={L.divIcon({
+                        className: 'custom-map-pin',
+                        html: `
+                          <div style="
+                            background: #D97706;
+                            width: 36px;
+                            height: 36px;
+                            border-radius: 50% 50% 50% 0;
+                            transform: rotate(-45deg);
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            border: 3px solid white;
+                            box-shadow: 0 4px 14px rgba(10,25,47,0.5);
+                          ">
+                            <div style="
+                              width: 12px;
+                              height: 12px;
+                              background: #FEF08A;
+                              border-radius: 50%;
+                              transform: rotate(45deg);
+                            "></div>
+                          </div>
+                        `,
+                        iconSize: [36, 36],
+                        iconAnchor: [18, 36],
+                        popupAnchor: [0, -36]
+                      })}
+                    >
+                      <Popup className="custom-leaflet-popup">
+                        <div className="p-1 space-y-1">
+                          <h4 className="font-bold text-sm text-[#0A192F]">{destination.name}</h4>
+                          <p className="text-xs text-slate-600">{destination.state}, India</p>
+                          <p className="text-[11px] font-mono text-amber-700">
+                            Lat: {(destination.lat || destination.coordinates?.lat)?.toFixed(4)}, Lng: {(destination.lng || destination.coordinates?.lng)?.toFixed(4)}
+                          </p>
+                        </div>
+                      </Popup>
+                    </Marker>
+                  </MapContainer>
                 </div>
               </div>
             )}

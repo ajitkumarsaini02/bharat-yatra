@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { MapPin, Sparkles, Heart, Clock, ArrowRight } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
@@ -24,6 +24,7 @@ const fallbackImageMap = {
 };
 
 export default function DestinationCard({ destination }) {
+  const navigate = useNavigate();
   const { favorites, toggleFavorite } = useAuth();
   const isFav = favorites.includes(destination.id);
   const [imgSrc, setImgSrc] = useState(destination.heroImage);
@@ -38,8 +39,15 @@ export default function DestinationCard({ destination }) {
     setImgSrc(matchedKey ? fallbackImageMap[matchedKey] : fallbackImageMap.default);
   };
 
+  const handleCardClick = (e) => {
+    navigate(`/destination/${destination.id}`);
+  };
+
   return (
-    <div className="group bg-white dark:bg-[#0C1526] rounded-3xl overflow-hidden border border-amber-900/10 dark:border-amber-500/25 shadow-md hover:shadow-2xl transition-all duration-300 flex flex-col hover:-translate-y-1">
+    <div
+      onClick={handleCardClick}
+      className="group bg-white dark:bg-[#0C1526] rounded-3xl overflow-hidden border border-amber-900/10 dark:border-amber-500/25 shadow-md hover:shadow-2xl transition-all duration-300 flex flex-col hover:-translate-y-1 cursor-pointer"
+    >
       {/* Image Container */}
       <div className="relative h-60 w-full overflow-hidden bg-slate-950">
         <img
@@ -125,22 +133,30 @@ export default function DestinationCard({ destination }) {
           </div>
 
           <div className="flex items-center gap-2">
-            <Link
-              to={`/destination/${destination.id}`}
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                navigate(`/destination/${destination.id}`);
+              }}
               className="px-3.5 py-2 rounded-xl text-slate-800 dark:text-slate-100 bg-amber-50 dark:bg-slate-800/90 hover:bg-amber-100 dark:hover:bg-slate-700 transition font-bold text-xs flex items-center gap-1 border border-amber-200/60 dark:border-amber-500/30 cursor-pointer shadow-xs"
               title="View Details"
             >
               <span>Explore</span>
               <ArrowRight className="w-3.5 h-3.5 text-amber-700 dark:text-amber-400" />
-            </Link>
+            </button>
 
-            <Link
-              to={`/ai-planner?destination=${encodeURIComponent(destination.name)}`}
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                navigate(`/ai-planner?destination=${encodeURIComponent(destination.name)}`);
+              }}
               className="px-3.5 py-2 rounded-xl text-xs font-black text-slate-950 gradient-saffron hover:opacity-95 transition flex items-center gap-1 shadow-sm cursor-pointer"
             >
               <Sparkles className="w-3.5 h-3.5 text-slate-950" />
               <span>AI Plan</span>
-            </Link>
+            </button>
           </div>
         </div>
       </div>

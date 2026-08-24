@@ -1,119 +1,173 @@
-# 🇮🇳 BHARAT YATRA
-### Centralized Tourism Discovery & AI-Assisted Personalized Trip Planning Full-Stack Web Application
+# 🇮🇳 BHARAT YATRA (भारत यात्रा)
+### Centralized Indian Tourism Discovery, AI-Assisted Trip Planner & Monument Management Platform
 
 ---
 
-## 📌 1. Overview & Problem Statement
+## 📌 1. Overview & Vision
 
-India offers a vast spectrum of tourist destinations, monuments, beaches, cultural places, food, and local experiences. However, travelers often need to use multiple platforms to find information about destinations, hotels, transportation, attractions, and expenses. This makes travel planning time-consuming and fragmented.
-
-### Major Problems Addressed:
-* **Fragmented Information:** Travel information is scattered across disparate blogs and websites.
-* **Difficulty in Custom Discovery:** Finding suitable destinations according to budget, persona, and interests is difficult.
-* **Tedious Manual Planning:** Constructing day-wise itineraries requires hours of manual research.
-* **Unpredictable Expenses:** Estimating overall expenses and category allocations (stay, food, transit, entry tickets) is complex.
-* **Hidden Local Gems:** Regional cuisines, GI crafts, and cultural etiquettes often go undiscovered.
+**Bharat Yatra** is a full-stack tourism and heritage platform dedicated to showcasing the cultural, historical, and geographical diversity of India. The platform integrates **112+ comprehensive monuments and tourist destinations** across all 28 states and union territories, offering AI-assisted day-wise itinerary planning, intelligent budget calculation, real-time weather forecasts, GIS map discovery, and dedicated role-based administrative management.
 
 ---
 
-## 🎯 2. Key Features & Capabilities
+## 🎯 2. Key Features & Platform Capabilities
 
-1. **Destination Discovery:** Explore monuments, beaches, hill stations, wildlife reserves, and spiritual centers across all Indian zones (North, South, West, East, North-East).
-2. **AI-Assisted Trip Planner:** Generate personalized day-wise travel itineraries with morning/afternoon/evening slots, timings, and local tips.
-3. **Smart Budget Estimator:** Real-time multi-category expense forecast with interactive sliders and money-saving hacks.
-4. **Interactive GIS Maps:** OpenStreetMap / Leaflet integration with interactive pins across India.
-5. **Regional Food & Cuisine Explorer:** State-wise famous delicacies and iconic food joints.
-6. **Transport & Connectivity Hub:** IRCTC train guidelines, flight routes, state buses, and last-mile transit tips.
-7. **Favorites & Community Reviews:** Wishlist saving and star ratings with traveler reviews.
-8. **Admin Dashboard:** Content management and platform analytics.
+### 🏛️ 1. Comprehensive Indian Monuments Directory (112+ Destinations)
+* **UNESCO World Heritage Sites & Iconic Forts:** Taj Mahal, Red Fort, Amer Fort, Mehrangarh, Jaisalmer, Golconda, etc.
+* **Spiritual & Sacred Circuits:** Varanasi Ghats, Golden Temple, Kedarnath, Somnath, Meenakshi Amman, Konark Sun Temple.
+* **Caves, Palaces & Natural Wonders:** Ajanta & Ellora Caves, Mysore Palace, Rann of Kutch, Valley of Flowers, Lonar Crater.
+* **Beaches, Wildlife & Hill Stations:** Goa, Andaman, Munnar, Jim Corbett, Kaziranga, Ladakh Pangong Circuit.
+* **Rich Metadata:** GPS coordinates, daily average budgets, ideal duration, best time to visit, regional foods, and transport connectivity.
+
+### 🤖 2. AI-Assisted Personalized Trip Planner
+* Generates custom **1 to 7 day itineraries** tailored by destination, traveler persona (Solo, Couple, Family, Friends), and budget style (Budget, Moderate, Luxury).
+* Structured morning, afternoon, and evening slots with timings, estimated costs, and local insider tips.
+* Integrated dynamic packing checklist and daily budget distribution breakdown.
+
+### 💰 3. Smart Travel Budget Estimator
+* Dynamic budget forecasting categorized into Stay, Food, Local Commute, Sightseeing Tickets, and Shopping/Buffer.
+* Real-time expense sliders with money-saving travel hacks and seasonal cost optimization tips.
+
+### 🗺️ 4. Interactive GIS Tourism Map
+* Interactive OpenStreetMap & Leaflet integration with pinpoint markers for every state and zone across India.
+* Filter monuments dynamically by zone (North, South, West, East, North-East) or category.
+
+### 🍱 5. Regional Cuisine & 🚆 IRCTC Transport Hub
+* State-wise authentic culinary guides with famous traditional thalis, street food, and iconic local eateries.
+* Comprehensive transit advice covering Vande Bharat / IRCTC trains, domestic airports, and local commute options.
+
+### 👑 6. Role-Based Architecture & Admin Portal (`/admin`)
+* **Dedicated Collections:** Independent `users` and `admins` database collections in MongoDB Atlas.
+* **Admin Content Management:** Authenticated administrators can add new monuments, delete records, and force-sync directory data to the live database.
+* **Route Protection:** Protected routes restricting platform management strictly to verified administrators.
 
 ---
 
 ## 🛠️ 3. Technology Stack & Architecture
 
 ```
-                       ┌─────────────────────────────────────────┐
-                       │           BHARAT YATRA CLIENT           │
-                       │    React.js + Tailwind CSS + Leaflet   │
-                       └──────────────────┬──────────────────────┘
-                                          │ REST API / JSON
-                                          ▼
-                       ┌─────────────────────────────────────────┐
-                       │          EXPRESS & NODE BACKEND         │
-                       │   Auth, AI Planner, Budget, Reviews     │
-                       └──────────────────┬──────────────────────┘
-                                          │ Mongoose ODM
-                                          ▼
-                       ┌─────────────────────────────────────────┐
-                       │            MONGODB DATABASE             │
-                       │ (with standalone in-memory demo state) │
-                       └─────────────────────────────────────────┘
+                       ┌──────────────────────────────────────────────┐
+                       │             BHARAT YATRA CLIENT              │
+                       │    React (Vite) + Tailwind CSS + Leaflet     │
+                       │  Lucide Icons + Context API + Axios Client   │
+                       └──────────────────────┬───────────────────────┘
+                                              │ REST API / JSON (JWT)
+                                              ▼
+                       ┌──────────────────────────────────────────────┐
+                       │           EXPRESS & NODE.JS BACKEND          │
+                       │   Auth (bcryptjs + JWT), AI Planner Engine,  │
+                       │   Destination Controller, Weather & External │
+                       └──────────────────────┬───────────────────────┘
+                                              │ Mongoose ODM
+                                              ▼
+                       ┌──────────────────────────────────────────────┐
+                       │             MONGODB ATLAS DATABASE           │
+                       │   • destinations (112+ Monument Documents)   │
+                       │   • users (Traveler Profiles & Favorites)    │
+                       │   • admins (Platform Managers & Credentials) │
+                       └──────────────────────────────────────────────┘
 ```
 
-* **Frontend:** React (Vite) + Tailwind CSS + Lucide Icons + React-Leaflet + Canvas Confetti
-* **Backend:** Node.js + Express.js + JWT Authentication + bcryptjs
-* **Database:** MongoDB + Mongoose (with dual-mode in-memory fallback)
-* **GIS Maps:** OpenStreetMap + Leaflet.js
-* **AI Module:** Algorithmic recommendation engine generating day-wise plans, packing checklists, and expense distributions.
+* **Frontend:** React 18 (Vite), Tailwind CSS, React Router v6, Lucide React, Leaflet & React-Leaflet, Canvas Confetti.
+* **Backend:** Node.js, Express.js, Mongoose ODM, JWT Authentication, bcryptjs password hashing, CORS, Dotenv.
+* **Database:** MongoDB Atlas (`bharat_yatra` cluster).
+* **APIs & Services:** Open-Meteo Weather API, Wikipedia & Wikimedia APIs, Geoapify GIS Places API.
 
 ---
 
-## 🚀 4. How to Run the Project
-
-### 1. Prerequisites
-Ensure you have **Node.js (v18+)** installed.
-
-### 2. Start Backend Server
-```bash
-cd server
-npm install
-npm start
-```
-*Backend runs on:* `http://localhost:5000`  
-*API Health check:* `http://localhost:5000/api/health`
-
-### 3. Start Frontend Client (in a separate terminal)
-```bash
-cd client
-npm install
-npm run dev
-```
-*Frontend runs on:* `http://localhost:5173` (or the port displayed in Vite).
-
----
-
-## ⚡ 5. Demo Logins
-
-The app includes 1-click demo buttons on the Sign In page:
-* **Admin Demo:** `admin@bharatyatra.com` / `admin123` (Access Admin Dashboard & Data Controls)
-* **Traveler Demo:** `traveler@bharatyatra.com` / `user123` (Access Favorites & AI Trip Saves)
-
----
-
-## 📂 6. Project Structure
+## 📁 4. Project Structure
 
 ```
-Bharat Yatra/
+bharat-yatra/
 ├── server/
-│   ├── controllers/       # Auth, Destinations, AI Planner, Budget, Reviews
-│   ├── data/              # 30+ destinations, cuisines, transport datasets
-│   ├── middleware/        # JWT auth verification
-│   ├── models/            # Mongoose schemas for User, Destination, Itinerary, Review
-│   ├── routes/            # Express API route endpoints
-│   ├── server.js          # Main Express server entry
+│   ├── controllers/       # authController, destinationController, plannerController, budgetController
+│   ├── data/              # tourismData.js (112+ curated monuments dataset, cuisines, transport)
+│   ├── middleware/        # auth.js (verifyToken, verifyAdmin)
+│   ├── models/            # Admin.js, User.js, Destination.js, Itinerary.js, Review.js
+│   ├── routes/            # apiRoutes.js
+│   ├── services/          # destinationEnrichmentService, geoapifyService, wikimediaService
+│   ├── seedDatabase.js    # Database seeder & synchronization script for 112 monuments
+│   ├── server.js          # Express server entry point
+│   ├── .env               # Environment configuration
 │   └── package.json
 ├── client/
 │   ├── src/
-│   │   ├── components/    # Navbar, Footer, DestinationCard, InteractiveMap, Hero
-│   │   ├── context/       # AuthContext, Wishlist, Saved Itineraries
-│   │   ├── pages/         # Home, Explore, Detail, AI Planner, Budget, Cuisine, Transport, Admin, Auth
-│   │   ├── services/      # Axios API client
-│   │   ├── data/          # Client dataset fallback
-│   │   ├── App.jsx        # Routing configuration
-│   │   └── index.css      # Indian heritage styling & animations
+│   │   ├── components/    # Navbar, Footer, DestinationCard, InteractiveMap, HeroSection
+│   │   ├── context/       # AuthContext (Traveler & Admin auth state, favorites)
+│   │   ├── pages/         # Home, Explore, DestinationDetail, AIPlanner, BudgetCalculator,
+│   │   │                  # CuisineGuide, TransportGuide, AdminDashboard, LoginRegister
+│   │   ├── services/      # api.js (Axios API client with JWT interceptor)
+│   │   ├── App.jsx        # Routing and theme provider
+│   │   └── index.css      # Indian heritage design system & custom gradients
+│   ├── public/            # Monument static assets & favicons
 │   ├── index.html
 │   ├── vite.config.js
 │   └── package.json
 └── README.md
 ```
-"# bharat-yatra" 
+
+---
+
+## 🚀 5. Getting Started & Installation
+
+### 1. Prerequisites
+* **Node.js (v18 or higher)**
+* **MongoDB Atlas** account (or local MongoDB instance)
+* **Git**
+
+### 2. Clone the Repository
+```bash
+git clone https://github.com/ajitkumarsaini02/bharat-yatra.git
+cd bharat-yatra
+```
+
+### 3. Server Setup & Configuration
+```bash
+cd server
+npm install
+```
+
+Create a `.env` file in the `server` directory:
+```env
+PORT=5000
+MONGO_URI=mongodb+srv://<username>:<password>@cluster1.mongodb.net/bharat_yatra?retryWrites=true&w=majority
+JWT_SECRET=bharat_yatra_super_secret_key_2026
+ADMIN_SECRET_KEY=bharat_admin_2026
+```
+
+Seed / Sync all 112 Monuments to MongoDB Atlas:
+```bash
+node seedDatabase.js
+```
+
+Start the Backend Server:
+```bash
+npm start
+```
+* Backend runs on: `http://localhost:5000`  
+* Health status endpoint: `http://localhost:5000/api/health`
+
+### 4. Client Setup
+Open a new terminal window:
+```bash
+cd client
+npm install
+npm run dev
+```
+* Frontend runs on: `http://localhost:5173`
+
+---
+
+## 🔐 6. Authentication & Roles
+
+### 🧳 Traveler (User) Account
+* Register as **Traveler** to explore monuments, save favorite destinations to wishlist, and generate personalized AI itineraries.
+
+### 🛡️ Administrator Account
+* Register as **Admin** using the platform admin passcode (`bharat_admin_2026`).
+* Admins gain access to the **Administrator Control Center (`/admin`)** with live database CRUD operations and external API enrichment triggers.
+
+---
+
+## 📄 License & Credits
+Developed as an educational and cultural initiative to promote Indian heritage, tourism, and travel intelligence.
+All rights reserved © 2026 Bharat Yatra Platform.

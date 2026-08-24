@@ -40,7 +40,7 @@ export const register = async (req, res) => {
 
         return res.status(201).json({
           success: true,
-          message: 'Registration successful',
+          message: 'Registration successful (Saved to MongoDB)',
           token,
           user: {
             id: newUser._id,
@@ -52,8 +52,11 @@ export const register = async (req, res) => {
           }
         });
       } catch (dbErr) {
-        // Fall through to inMemory fallback
+        console.error('⚠️ MongoDB User.create error:', dbErr.message);
+        // Fall through to inMemory fallback if database write fails
       }
+    } else {
+      console.warn('ℹ️ MongoDB is disconnected. Saving user in in-memory store.');
     }
 
     // In-memory fallback
@@ -223,7 +226,7 @@ export const getProfile = async (req, res) => {
         email: req.user.email,
         role: req.user.role,
         avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80',
-        favorites: ['dest-1', 'dest-2']
+        favorites: []
       }
     });
   } catch (error) {

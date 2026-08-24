@@ -1,4 +1,5 @@
 import express from 'express';
+import mongoose from 'mongoose';
 import { register, login, getProfile } from '../controllers/authController.js';
 import { 
   getDestinations, 
@@ -61,10 +62,15 @@ router.put('/reviews/:id/like', likeReview);
 
 // --- System Status & Health Check ---
 router.get('/health', (req, res) => {
+  const isDbConnected = mongoose.connection.readyState === 1;
   res.json({
     status: 'online',
     app: 'Bharat Yatra REST API',
     version: '2.0.0',
+    database: {
+      connected: isDbConnected,
+      status: isDbConnected ? 'MongoDB Connected' : 'Disconnected (Using In-Memory Fallback)'
+    },
     services: {
       geoapify: !!process.env.GEOAPIFY_API_KEY,
       openMeteo: 'active',

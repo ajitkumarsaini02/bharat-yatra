@@ -21,8 +21,22 @@ export const AuthProvider = ({ children }) => {
   });
 
   const [favorites, setFavorites] = useState(() => {
-    const savedFavs = localStorage.getItem('bharat_yatra_favs');
-    return savedFavs ? JSON.parse(savedFavs) : [];
+    try {
+      const savedFavs = localStorage.getItem('bharat_yatra_favs');
+      if (!savedFavs) return [];
+      const parsed = JSON.parse(savedFavs);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        const isLegacyDemo = parsed.includes('dest-taj-mahal') || parsed.includes('dest-1');
+        if (isLegacyDemo && parsed.length <= 3) {
+          localStorage.removeItem('bharat_yatra_favs');
+          return [];
+        }
+        return parsed;
+      }
+      return [];
+    } catch {
+      return [];
+    }
   });
 
   const [savedItineraries, setSavedItineraries] = useState(() => {

@@ -34,14 +34,21 @@ app.get('/', (req, res) => {
   });
 });
 
+import { seedAllDestinations } from './seedDatabase.js';
+
 mongoose.set('bufferCommands', false);
 
 // Connect to MongoDB with graceful fast fallback
 mongoose.connect(MONGO_URI, {
-  serverSelectionTimeoutMS: 2500
+  serverSelectionTimeoutMS: 5000
 })
-  .then(() => {
+  .then(async () => {
     console.log('✅ Connected to MongoDB Database successfully.');
+    try {
+      await seedAllDestinations();
+    } catch (e) {
+      console.warn('⚠️ Auto-seed check notice:', e.message);
+    }
   })
   .catch((err) => {
     console.log('ℹ️ Note: Running in Zero-Config Standalone Mode with In-Memory State Store.');

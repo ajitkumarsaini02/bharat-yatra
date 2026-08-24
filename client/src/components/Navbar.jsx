@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
   Compass, 
@@ -23,9 +23,46 @@ import { useTheme } from '../context/ThemeContext';
 export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const profileRef = useRef(null);
+  const navHeaderRef = useRef(null);
   const location = useLocation();
   const { user, favorites, logoutUser, isAdmin } = useAuth();
   const { isDark, toggleTheme } = useTheme();
+
+  // Close menus on click outside & escape key
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (profileRef.current && !profileRef.current.contains(event.target)) {
+        setIsProfileOpen(false);
+      }
+      if (navHeaderRef.current && !navHeaderRef.current.contains(event.target)) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        setIsProfileOpen(false);
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('touchstart', handleClickOutside);
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+
+  // Auto-close dropdowns on navigation
+  useEffect(() => {
+    setIsProfileOpen(false);
+    setIsMobileMenuOpen(false);
+  }, [location.pathname]);
 
   const navLinks = [
     { name: 'Explore', path: '/explore', icon: Compass },
@@ -39,7 +76,7 @@ export default function Navbar() {
   const isActive = (path) => location.pathname === path;
 
   return (
-    <header className="sticky top-0 z-40 w-full glass-panel dark:glass-dark border-b border-amber-900/10 dark:border-amber-500/20 shadow-xs transition-colors duration-200">
+    <header ref={navHeaderRef} className="sticky top-0 z-40 w-full glass-panel dark:glass-dark border-b border-amber-900/10 dark:border-amber-500/20 shadow-xs transition-colors duration-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           
@@ -119,7 +156,7 @@ export default function Navbar() {
 
             {/* User Profile / Admin / Login */}
             {user ? (
-              <div className="relative">
+              <div ref={profileRef} className="relative">
                 <button
                   onClick={() => setIsProfileOpen(!isProfileOpen)}
                   className="flex items-center space-x-2 p-1.5 rounded-2xl hover:bg-amber-50 dark:hover:bg-slate-800 transition border border-amber-900/15 dark:border-amber-500/30 cursor-pointer"

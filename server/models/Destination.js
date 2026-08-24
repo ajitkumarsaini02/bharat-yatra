@@ -22,21 +22,21 @@ const destinationSchema = new mongoose.Schema({
   avgDailyExpense: { type: Number, default: 2000 },
   highlights: [{ type: String }],
   attractions: [{
-    name: String,
-    type: String,
-    entryFee: Number,
-    timeNeeded: String
+    name: { type: String },
+    type: { type: String },
+    entryFee: { type: Number, default: 0 },
+    timeNeeded: { type: String }
   }],
   famousFood: [{
-    name: String,
-    place: String,
-    desc: String
+    name: { type: String },
+    place: { type: String },
+    desc: { type: String }
   }],
   shoppingSpecialties: [{ type: String }],
   transportation: {
-    nearestAirport: String,
-    nearestRailway: String,
-    localCommute: String
+    nearestAirport: { type: String },
+    nearestRailway: { type: String },
+    localCommute: { type: String }
   },
   // External API Enriched Metadata & Caching
   wikiData: {

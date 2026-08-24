@@ -161,11 +161,9 @@ export default function Navbar() {
                   onClick={() => setIsProfileOpen(!isProfileOpen)}
                   className="flex items-center space-x-2 p-1.5 rounded-2xl hover:bg-amber-50 dark:hover:bg-slate-800 transition border border-amber-900/15 dark:border-amber-500/30 cursor-pointer"
                 >
-                  <img
-                    src={user.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=100&q=80'}
-                    alt={user.name}
-                    className="w-8 h-8 rounded-xl object-cover"
-                  />
+                  <div className="w-8 h-8 rounded-xl bg-amber-100 dark:bg-amber-950/80 border border-amber-300 dark:border-amber-500/40 flex items-center justify-center text-amber-900 dark:text-amber-300 font-black text-xs shadow-xs">
+                    {user.name ? user.name.charAt(0).toUpperCase() : <User className="w-4 h-4" />}
+                  </div>
                   <span className="text-xs font-bold text-[#0A192F] dark:text-slate-100 max-w-[90px] truncate">
                     {user.name}
                   </span>

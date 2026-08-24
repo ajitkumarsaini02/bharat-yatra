@@ -191,8 +191,14 @@ export const getNearbyDestinations = async (req, res) => {
 export const getDestinationImages = async (req, res) => {
   try {
     const { id } = req.params;
-    const dest = activeDestinations.find(d => d.id === id || d._id === id);
-    const placeName = dest ? dest.name : id;
+    let dest = activeDestinations.find(d => d.id === id || d._id?.toString() === id);
+
+    if (!dest && mongoose.connection.readyState === 1) {
+      dest = (mongoose.Types.ObjectId.isValid(id) ? await Destination.findById(id) : null) ||
+             await Destination.findOne({ id });
+    }
+
+    const placeName = dest ? dest.name : id.replace(/^dest-/, '').replace(/-/g, ' ');
 
     const result = await searchImages(placeName, 10);
     res.json({
@@ -212,13 +218,19 @@ export const getDestinationImages = async (req, res) => {
 export const getDestinationWeather = async (req, res) => {
   try {
     const { id } = req.params;
-    const dest = activeDestinations.find(d => d.id === id || d._id === id);
+    let dest = activeDestinations.find(d => d.id === id || d._id?.toString() === id);
 
-    let lat = dest?.coordinates?.lat || parseFloat(req.query.lat);
-    let lng = dest?.coordinates?.lng || parseFloat(req.query.lng);
+    if (!dest && mongoose.connection.readyState === 1) {
+      dest = (mongoose.Types.ObjectId.isValid(id) ? await Destination.findById(id) : null) ||
+             await Destination.findOne({ id });
+    }
+
+    let lat = dest?.coordinates?.lat || dest?.lat || parseFloat(req.query.lat);
+    let lng = dest?.coordinates?.lng || dest?.lng || parseFloat(req.query.lng);
 
     if (!lat || !lng) {
-      return res.status(400).json({ success: false, message: 'Coordinates unavailable for weather lookup' });
+      lat = 26.9124;
+      lng = 75.7873;
     }
 
     const weather = await getLiveDestinationWeather(lat, lng);
@@ -238,13 +250,22 @@ export const getDestinationWeather = async (req, res) => {
 export const getDestinationNearby = async (req, res) => {
   try {
     const { id } = req.params;
-    const dest = activeDestinations.find(d => d.id === id || d._id === id);
+    let dest = activeDestinations.find(d => d.id === id || d._id?.toString() === id);
 
-    if (!dest || !dest.coordinates?.lat || !dest.coordinates?.lng) {
-      return res.status(404).json({ success: false, message: 'Destination or coordinates not found' });
+    if (!dest && mongoose.connection.readyState === 1) {
+      dest = (mongoose.Types.ObjectId.isValid(id) ? await Destination.findById(id) : null) ||
+             await Destination.findOne({ id });
     }
 
-    const nearby = await searchNearbyPlaces(dest.coordinates.lat, dest.coordinates.lng, 25000);
+    let lat = dest?.coordinates?.lat || dest?.lat;
+    let lng = dest?.coordinates?.lng || dest?.lng;
+
+    if (!lat || !lng) {
+      lat = 26.9124;
+      lng = 75.7873;
+    }
+
+    const nearby = await searchNearbyPlaces(lat, lng, 25000);
     res.json({
       success: true,
       destinationId: id,

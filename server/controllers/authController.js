@@ -5,14 +5,27 @@ import User from '../models/User.js';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'bharat_yatra_super_secret_key_2026';
 
+const ADMIN_SECRET = process.env.ADMIN_SECRET_KEY || 'bharat_admin_2026';
+
 // In-memory registered users store when MongoDB isn't connected
 let inMemoryUsers = [];
 
 export const register = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, role = 'user', adminSecretKey } = req.body;
     if (!name || !email || !password) {
       return res.status(400).json({ success: false, message: 'Please provide all required fields' });
+    }
+
+    // Role validation
+    let resolvedRole = role === 'admin' ? 'admin' : 'user';
+    if (email.toLowerCase().includes('admin')) {
+      resolvedRole = 'admin';
+    }
+
+    // If registering as admin, check secret key if provided
+    if (resolvedRole === 'admin' && adminSecretKey && adminSecretKey.trim() !== '' && adminSecretKey !== ADMIN_SECRET) {
+      return res.status(403).json({ success: false, message: 'Invalid Admin Secret Key. Access denied.' });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -29,7 +42,7 @@ export const register = async (req, res) => {
           name,
           email: email.toLowerCase(),
           password: hashedPassword,
-          role: email.includes('admin') ? 'admin' : 'user'
+          role: resolvedRole
         });
 
         const token = jwt.sign(
@@ -40,7 +53,7 @@ export const register = async (req, res) => {
 
         return res.status(201).json({
           success: true,
-          message: 'Registration successful (Saved to MongoDB)',
+          message: `Registration successful as ${resolvedRole.toUpperCase()} (Saved to MongoDB)`,
           token,
           user: {
             id: newUser._id,
@@ -70,7 +83,7 @@ export const register = async (req, res) => {
       name,
       email: email.toLowerCase(),
       password: hashedPassword,
-      role: email.includes('admin') ? 'admin' : 'user',
+      role: resolvedRole,
       avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80',
       favorites: []
     };
@@ -84,7 +97,7 @@ export const register = async (req, res) => {
 
     return res.status(201).json({
       success: true,
-      message: 'Registration successful',
+      message: `Registration successful as ${resolvedRole.toUpperCase()}`,
       token,
       user: {
         id: mockUser._id,

@@ -44,12 +44,14 @@ const registerLocally = (userData) => {
     throw existErr;
   }
 
+  const assignedRole = userData.role || (userData.email.toLowerCase().includes('admin') ? 'admin' : 'user');
+
   const newUser = {
     id: 'user-' + Date.now(),
     name: userData.name,
     email: userData.email.toLowerCase(),
     password: userData.password,
-    role: userData.email.toLowerCase().includes('admin') ? 'admin' : 'user',
+    role: assignedRole,
     avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80',
     favorites: []
   };

@@ -95,8 +95,8 @@ export const AuthProvider = ({ children }) => {
     return res;
   };
 
-  const registerUser = async (name, email, password) => {
-    const res = await api.register({ name, email, password });
+  const registerUser = async (name, email, password, role = 'user', adminSecretKey = '') => {
+    const res = await api.register({ name, email, password, role, adminSecretKey });
     if (res.user) {
       setUser(res.user);
     }

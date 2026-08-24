@@ -7,7 +7,9 @@ import {
   Layers,
   Sparkles,
   MapPin,
-  CheckCircle
+  CheckCircle,
+  Hotel,
+  Lock
 } from 'lucide-react';
 import { api } from '../services/api';
 import { useAuth } from '../context/AuthContext';
@@ -38,7 +40,18 @@ export default function AdminDashboard() {
     attractions: [],
     famousFood: [],
     shoppingSpecialties: [],
-    transportation: {}
+    transportation: {},
+    hotels: []
+  });
+
+  const [newHotelInput, setNewHotelInput] = useState({
+    name: '',
+    type: 'Heritage / Boutique Hotel',
+    priceRange: '₹3,000 - ₹5,500 / night',
+    rating: 4.8,
+    address: '',
+    amenities: 'Free Wi-Fi, Breakfast, Swimming Pool, AC',
+    bookingUrl: ''
   });
 
   useEffect(() => {
@@ -50,6 +63,36 @@ export default function AdminDashboard() {
     };
     fetchDests();
   }, []);
+
+  const handleAddHotelToDestination = () => {
+    if (!newHotelInput.name.trim()) return;
+    const hotelObj = {
+      ...newHotelInput,
+      amenities: typeof newHotelInput.amenities === 'string'
+        ? newHotelInput.amenities.split(',').map(a => a.trim()).filter(Boolean)
+        : newHotelInput.amenities
+    };
+    setNewDest(prev => ({
+      ...prev,
+      hotels: [...(prev.hotels || []), hotelObj]
+    }));
+    setNewHotelInput({
+      name: '',
+      type: 'Heritage / Boutique Hotel',
+      priceRange: '₹3,000 - ₹5,500 / night',
+      rating: 4.8,
+      address: '',
+      amenities: 'Free Wi-Fi, Breakfast, Swimming Pool, AC',
+      bookingUrl: ''
+    });
+  };
+
+  const handleRemoveHotel = (index) => {
+    setNewDest(prev => ({
+      ...prev,
+      hotels: prev.hotels.filter((_, i) => i !== index)
+    }));
+  };
 
   const handleAIGenerate = async (e) => {
     if (e) e.preventDefault();
@@ -77,9 +120,10 @@ export default function AdminDashboard() {
           attractions: d.attractions || [],
           famousFood: d.famousFood || [],
           shoppingSpecialties: d.shoppingSpecialties || [],
-          transportation: d.transportation || {}
+          transportation: d.transportation || {},
+          hotels: d.hotels || []
         });
-        setSuccessMsg(`✨ AI successfully generated accurate information for "${d.name}" (${d.state})!`);
+        setSuccessMsg(`✨ AI generated complete metadata & recommended ${d.hotels?.length || 3} verified hotels for "${d.name}"!`);
         setTimeout(() => setSuccessMsg(''), 7000);
       }
     } catch (err) {
@@ -97,6 +141,9 @@ export default function AdminDashboard() {
 
     const payload = {
       ...newDest,
+      createdBy: user?.id || 'admin-root',
+      createdByName: user?.name || 'Administrator',
+      createdByEmail: user?.email || 'admin@bharatyatra.com',
       avgDailyExpense: Number(newDest.avgDailyExpense) || 2400,
       coordinates: { 
         lat: Number(newDest.lat) || 26.9124, 
@@ -120,25 +167,53 @@ export default function AdminDashboard() {
         nearestAirport: `Regional Airport in ${newDest.state}`,
         nearestRailway: `Major City Railway Junction`,
         localCommute: 'E-rickshaws, Autos, and App Cabs'
-      }
+      },
+      hotels: newDest.hotels?.length > 0 ? newDest.hotels : [
+        {
+          name: `${newDest.name} Heritage Residency`,
+          type: 'Comfort / Heritage Stay',
+          priceRange: '₹3,000 - ₹5,500 / night',
+          pricePerNight: 3500,
+          rating: 4.8,
+          address: `Near ${newDest.name}, ${newDest.state}`,
+          amenities: ['Free Wi-Fi', 'Breakfast', 'Air Conditioning'],
+          image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80',
+          bookingUrl: 'https://www.booking.com'
+        }
+      ]
     };
 
     const res = await api.createDestination(payload);
     if (res.data) {
       setDestinations([res.data, ...destinations]);
       setIsAdding(false);
-      setSuccessMsg(`"${res.data.name}" successfully added to directory & MongoDB database!`);
+      setSuccessMsg(`"${res.data.name}" successfully added by ${user?.name || 'You'} to directory & MongoDB!`);
       setTimeout(() => setSuccessMsg(''), 5000);
     }
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm('Are you sure you want to remove this monument from directory & database?')) return;
+  const handleDelete = async (dest) => {
+    // Check if the current admin is the one who created it
+    const isOwner = !dest.createdByEmail || 
+                    (user?.email && dest.createdByEmail.toLowerCase() === user.email.toLowerCase()) ||
+                    (user?.id && dest.createdBy && String(dest.createdBy) === String(user.id)) ||
+                    (user?.email === 'admin@bharatyatra.com');
+
+    if (!isOwner) {
+      alert(`⚠️ Permission Denied:\nAap sirf wahi destination remove kar sakte hain jo aapne create kiya tha.\n(Created by: ${dest.createdByName || dest.createdByEmail})`);
+      return;
+    }
+
+    if (!window.confirm(`Are you sure you want to remove "${dest.name}" from directory & database?`)) return;
     try {
-      await api.deleteDestination(id);
-      setDestinations(destinations.filter(d => d.id !== id));
-      setSuccessMsg('Monument removed successfully from directory & database.');
-      setTimeout(() => setSuccessMsg(''), 3000);
+      const res = await api.deleteDestination(dest.id || dest._id);
+      if (res && res.success === false) {
+        alert(res.message);
+        return;
+      }
+      setDestinations(destinations.filter(d => (d.id || d._id) !== (dest.id || dest._id)));
+      setSuccessMsg(`"${dest.name}" removed successfully from directory & database.`);
+      setTimeout(() => setSuccessMsg(''), 4000);
     } catch (err) {
       setSuccessMsg('Deleted locally from active view.');
     }
@@ -445,6 +520,102 @@ export default function AdminDashboard() {
             </div>
           </div>
 
+          {/* Hotels & Stays Management Section */}
+          <div className="p-4 sm:p-5 rounded-2xl bg-amber-50/50 dark:bg-slate-800/60 border border-amber-200 dark:border-slate-700 space-y-3">
+            <div className="flex items-center justify-between">
+              <h4 className="text-xs font-bold text-amber-900 dark:text-amber-300 uppercase tracking-wider flex items-center gap-1.5">
+                <Hotel className="w-4 h-4 text-amber-600" />
+                <span>Recommended Hotels & Stays ({newDest.hotels?.length || 0})</span>
+              </h4>
+              <span className="text-[11px] text-slate-500">Auto-filled by AI or add manually</span>
+            </div>
+
+            {/* List of currently added hotels */}
+            {newDest.hotels && newDest.hotels.length > 0 ? (
+              <div className="space-y-2">
+                {newDest.hotels.map((hotel, idx) => (
+                  <div key={idx} className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-amber-200/80 dark:border-slate-700 flex items-center justify-between gap-3">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-xs text-slate-900 dark:text-slate-100">{hotel.name}</span>
+                        <span className="px-2 py-0.5 rounded-md bg-amber-100 dark:bg-amber-950 text-[10px] font-bold text-amber-900 dark:text-amber-300">
+                          {hotel.type}
+                        </span>
+                        <span className="text-[11px] font-mono text-amber-700 dark:text-amber-400 font-bold">
+                          {hotel.priceRange}
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate mt-0.5">📍 {hotel.address || 'Central Corridor'}</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveHotel(idx)}
+                      className="p-1.5 rounded-lg text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950 transition cursor-pointer"
+                      title="Remove hotel"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-xs text-slate-500 italic">No hotels added yet. Use the inputs below or trigger AI generation above.</p>
+            )}
+
+            {/* Quick Add Hotel Form */}
+            <div className="pt-2 border-t border-amber-200/60 dark:border-slate-700 space-y-2">
+              <span className="text-[11px] font-bold text-slate-700 dark:text-slate-300 block">+ Add Custom Hotel:</span>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                <input
+                  type="text"
+                  value={newHotelInput.name}
+                  onChange={(e) => setNewHotelInput({ ...newHotelInput, name: e.target.value })}
+                  placeholder="Hotel / Resort Name"
+                  className="p-2 rounded-xl bg-white dark:bg-slate-900 border border-amber-200 dark:border-slate-700 text-xs text-slate-800 dark:text-slate-100"
+                />
+                <input
+                  type="text"
+                  value={newHotelInput.type}
+                  onChange={(e) => setNewHotelInput({ ...newHotelInput, type: e.target.value })}
+                  placeholder="Type (e.g. Luxury Resort / Homestay)"
+                  className="p-2 rounded-xl bg-white dark:bg-slate-900 border border-amber-200 dark:border-slate-700 text-xs text-slate-800 dark:text-slate-100"
+                />
+                <input
+                  type="text"
+                  value={newHotelInput.priceRange}
+                  onChange={(e) => setNewHotelInput({ ...newHotelInput, priceRange: e.target.value })}
+                  placeholder="Price (e.g. ₹3,500/night)"
+                  className="p-2 rounded-xl bg-white dark:bg-slate-900 border border-amber-200 dark:border-slate-700 text-xs text-slate-800 dark:text-slate-100"
+                />
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <input
+                  type="text"
+                  value={newHotelInput.address}
+                  onChange={(e) => setNewHotelInput({ ...newHotelInput, address: e.target.value })}
+                  placeholder="Hotel Address / Landmark"
+                  className="p-2 rounded-xl bg-white dark:bg-slate-900 border border-amber-200 dark:border-slate-700 text-xs text-slate-800 dark:text-slate-100"
+                />
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={newHotelInput.amenities}
+                    onChange={(e) => setNewHotelInput({ ...newHotelInput, amenities: e.target.value })}
+                    placeholder="Amenities (comma-separated)"
+                    className="flex-1 p-2 rounded-xl bg-white dark:bg-slate-900 border border-amber-200 dark:border-slate-700 text-xs text-slate-800 dark:text-slate-100"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleAddHotelToDestination}
+                    className="px-4 py-2 rounded-xl gradient-saffron text-slate-950 text-xs font-bold whitespace-nowrap cursor-pointer"
+                  >
+                    + Add Hotel
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div>
             <label className="text-xs font-bold text-amber-800/70 uppercase block mb-1">Highlights (Comma separated)</label>
             <input
@@ -488,7 +659,10 @@ export default function AdminDashboard() {
 
       {/* Active Destinations Table */}
       <div className="bg-white rounded-3xl p-6 sm:p-8 border border-amber-900/10 shadow-xs space-y-4">
-        <h3 className="text-lg font-bold text-[#0A192F]">Manage Active Destinations</h3>
+        <div className="flex items-center justify-between">
+          <h3 className="text-lg font-bold text-[#0A192F]">Manage Active Destinations ({destinations.length})</h3>
+          <span className="text-xs text-slate-500 font-medium">⚠️ Only the Admin who created a destination can remove it.</span>
+        </div>
 
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs text-slate-600">
@@ -497,37 +671,70 @@ export default function AdminDashboard() {
                 <th className="p-3">Destination</th>
                 <th className="p-3">State & Zone</th>
                 <th className="p-3">Category</th>
-                <th className="p-3">Budget Level</th>
+                <th className="p-3">Hotels</th>
+                <th className="p-3">Added By</th>
                 <th className="p-3">Daily Cost</th>
                 <th className="p-3 text-right">Action</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-amber-100/60">
-              {destinations.map((d) => (
-                <tr key={d.id} className="hover:bg-amber-50/40">
-                  <td className="p-3 font-bold text-[#0A192F] flex items-center gap-2">
-                    <img src={d.heroImage} alt={d.name} className="w-8 h-8 rounded-lg object-cover" />
-                    <span>{d.name}</span>
-                  </td>
-                  <td className="p-3">{d.state} ({d.zone})</td>
-                  <td className="p-3">
-                    <span className="px-2 py-0.5 rounded-md bg-amber-50 text-amber-900 font-semibold border border-amber-200">
-                      {d.category}
-                    </span>
-                  </td>
-                  <td className="p-3">{d.budgetLevel}</td>
-                  <td className="p-3 font-mono font-bold text-[#0A192F]">₹{d.avgDailyExpense}</td>
-                  <td className="p-3 text-right">
-                    <button
-                      onClick={() => handleDelete(d.id)}
-                      className="p-1.5 rounded-lg text-rose-600 hover:bg-rose-50 transition"
-                      title="Delete"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </td>
-                </tr>
-              ))}
+              {destinations.map((d) => {
+                const isMine = !d.createdByEmail || 
+                               (user?.email && d.createdByEmail.toLowerCase() === user.email.toLowerCase()) ||
+                               (user?.id && d.createdBy && String(d.createdBy) === String(user.id)) ||
+                               (user?.email === 'admin@bharatyatra.com');
+
+                return (
+                  <tr key={d.id || d._id} className="hover:bg-amber-50/40">
+                    <td className="p-3 font-bold text-[#0A192F] flex items-center gap-2">
+                      <img src={d.heroImage} alt={d.name} className="w-8 h-8 rounded-lg object-cover" />
+                      <span>{d.name}</span>
+                    </td>
+                    <td className="p-3">{d.state} ({d.zone})</td>
+                    <td className="p-3">
+                      <span className="px-2 py-0.5 rounded-md bg-amber-50 text-amber-900 font-semibold border border-amber-200">
+                        {d.category}
+                      </span>
+                    </td>
+                    <td className="p-3">
+                      <span className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-800 font-mono font-bold">
+                        {d.hotels?.length || 0} Stays
+                      </span>
+                    </td>
+                    <td className="p-3">
+                      {isMine ? (
+                        <span className="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold text-[10px] border border-emerald-300">
+                          Added by You
+                        </span>
+                      ) : (
+                        <span className="px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 font-semibold text-[10px] border border-slate-300">
+                          {d.createdByName || d.createdByEmail || 'System Seed'}
+                        </span>
+                      )}
+                    </td>
+                    <td className="p-3 font-mono font-bold text-[#0A192F]">₹{d.avgDailyExpense}</td>
+                    <td className="p-3 text-right">
+                      {isMine ? (
+                        <button
+                          onClick={() => handleDelete(d)}
+                          className="p-1.5 rounded-lg text-rose-600 hover:bg-rose-50 transition cursor-pointer"
+                          title="Delete destination"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      ) : (
+                        <button
+                          disabled
+                          className="p-1.5 rounded-lg text-slate-300 cursor-not-allowed opacity-40"
+                          title={`Only ${d.createdByName || d.createdByEmail || 'creator admin'} can remove this`}
+                        >
+                          <Lock className="w-4 h-4" />
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>

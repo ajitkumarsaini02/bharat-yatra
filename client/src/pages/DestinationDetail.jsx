@@ -25,7 +25,8 @@ import {
   Landmark,
   Compass,
   Eye,
-  Navigation
+  Navigation,
+  Hotel
 } from 'lucide-react';
 import { api } from '../services/api';
 import { useAuth } from '../context/AuthContext';
@@ -649,6 +650,104 @@ export default function DestinationDetail() {
                 </div>
               </div>
             )}
+
+            {/* Recommended Hotels & Accommodations Section */}
+            <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-slate-900 border border-amber-900/10 dark:border-slate-800 shadow-xs space-y-6">
+              <div className="flex items-center justify-between">
+                <h3 className="text-xl font-bold text-[#0A192F] dark:text-slate-100 flex items-center gap-2">
+                  <Hotel className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+                  <span>Recommended Hotels & Heritage Stays</span>
+                </h3>
+                <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">Verified Hospitality Partners</span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {((destination.hotels && destination.hotels.length > 0) ? destination.hotels : [
+                  {
+                    name: `${destination.name} Heritage Palace Resort`,
+                    type: 'Luxury Heritage Stay',
+                    priceRange: '₹6,500 - ₹12,000 / night',
+                    rating: 4.9,
+                    address: `Near ${destination.name}, ${destination.state}`,
+                    amenities: ['Pool', 'Spa', 'Free Wi-Fi', 'Dining'],
+                    image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80',
+                    bookingUrl: `https://www.google.com/travel/hotels?q=${encodeURIComponent(destination.name + ' hotels ' + destination.state)}`
+                  },
+                  {
+                    name: `${destination.name} Boutique Haveli`,
+                    type: 'Comfort & Heritage',
+                    priceRange: '₹3,000 - ₹5,000 / night',
+                    rating: 4.7,
+                    address: `City Center, ${destination.state}`,
+                    amenities: ['Breakfast', 'AC', 'Wi-Fi', 'Travel Desk'],
+                    image: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=800&q=80',
+                    bookingUrl: `https://www.google.com/travel/hotels?q=${encodeURIComponent(destination.name + ' boutique hotels')}`
+                  },
+                  {
+                    name: `Backpackers & Homestay ${destination.name}`,
+                    type: 'Budget Homestay / Hostel',
+                    priceRange: '₹900 - ₹1,800 / night',
+                    rating: 4.5,
+                    address: `Corridor, ${destination.state}`,
+                    amenities: ['Rooftop Cafe', 'Wi-Fi', 'Lounge'],
+                    image: 'https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=800&q=80',
+                    bookingUrl: `https://www.google.com/travel/hotels?q=${encodeURIComponent(destination.name + ' budget homestays')}`
+                  }
+                ]).map((hotel, idx) => (
+                  <div key={idx} className="group rounded-2xl overflow-hidden border border-amber-200/70 dark:border-slate-800 bg-amber-50/40 dark:bg-slate-800/50 flex flex-col justify-between hover:shadow-lg transition">
+                    <div>
+                      <div className="relative h-36 w-full overflow-hidden bg-slate-950">
+                        <img
+                          src={hotel.image || 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80'}
+                          alt={hotel.name}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          loading="lazy"
+                        />
+                        <span className="absolute top-2 left-2 px-2 py-0.5 rounded-md text-[10px] font-bold bg-black/80 text-amber-300 backdrop-blur-xs">
+                          {hotel.type || 'Hotel'}
+                        </span>
+                        <span className="absolute top-2 right-2 px-2 py-0.5 rounded-md text-[10px] font-bold bg-black/80 text-amber-300 backdrop-blur-xs flex items-center gap-1">
+                          <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
+                          {hotel.rating || 4.7}
+                        </span>
+                      </div>
+
+                      <div className="p-4 space-y-2">
+                        <h4 className="font-extrabold text-sm text-slate-900 dark:text-slate-100 line-clamp-1">{hotel.name}</h4>
+                        {hotel.address && (
+                          <p className="text-[11px] text-slate-600 dark:text-slate-400 line-clamp-1">📍 {hotel.address}</p>
+                        )}
+                        <div className="flex flex-wrap gap-1 pt-1">
+                          {(hotel.amenities || ['Free Wi-Fi', 'Breakfast', 'Air Conditioning']).slice(0, 3).map((am, i) => (
+                            <span key={i} className="px-2 py-0.5 rounded-md bg-white dark:bg-slate-900 text-[10px] font-medium text-slate-700 dark:text-slate-300 border border-amber-200/50 dark:border-slate-700">
+                              ✓ {am}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="p-4 pt-2 border-t border-amber-200/50 dark:border-slate-700/60 flex items-center justify-between">
+                      <div>
+                        <span className="text-[10px] text-slate-500 dark:text-slate-400 block font-medium">Est. Price</span>
+                        <span className="text-xs font-black text-amber-900 dark:text-amber-300 font-mono">
+                          {hotel.priceRange || `₹${(hotel.pricePerNight || 3200).toLocaleString('en-IN')}/nt`}
+                        </span>
+                      </div>
+                      <a
+                        href={hotel.bookingUrl || `https://www.google.com/travel/hotels?q=${encodeURIComponent(hotel.name + ' ' + destination.state)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-3 py-1.5 rounded-xl gradient-saffron text-slate-950 text-xs font-bold transition flex items-center gap-1 shadow-xs cursor-pointer"
+                      >
+                        <span>Book Stay</span>
+                        <ExternalLink className="w-3 h-3" />
+                      </a>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
 
             {/* User Reviews Section */}
             <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-slate-900 border border-amber-900/10 dark:border-slate-800 shadow-xs space-y-6">

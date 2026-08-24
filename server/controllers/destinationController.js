@@ -319,9 +319,17 @@ export const getTransportGuide = (req, res) => {
 export const createDestination = async (req, res) => {
   try {
     const isDbConnected = mongoose.connection.readyState === 1;
+    const adminId = req.user?.id || req.body.createdBy || 'admin-root';
+    const adminName = req.user?.name || req.body.createdByName || 'Administrator';
+    const adminEmail = req.user?.email || req.body.createdByEmail || 'admin@bharatyatra.com';
+
     const newDest = {
       id: 'dest-' + (activeDestinations.length + 1) + '-' + Date.now().toString(36),
       ...req.body,
+      createdBy: adminId,
+      createdByName: adminName,
+      createdByEmail: adminEmail,
+      hotels: req.body.hotels || [],
       rating: req.body.rating || 4.8,
       reviewsCount: 1
     };
@@ -336,6 +344,8 @@ export const createDestination = async (req, res) => {
 
     activeDestinations.unshift(newDest);
 
+    console.log(`✅ Admin "${adminName}" (${adminEmail}) added destination "${newDest.name}" with ${newDest.hotels?.length || 0} hotels!`);
+
     res.status(201).json({
       success: true,
       message: 'Destination added successfully to Bharat Yatra directory (Saved to MongoDB)',
@@ -349,17 +359,48 @@ export const createDestination = async (req, res) => {
 export const deleteDestination = async (req, res) => {
   try {
     const { id } = req.params;
+    const requesterId = req.user?.id || req.query.adminId || req.headers['x-admin-id'];
+    const requesterEmail = req.user?.email || req.query.adminEmail || req.headers['x-admin-email'];
     const isDbConnected = mongoose.connection.readyState === 1;
+
+    let targetDest = null;
+    if (isDbConnected) {
+      targetDest = (mongoose.Types.ObjectId.isValid(id) ? await Destination.findById(id) : null) ||
+                   await Destination.findOne({ id });
+    }
+    if (!targetDest) {
+      targetDest = activeDestinations.find(d => d.id === id || d._id?.toString() === id);
+    }
+
+    if (!targetDest) {
+      return res.status(404).json({ success: false, message: 'Destination not found' });
+    }
+
+    // Ownership Verification: Only the Admin who created this destination can remove it!
+    if (targetDest.createdBy || targetDest.createdByEmail) {
+      const isOwner = (requesterId && targetDest.createdBy && String(targetDest.createdBy) === String(requesterId)) ||
+                      (requesterEmail && targetDest.createdByEmail && targetDest.createdByEmail.toLowerCase() === requesterEmail.toLowerCase()) ||
+                      (targetDest.createdByEmail === 'admin@bharatyatra.com'); // Root admin compatibility
+
+      if (!isOwner && requesterEmail) {
+        return res.status(403).json({
+          success: false,
+          message: `Permission Denied: Aap sirf wahi destination remove kar sakte hain jo aapne create kiya tha. (Added by: ${targetDest.createdByName || targetDest.createdByEmail})`
+        });
+      }
+    }
 
     if (isDbConnected) {
       try {
-        await Destination.findOneAndDelete({ id });
+        await Destination.findOneAndDelete({ $or: [{ id }, { _id: mongoose.Types.ObjectId.isValid(id) ? id : null }] });
       } catch (dbErr) {
         console.error('⚠️ Destination.delete error:', dbErr.message);
       }
     }
 
-    activeDestinations = activeDestinations.filter(d => d.id !== id);
+    activeDestinations = activeDestinations.filter(d => d.id !== id && d._id?.toString() !== id);
+
+    console.log(`🗑️ Destination "${targetDest.name}" (${id}) removed by Admin (${requesterEmail || requesterId})`);
 
     res.json({
       success: true,

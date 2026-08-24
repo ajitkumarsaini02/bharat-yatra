@@ -38,6 +38,20 @@ const destinationSchema = new mongoose.Schema({
     nearestRailway: { type: String },
     localCommute: { type: String }
   },
+  createdBy: { type: String, default: null },
+  createdByName: { type: String, default: 'System Seed' },
+  createdByEmail: { type: String, default: null },
+  hotels: [{
+    name: { type: String, required: true },
+    type: { type: String, default: 'Heritage / Boutique Hotel' },
+    priceRange: { type: String, default: '₹2,500 - ₹5,000 / night' },
+    pricePerNight: { type: Number, default: 3200 },
+    rating: { type: Number, default: 4.7 },
+    address: { type: String },
+    amenities: [{ type: String }],
+    image: { type: String, default: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80' },
+    bookingUrl: { type: String }
+  }],
   // External API Enriched Metadata & Caching
   wikiData: {
     title: String,

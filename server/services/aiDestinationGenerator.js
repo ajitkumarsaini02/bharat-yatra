@@ -348,6 +348,43 @@ export async function generateDestinationWithAI(inputName) {
     avgDailyExpense = 3000;
   }
 
+  // Recommended Hotels & Stays
+  const hotels = [
+    {
+      name: `${formattedName} Heritage Palace & Spa`,
+      type: 'Luxury Heritage Resort',
+      priceRange: '₹6,500 - ₹12,000 / night',
+      pricePerNight: 7500,
+      rating: 4.8,
+      address: `Near ${formattedName} Heritage Zone, ${resolvedState}`,
+      amenities: ['Swimming Pool', 'Multi-Cuisine Dining', 'Free Wi-Fi', 'Spa & Wellness', 'Airport Shuttle'],
+      image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80',
+      bookingUrl: 'https://www.booking.com'
+    },
+    {
+      name: `${formattedName} Boutique Residency`,
+      type: 'Comfort / Boutique Stay',
+      priceRange: '₹2,800 - ₹4,500 / night',
+      pricePerNight: 3200,
+      rating: 4.6,
+      address: `City Center, ${resolvedState}`,
+      amenities: ['Complimentary Breakfast', 'High-Speed Wi-Fi', 'Room Service', 'Travel Desk'],
+      image: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=800&q=80',
+      bookingUrl: 'https://www.booking.com'
+    },
+    {
+      name: `The Travellers Backpackers & Homestay`,
+      type: 'Budget Homestay / Hostel',
+      priceRange: '₹800 - ₹1,800 / night',
+      pricePerNight: 1200,
+      rating: 4.5,
+      address: `Old Town Corridor, ${resolvedState}`,
+      amenities: ['Rooftop Cafe', 'Community Lounge', 'Clean Bunks & AC Rooms', 'Guided Walks'],
+      image: 'https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=800&q=80',
+      bookingUrl: 'https://www.booking.com'
+    }
+  ];
+
   const generatedDestination = {
     name: formattedName,
     state: resolvedState,
@@ -371,6 +408,7 @@ export async function generateDestinationWithAI(inputName) {
     famousFood: regionalData.foods,
     shoppingSpecialties: regionalData.shopping,
     transportation: transportation,
+    hotels: hotels,
     aiGenerated: true,
     rating: 4.85,
     reviewsCount: 120

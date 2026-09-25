@@ -17,13 +17,13 @@ export const destinationsData = [
     "bestTimeToVisit": "October to March",
     "idealDuration": "2-3 Days",
     "rating": 4.71,
-    "reviewsCount": 1846,
+    "reviewsCount": 1836,
     "coordinates": {
       "lat": 27.1795,
       "lng": 78.0211
     },
     "budgetLevel": "Moderate",
-    "avgDailyExpense": 1900,
+    "avgDailyExpense": 1800,
     "highlights": [
       "Exploring the monumental architecture of Agra Fort",
       "Photography and guided heritage walk around the grounds",
@@ -81,7 +81,7 @@ export const destinationsData = [
       "lng": 75.7033
     },
     "budgetLevel": "Moderate",
-    "avgDailyExpense": 1700,
+    "avgDailyExpense": 1800,
     "highlights": [
       "Exploring the monumental architecture of Ajanta Caves",
       "Photography and guided heritage walk around the grounds",
@@ -97,7 +97,7 @@ export const destinationsData = [
       {
         "name": "Ajanta Caves Museum & Galleries",
         "type": "Museum",
-        "entryFee": 20,
+        "entryFee": 60,
         "timeNeeded": "1.5 hours"
       }
     ],

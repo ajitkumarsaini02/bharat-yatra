@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Search, MapPin, Compass } from 'lucide-react';
+import { useNavigate, Link } from 'react-router-dom';
+import { Search, MapPin, Compass, Route as RouteIcon } from 'lucide-react';
 import { destinationsData } from '../data/mockData';
 import { api } from '../services/api';
 
@@ -162,7 +162,7 @@ export default function HeroSection({ destinations = [] }) {
             />
           </div>
 
-          <div className="flex w-full sm:w-auto items-center gap-2">
+          <div className="flex flex-col sm:flex-row w-full sm:w-auto items-center gap-2">
             <button
               type="submit"
               className="w-full sm:w-auto px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl gradient-saffron text-slate-950 font-black text-xs sm:text-sm hover:opacity-95 transition shadow-lg shadow-amber-500/25 flex items-center justify-center gap-1.5 cursor-pointer"
@@ -170,6 +170,14 @@ export default function HeroSection({ destinations = [] }) {
               <Compass className="w-4 h-4 text-slate-950" />
               <span>Explore</span>
             </button>
+
+            <Link
+              to="/travel-planner"
+              className="w-full sm:w-auto px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-white/10 hover:bg-white/20 text-amber-300 border border-amber-400/40 font-black text-xs sm:text-sm transition flex items-center justify-center gap-1.5 cursor-pointer shadow-md whitespace-nowrap"
+            >
+              <RouteIcon className="w-4 h-4 text-amber-400" />
+              <span>Plan Your Complete Trip</span>
+            </Link>
           </div>
         </form>
 

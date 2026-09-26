@@ -373,15 +373,31 @@ export default function DestinationDetail() {
               {weather?.icon || '🌤️'}
             </div>
             <div>
-              <span className="text-[10px] uppercase font-bold text-amber-300 flex items-center gap-1">
+              <div className="text-[10px] uppercase font-bold text-amber-300 flex items-center gap-1">
                 <span>Live Weather</span>
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-              </span>
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              </div>
               <span className="text-xs sm:text-sm font-extrabold text-white block">
                 {weather?.temperature ? `${weather.temperature}°C` : '28°C'} • {weather?.condition || 'Pleasant'}
               </span>
             </div>
           </div>
+        </div>
+
+        {/* Plan Trip From Here Banner */}
+        <div className="bg-gradient-to-r from-[#0A192F] via-[#112240] to-[#0A192F] rounded-3xl p-6 sm:p-8 text-white flex flex-col sm:flex-row items-center justify-between gap-6 border border-amber-400/20 shadow-xl">
+          <div className="space-y-1">
+            <span className="text-[10px] font-black uppercase text-amber-400 tracking-wider">Complete Journey Planner</span>
+            <h3 className="text-xl sm:text-2xl font-black text-white">Plan Your Complete Trip To {destination.name}</h3>
+            <p className="text-xs text-slate-300">Compare Rail, Bus, Flight, Hotel & Local commute options from your origin city.</p>
+          </div>
+          <Link
+            to={`/travel-planner?destination=${encodeURIComponent(destination.name)}`}
+            className="w-full sm:w-auto px-8 py-3.5 rounded-2xl gradient-saffron text-slate-950 font-black text-xs sm:text-sm uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-amber-500/25 hover:scale-105 transition cursor-pointer shrink-0"
+          >
+            <Navigation className="w-4 h-4 text-slate-950" />
+            <span>Plan Trip From Here</span>
+          </Link>
         </div>
 
         {/* Two Columns: Left Details + Right Sidebar */}

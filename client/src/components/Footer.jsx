@@ -35,7 +35,7 @@ export default function Footer() {
               <li><Link to="/ai-planner" className="hover:text-amber-300 transition">AI Day-Wise Trip Planner</Link></li>
               <li><Link to="/budget-calculator" className="hover:text-amber-300 transition">Budget & Cost Estimator</Link></li>
               <li><Link to="/cuisine" className="hover:text-amber-300 transition">Regional Flavors & Foods</Link></li>
-              <li><Link to="/transport" className="hover:text-amber-300 transition">Transit & Railway Guide</Link></li>
+              <li><Link to="/travel-planner" className="hover:text-amber-300 transition">Travel Distance & Fare Planner</Link></li>
               <li><Link to="/map" className="hover:text-amber-300 transition">Interactive GIS Map</Link></li>
             </ul>
           </div>

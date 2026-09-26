@@ -29,8 +29,13 @@ import { generateItinerary, saveItinerary, getSavedItineraries, deleteSavedItine
 import { calculateBudget } from '../controllers/budgetController.js';
 import { getReviewsByDestination, addReview, likeReview } from '../controllers/reviewController.js';
 import { verifyToken, verifyAdmin } from '../middleware/auth.js';
+import travelRoutes from './travelRoutes.js';
 
 const router = express.Router();
+
+// --- Travel Distance & Cost Planner Routes ---
+router.use('/travel', travelRoutes);
+
 
 // --- Auth & Favorites Routes ---
 router.post('/auth/register', register);

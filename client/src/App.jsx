@@ -14,10 +14,10 @@ import DestinationDetail from './pages/DestinationDetail';
 import AiTripPlanner from './pages/AiTripPlanner';
 import BudgetPlannerPage from './pages/BudgetPlannerPage';
 import CuisineExplorer from './pages/CuisineExplorer';
-import TransportGuide from './pages/TransportGuide';
 import FavoritesWishlist from './pages/FavoritesWishlist';
 import AdminDashboard from './pages/AdminDashboard';
 import LoginRegister from './pages/LoginRegister';
+import TravelPlanner from './pages/TravelPlanner';
 import InteractiveMap from './components/InteractiveMap';
 
 export default function App() {
@@ -42,8 +42,9 @@ export default function App() {
               <Route path="/destination/:id" element={<ProtectedRoute><DestinationDetail /></ProtectedRoute>} />
               <Route path="/ai-planner" element={<ProtectedRoute><AiTripPlanner /></ProtectedRoute>} />
               <Route path="/budget-calculator" element={<ProtectedRoute><BudgetPlannerPage /></ProtectedRoute>} />
+              <Route path="/travel-planner" element={<ProtectedRoute><TravelPlanner /></ProtectedRoute>} />
               <Route path="/cuisine" element={<ProtectedRoute><CuisineExplorer /></ProtectedRoute>} />
-              <Route path="/transport" element={<ProtectedRoute><TransportGuide /></ProtectedRoute>} />
+              <Route path="/transport" element={<Navigate to="/travel-planner" replace />} />
               <Route path="/favorites" element={<ProtectedRoute><FavoritesWishlist /></ProtectedRoute>} />
               <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Heart, Bookmark, Trash2, Sparkles } from 'lucide-react';
+import { Heart, Bookmark, Trash2, Sparkles, Route as RouteIcon, MapPin, Calendar } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { destinationsData } from '../data/mockData';
 import { api } from '../services/api';
@@ -10,6 +10,18 @@ export default function FavoritesWishlist() {
   const { favorites, savedItineraries, removeItinerary } = useAuth();
   const [activeTab, setActiveTab] = useState('destinations');
   const [allDestinations, setAllDestinations] = useState(destinationsData);
+  const [plannedTrips, setPlannedTrips] = useState([
+    {
+      id: 'trip-demo-1',
+      from: 'Delhi',
+      destination: 'Agra',
+      travelDate: '15 Oct 2026',
+      mode: 'Train / Rail',
+      hotel: 'Heritage Grand Hotel',
+      estimatedCost: 12500,
+      status: 'Planned'
+    }
+  ]);
 
   useEffect(() => {
     const loadDests = async () => {
@@ -35,10 +47,10 @@ export default function FavoritesWishlist() {
       {/* Header */}
       <div className="text-center max-w-3xl mx-auto space-y-3">
         <h1 className="text-3xl sm:text-5xl font-black text-[#0A192F] dark:text-white tracking-tight">
-          Saved Destinations & Itineraries
+          My Saved Dashboard & Trips
         </h1>
         <p className="text-slate-600 dark:text-slate-300 text-sm sm:text-base">
-          Access your shortlisted dream destinations and saved AI day-wise trip plans anytime.
+          Access your shortlisted dream destinations, planned travel distance calculations, and saved AI itineraries.
         </p>
       </div>
 
@@ -47,26 +59,38 @@ export default function FavoritesWishlist() {
         <div className="inline-flex p-1.5 bg-amber-50/80 dark:bg-slate-800 rounded-2xl border border-amber-200/80 dark:border-slate-700">
           <button
             onClick={() => setActiveTab('destinations')}
-            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition cursor-pointer ${
+            className={`flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition cursor-pointer ${
               activeTab === 'destinations'
                 ? 'bg-white dark:bg-slate-900 text-[#0A192F] dark:text-amber-300 shadow-sm'
                 : 'text-amber-900 dark:text-slate-300 hover:text-[#0A192F] dark:hover:text-white'
             }`}
           >
             <Heart className="w-4 h-4 text-rose-500" />
-            <span>Saved Destinations ({favoriteDestinations.length})</span>
+            <span>Wishlist ({favoriteDestinations.length})</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('planned')}
+            className={`flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition cursor-pointer ${
+              activeTab === 'planned'
+                ? 'bg-white dark:bg-slate-900 text-[#0A192F] dark:text-amber-300 shadow-sm'
+                : 'text-amber-900 dark:text-slate-300 hover:text-[#0A192F] dark:hover:text-white'
+            }`}
+          >
+            <RouteIcon className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+            <span>Planned Trips ({plannedTrips.length})</span>
           </button>
 
           <button
             onClick={() => setActiveTab('itineraries')}
-            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition cursor-pointer ${
+            className={`flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition cursor-pointer ${
               activeTab === 'itineraries'
                 ? 'bg-white dark:bg-slate-900 text-[#0A192F] dark:text-amber-300 shadow-sm'
                 : 'text-amber-900 dark:text-slate-300 hover:text-[#0A192F] dark:hover:text-white'
             }`}
           >
             <Bookmark className="w-4 h-4 text-amber-600 dark:text-amber-400" />
-            <span>AI Itineraries ({savedItineraries.length})</span>
+            <span>AI Plans ({savedItineraries.length})</span>
           </button>
         </div>
       </div>
@@ -100,7 +124,68 @@ export default function FavoritesWishlist() {
         </div>
       )}
 
-      {/* Tab 2: Saved AI Itineraries */}
+      {/* Tab 2: Planned Trips */}
+      {activeTab === 'planned' && (
+        <div className="space-y-6">
+          {plannedTrips.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {plannedTrips.map((trip) => (
+                <div key={trip.id} className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-amber-900/10 dark:border-slate-800 shadow-md space-y-4">
+                  <div className="flex justify-between items-start border-b border-amber-100 dark:border-slate-800 pb-3">
+                    <div>
+                      <span className="text-[10px] font-black uppercase text-amber-700 dark:text-amber-400 tracking-wider">
+                        PLANNED TRIP SEARCH
+                      </span>
+                      <h3 className="text-xl font-extrabold text-[#0A192F] dark:text-slate-100">
+                        {trip.from} → {trip.destination}
+                      </h3>
+                    </div>
+                    <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-amber-100 dark:bg-amber-950/80 text-amber-900 dark:text-amber-300 border border-amber-300 dark:border-amber-500/40">
+                      Status: {trip.status}
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3 text-xs text-slate-600 dark:text-slate-300">
+                    <div>
+                      <span className="text-[10px] text-slate-400 block font-semibold">Travel Date</span>
+                      <span className="font-bold text-[#0A192F] dark:text-slate-100 font-mono">{trip.travelDate}</span>
+                    </div>
+                    <div>
+                      <span className="text-[10px] text-slate-400 block font-semibold">Travel Mode</span>
+                      <span className="font-bold text-[#0A192F] dark:text-slate-100">{trip.mode}</span>
+                    </div>
+                    <div>
+                      <span className="text-[10px] text-slate-400 block font-semibold">Hotel Stay</span>
+                      <span className="font-bold text-[#0A192F] dark:text-slate-100">{trip.hotel}</span>
+                    </div>
+                    <div>
+                      <span className="text-[10px] text-slate-400 block font-semibold">Estimated Cost</span>
+                      <span className="font-black text-amber-600 dark:text-amber-400 font-mono text-sm">₹{trip.estimatedCost?.toLocaleString('en-IN')}</span>
+                    </div>
+                  </div>
+
+                  <div className="pt-2 flex gap-2">
+                    <Link
+                      to={`/travel-planner?from=${encodeURIComponent(trip.from)}&destination=${encodeURIComponent(trip.destination)}`}
+                      className="w-full py-2.5 rounded-xl gradient-saffron text-slate-950 font-black text-xs text-center block shadow-xs"
+                    >
+                      Re-Calculate Travel Distance & Fares
+                    </Link>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="bg-white dark:bg-slate-900 rounded-3xl p-12 text-center border border-amber-100 dark:border-slate-800 space-y-4">
+              <RouteIcon className="w-10 h-10 text-amber-500 mx-auto" />
+              <h3 className="text-xl font-bold text-[#0A192F] dark:text-slate-100">No Planned Trips Saved</h3>
+              <Link to="/travel-planner" className="inline-block px-6 py-2.5 rounded-xl gradient-saffron text-slate-950 font-bold text-xs">
+                Plan a New Trip
+              </Link>
+            </div>
+          )}
+        </div>
+      )}
       {activeTab === 'itineraries' && (
         <div>
           {savedItineraries.length > 0 ? (

@@ -447,6 +447,210 @@ export const api = {
     };
   },
 
+  // Travel Distance & Cost Planner
+  planTravel: async (plannerParams) => {
+    if (API_BASE) {
+      try {
+        const res = await apiClient.post('/travel/plan', plannerParams);
+        if (res.data && typeof res.data !== 'string' && res.data.success) {
+          return res.data;
+        }
+      } catch (err) {
+        if (err.response && err.response.data && err.response.data.message) {
+          throw new Error(err.response.data.message);
+        }
+      }
+    }
+
+    // Client-side fallback computation
+    const { from = 'Delhi', destination = 'Agra', travelDate, travelersCount = 2, hotelNights = 2 } = plannerParams || {};
+    
+    if (!from || !from.trim() || !destination || !destination.trim()) {
+      throw new Error('Both source and destination locations are required.');
+    }
+
+    if (from.trim().toLowerCase() === destination.trim().toLowerCase()) {
+      throw new Error('Source and destination cannot be the same location.');
+    }
+
+    const knownCoords = {
+      'delhi': { lat: 28.6139, lng: 77.2090 },
+      'new delhi': { lat: 28.6139, lng: 77.2090 },
+      'agra': { lat: 27.1767, lng: 78.0081 },
+      'jaipur': { lat: 26.9124, lng: 75.7873 },
+      'mumbai': { lat: 19.0760, lng: 72.8777 },
+      'bengaluru': { lat: 12.9716, lng: 77.5946 },
+      'bangalore': { lat: 12.9716, lng: 77.5946 },
+      'varanasi': { lat: 25.3176, lng: 82.9739 },
+      'goa': { lat: 15.2993, lng: 74.1240 },
+      'kolkata': { lat: 22.5726, lng: 88.3639 },
+      'chennai': { lat: 13.0827, lng: 80.2707 },
+      'hyderabad': { lat: 17.3850, lng: 78.4867 },
+      'shimla': { lat: 31.1048, lng: 77.1734 },
+      'manali': { lat: 32.2432, lng: 77.1892 },
+      'udaipur': { lat: 24.5854, lng: 73.7125 },
+      'amritsar': { lat: 31.6340, lng: 74.8723 },
+      'kochi': { lat: 9.9312, lng: 76.2673 },
+      'rishikesh': { lat: 30.0869, lng: 78.2676 }
+    };
+
+    const findCoords = (name) => {
+      const q = (name || '').toLowerCase().trim();
+      const match = destinationsData.find(d => d.name.toLowerCase().includes(q) || q.includes(d.name.toLowerCase()));
+      if (match?.coordinates) return { lat: match.coordinates.lat, lng: match.coordinates.lng, name: match.name };
+      for (const [k, v] of Object.entries(knownCoords)) {
+        if (q.includes(k) || k.includes(q)) return { ...v, name };
+      }
+      return { lat: 28.6139, lng: 77.2090, name };
+    };
+
+    const c1 = findCoords(from);
+    const c2 = findCoords(destination);
+
+    // Haversine formula
+    const R = 6371;
+    const toRad = (deg) => (deg * Math.PI) / 180;
+    const dLat = toRad(c2.lat - c1.lat);
+    const dLon = toRad(c2.lng - c1.lng);
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(toRad(c1.lat)) * Math.cos(toRad(c2.lat)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const geoKm = Math.round(R * c * 10) / 10 || 210;
+    const roadKm = Math.round(geoKm * 1.24 * 10) / 10;
+    const railKm = Math.round(geoKm * 1.15 * 10) / 10;
+
+    const travelers = parseInt(travelersCount) || 2;
+    const nights = parseInt(hotelNights) || 2;
+    const days = Math.max(1, nights + 1);
+
+    const matchedDest = destinationsData.find(d => d.name.toLowerCase().includes(destination.toLowerCase().trim()) || destination.toLowerCase().trim().includes(d.name.toLowerCase()));
+
+    const hotels = (matchedDest?.hotels?.length ? matchedDest.hotels : [
+      { name: `Heritage Grand ${destination}`, location: `${destination} City Center`, rating: 4.6, roomType: 'Executive Deluxe', pricePerNight: 3200, amenities: ['WiFi', 'Pool', 'Breakfast'] },
+      { name: `Boutique Royal Stay`, location: `Near Historic Fort, ${destination}`, rating: 4.4, roomType: 'Standard Room', pricePerNight: 2400, amenities: ['WiFi', 'AC', 'Restaurant'] }
+    ]).map(h => ({
+      name: h.name,
+      location: h.location || h.address || destination,
+      rating: h.rating || 4.5,
+      roomType: h.type || h.roomType || 'Standard Deluxe Room',
+      pricePerNight: h.pricePerNight || 2500,
+      numberOfNights: nights,
+      estimatedHotelCost: (h.pricePerNight || 2500) * (nights || 1),
+      amenities: h.amenities || ['Free WiFi', 'Air Conditioning', 'Breakfast']
+    }));
+
+    const dailyCab = 1200;
+    const localTransportCost = dailyCab * days;
+
+    const avgHotelNight = hotels[0]?.pricePerNight || 2500;
+    const totalHotel = avgHotelNight * nights;
+    const estimatedTravel = Math.round(geoKm * 2.8 * travelers);
+    const foodCost = 750 * days * travelers;
+    const ticketsCost = 350 * days * travelers;
+    const bufferCost = Math.round((estimatedTravel + totalHotel + localTransportCost + foodCost + ticketsCost) * 0.10);
+    const grandTotal = estimatedTravel + totalHotel + localTransportCost + foodCost + ticketsCost + bufferCost;
+
+    return {
+      success: true,
+      query: { from: c1.name || from, destination: c2.name || destination, travelDate, travelersCount: travelers, hotelNights: nights },
+      distance: {
+        geographicDistanceKm: geoKm,
+        geographicDistanceFormatted: `Approx. geographic distance: ${geoKm} km`,
+        roadDistanceKm: roadKm,
+        distinction: {
+          geographic: 'Geographic Distance (Haversine air-line distance)',
+          road: 'Road Distance (Highway driving route)',
+          rail: 'Rail Distance (Track route length)'
+        }
+      },
+      train: { available: false, message: 'Live train fare/availability is currently unavailable.', mode: 'Train', source: from, destination },
+      bus: { available: false, message: 'Live bus fare/availability is currently unavailable.', mode: 'Bus', source: from, destination, roadDistanceKm: roadKm },
+      flight: { available: false, message: 'Live flight fare/availability is currently unavailable.', mode: 'Flight', source: from, destination, airDistanceKm: geoKm },
+      hotel: {
+        available: false,
+        liveStatusMessage: 'Live hotel pricing is currently unavailable.',
+        destinationName: destination,
+        numberOfNights: nights,
+        travelersCount: travelers,
+        hotels
+      },
+      localTransportation: {
+        label: 'Estimated local transportation cost',
+        isEstimated: true,
+        estimatedTotalCost: localTransportCost,
+        options: [
+          { mode: 'Taxi / Private Cab', estimatedDailyCost: dailyCab, estimatedTripCost: dailyCab * days, description: 'Comfortable point-to-point AC sedan/SUV cab service' },
+          { mode: 'Auto Rickshaw & E-Rickshaw', estimatedDailyCost: 450, estimatedTripCost: 450 * days, description: 'Ideal for short distances and inner market exploration' },
+          { mode: 'Metro & Local Bus Network', estimatedDailyCost: 180, estimatedTripCost: 180 * days, description: 'Most economical public transport option' },
+          { mode: 'Rental Vehicle (Bike / Scooter)', estimatedDailyCost: 900, estimatedTripCost: 900 * days, description: 'Self-drive freedom for exploring at your own pace' }
+        ]
+      },
+      completeTripCost: {
+        label: 'Complete Estimated Trip Cost',
+        travelersCount: travelers,
+        hotelNights: nights,
+        tripDays: days,
+        breakdown: {
+          travelCost: estimatedTravel,
+          hotelCost: totalHotel,
+          localTransportCost: localTransportCost,
+          foodCost: foodCost,
+          attractionTicketsCost: ticketsCost,
+          emergencyBuffer: bufferCost,
+          estimatedTotal: grandTotal
+        }
+      },
+      comparison: [
+        { mode: 'Train', distanceType: 'Rail Route Distance', distance: `${railKm} km`, duration: `${Math.round(geoKm / 65)} hrs 30 mins`, fareStatus: 'Live fare unavailable' },
+        { mode: 'Bus', distanceType: 'Road Distance', distance: `${roadKm} km`, duration: `${Math.round(roadKm / 50)} hrs 15 mins`, fareStatus: 'Live fare unavailable' },
+        { mode: 'Flight', distanceType: 'Geographic Air Distance', distance: `${geoKm} km`, duration: '1 hr 30 mins', fareStatus: 'Live fare unavailable' }
+      ]
+    };
+  },
+
+  searchStationCodes: async (query) => {
+    if (API_BASE) {
+      try {
+        const res = await apiClient.get('/travel/stations/search', { params: { q: query } });
+        if (res.data && res.data.success) return res.data;
+      } catch (err) {}
+    }
+    return { success: true, data: [] };
+  },
+
+  searchAirportCodes: async (query) => {
+    if (API_BASE) {
+      try {
+        const res = await apiClient.get('/travel/airports/search', { params: { q: query } });
+        if (res.data && res.data.success) return res.data;
+      } catch (err) {}
+    }
+    return { success: true, data: [] };
+  },
+
+  saveTravelPlan: async (planData) => {
+    if (API_BASE) {
+      try {
+        const res = await apiClient.post('/travel/save-plan', planData);
+        if (res.data && res.data.success) return res.data;
+      } catch (err) {}
+    }
+    const localPlans = JSON.parse(localStorage.getItem('bharat_yatra_saved_plans') || '[]');
+    const newPlan = { ...planData, id: 'plan-' + Date.now(), savedAt: new Date().toISOString() };
+    localPlans.unshift(newPlan);
+    localStorage.setItem('bharat_yatra_saved_plans', JSON.stringify(localPlans));
+    return { success: true, message: 'Travel plan saved successfully', data: newPlan };
+  },
+
+  getTrainStatus: async (trainNumber) => {
+    if (API_BASE) {
+      try {
+        const res = await apiClient.get('/travel/train/status', { params: { trainNumber } });
+        if (res.data) return res.data;
+      } catch (err) {}
+    }
+    return { success: false, message: 'Live status currently unavailable' };
+  },
+
   // Cuisine & Transport
   getCuisineData: async () => {
     if (API_BASE) {

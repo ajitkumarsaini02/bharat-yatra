@@ -7,6 +7,7 @@ import {
   UtensilsCrossed, 
   Train, 
   MapPin, 
+  Route as RouteIcon,
   Heart, 
   User, 
   ShieldCheck, 
@@ -68,8 +69,8 @@ export default function Navbar() {
     { name: 'Explore', path: '/explore', icon: Compass },
     { name: 'AI Trip Planner', path: '/ai-planner', icon: Sparkles, badge: 'Smart' },
     { name: 'Budget Planner', path: '/budget-calculator', icon: Calculator },
+    { name: 'Travel Planner', path: '/travel-planner', icon: RouteIcon },
     { name: 'Regional Cuisine', path: '/cuisine', icon: UtensilsCrossed },
-    { name: 'Transport Guide', path: '/transport', icon: Train },
     { name: 'Live Map', path: '/map', icon: MapPin },
   ];
 

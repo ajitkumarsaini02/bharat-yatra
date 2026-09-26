@@ -8,7 +8,7 @@ export const calculateBudget = (req, res) => {
       durationDays = 4,
       travelTier = 'Moderate', // Budget, Moderate, Luxury, Heritage Royal
       transitMode = 'Train', // Train, Flight, Private Cab, Self Drive
-      accommodationType = '3-Star Hotel / Heritage Haveli'
+      customTransportationFare = null
     } = req.body;
 
     const travelers = Math.max(parseInt(travelersCount) || 1, 1);
@@ -57,7 +57,7 @@ export const calculateBudget = (req, res) => {
     const totalStay = dailyStayPerPerson * days * travelers;
     const totalFood = dailyFoodPerPerson * days * travelers;
     const totalLocalTransit = dailyLocalTransitPerPerson * days * travelers;
-    const totalIntercityTransit = intercityTravelPerPerson * travelers;
+    const totalIntercityTransit = customTransportationFare ? Number(customTransportationFare) * travelers : intercityTravelPerPerson * travelers;
     const totalActivities = dailyActivitiesPerPerson * days * travelers;
     const shoppingAndBuffer = Math.round((totalStay + totalFood + totalActivities) * 0.12);
 

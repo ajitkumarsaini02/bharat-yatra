@@ -1,5 +1,29 @@
 import nodemailer from 'nodemailer';
 
+let cachedTransporter = null;
+let cachedTransporterKey = '';
+
+function getTransporter(cleanUser, cleanPass, emailHost, emailPort) {
+  const currentKey = `${cleanUser}:${cleanPass}:${emailHost}:${emailPort}`;
+  if (cachedTransporter && cachedTransporterKey === currentKey) {
+    return cachedTransporter;
+  }
+  cachedTransporter = nodemailer.createTransport({
+    host: emailHost,
+    port: emailPort,
+    secure: emailPort === 465,
+    pool: true, // Use persistent SMTP connection pool to eliminate socket handshake latency
+    maxConnections: 5,
+    maxMessages: 100,
+    auth: {
+      user: cleanUser,
+      pass: cleanPass
+    }
+  });
+  cachedTransporterKey = currentKey;
+  return cachedTransporter;
+}
+
 /**
  * Send Real HTML OTP Email via Nodemailer SMTP (or automatic Ethereal Test Inbox)
  */
@@ -17,16 +41,8 @@ export const sendOTPEmail = async (recipientEmail, otpCode) => {
   let isTestAccount = false;
 
   if (!isPlaceholderUser && !isPlaceholderPass) {
-    // Custom Real Gmail / SMTP credentials supplied by user
-    transporter = nodemailer.createTransport({
-      host: emailHost,
-      port: emailPort,
-      secure: emailPort === 465,
-      auth: {
-        user: cleanUser,
-        pass: cleanPass
-      }
-    });
+    // Custom Real Gmail / SMTP credentials with connection pooling
+    transporter = getTransporter(cleanUser, cleanPass, emailHost, emailPort);
     fromAddress = process.env.EMAIL_FROM || `"Bharat Yatra Security" <${cleanUser}>`;
   } else {
     // Fallback: Generate Ethereal Test Inbox link on the fly for test preview

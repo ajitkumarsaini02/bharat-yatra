@@ -68,21 +68,14 @@ export const sendRegistrationOTP = async (req, res) => {
     console.log(`🔐 REGISTRATION OTP FOR ${normalizedEmail}: ${otpCode}`);
     console.log(`==============================================\n`);
 
-    // Send Real Email via Nodemailer SMTP (or Ethereal Mail)
-    let emailResult = null;
-    try {
-      emailResult = await sendOTPEmail(normalizedEmail, otpCode);
-    } catch (mailErr) {
-      console.error('⚠️ SMTP Dispatch Error:', mailErr.message);
-    }
-
-    const hasPreview = emailResult && emailResult.previewUrl;
+    // Send Real Email via Nodemailer SMTP (Non-blocking async dispatch for instant user response)
+    sendOTPEmail(normalizedEmail, otpCode).catch(mailErr => {
+      console.error('⚠️ SMTP Background Dispatch Error:', mailErr.message);
+    });
 
     return res.json({
       success: true,
-      message: hasPreview
-        ? `6-Digit OTP code sent! Check preview inbox or server logs.`
-        : `6-Digit OTP code sent to ${normalizedEmail}`
+      message: `6-Digit OTP code sent to ${normalizedEmail}`
     });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });

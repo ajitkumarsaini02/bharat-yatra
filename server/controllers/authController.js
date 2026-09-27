@@ -75,7 +75,8 @@ export const sendRegistrationOTP = async (req, res) => {
 
     return res.json({
       success: true,
-      message: `6-Digit OTP code sent to ${normalizedEmail}`
+      message: `6-Digit OTP code sent to ${normalizedEmail}`,
+      devOtpHint: process.env.NODE_ENV !== 'production' ? otpCode : undefined
     });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });

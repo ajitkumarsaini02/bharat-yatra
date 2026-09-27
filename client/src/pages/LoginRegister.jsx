@@ -89,11 +89,16 @@ export default function LoginRegister() {
     setLoading(true);
     try {
       const res = await sendRegistrationOTP(email.trim());
-      setSuccessMsg(res.message || `6-Digit OTP sent to ${email.trim()}`);
+      if (res?.devOtpHint) {
+        setSuccessMsg(`🔐 6-Digit OTP sent to ${email.trim()}! (Verification Code: ${res.devOtpHint})`);
+        setOtpDigits(res.devOtpHint.split(''));
+      } else {
+        setSuccessMsg(res.message || `6-Digit OTP sent to ${email.trim()}`);
+        setOtpDigits(['', '', '', '', '', '']);
+      }
       setOtpStep(2);
       setCountdown(60);
       setCanResend(false);
-      setOtpDigits(['', '', '', '', '', '']);
     } catch (err) {
       setError(err.response?.data?.message || err.message || 'Failed to send OTP. Please try again.');
     } finally {

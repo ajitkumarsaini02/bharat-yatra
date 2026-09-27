@@ -1145,10 +1145,13 @@ export const api = {
     };
   },
 
-  deleteAdmin: async (adminId, currentUserEmail, currentUserId) => {
+  deleteAdmin: async (adminId, confirmPassword = '') => {
     if (API_BASE) {
       try {
-        const res = await apiClient.delete(`/admin/users/${adminId}`);
+        const res = await apiClient.delete(`/admin/users/${adminId}`, {
+          data: { confirmPassword },
+          headers: { 'x-confirm-password': confirmPassword }
+        });
         if (res.data && typeof res.data !== 'string') {
           return res.data;
         }
@@ -1249,10 +1252,13 @@ export const api = {
   },
 
   // Super Admin / Admin: Delete User or Admin account
-  deleteUserAccount: async (userId) => {
+  deleteUserAccount: async (userId, confirmPassword = '') => {
     if (API_BASE) {
       try {
-        const res = await apiClient.delete(`/admin/all-users/${userId}`);
+        const res = await apiClient.delete(`/admin/all-users/${userId}`, {
+          data: { confirmPassword },
+          headers: { 'x-confirm-password': confirmPassword }
+        });
         if (res.data && typeof res.data !== 'string') {
           return res.data;
         }

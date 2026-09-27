@@ -311,31 +311,43 @@ export default function AdminDashboard() {
   };
 
   const handleDeleteAdmin = async (adminAccount) => {
-    const adminId = adminAccount.id || adminAccount._id;
-    // Ownership check: ONLY the admin who added this admin account can delete it!
-    const isCreator = (user?.email && adminAccount.createdByEmail && adminAccount.createdByEmail.toLowerCase() === user.email.toLowerCase()) ||
-                      (user?.id && adminAccount.createdBy && String(adminAccount.createdBy) === String(user.id)) ||
-                      (user?.email?.toLowerCase() === superAdminEmail.toLowerCase());
+    const targetEmail = (adminAccount.email || '').toLowerCase();
+    const isTargetSuperAdmin = targetEmail === superAdminEmail.toLowerCase();
 
-    if (!isCreator) {
-      alert(`⚠️ Permission Denied:\nAap sirf wahi admin delete kar sakte hain jisko aapne add kiya hai.\n(Added by: ${adminAccount.createdByName || adminAccount.createdByEmail || 'System Seed'})`);
+    // 1. IMMUNITY CHECK: Primary Super Admin account can NEVER be deleted!
+    if (isTargetSuperAdmin) {
+      alert(`⚠️ Security Protocol Violation:\nPrimary Super Administrator account (${superAdminEmail}) is permanently protected and CANNOT be deleted by anyone!`);
       return;
     }
 
-    if (!window.confirm(`Are you sure you want to remove admin account "${adminAccount.name}" (${adminAccount.email})?`)) return;
+    // 2. EXCLUSIVE SUPER ADMIN PERMISSION
+    const isCurrentSuperAdmin = user?.email?.toLowerCase() === superAdminEmail.toLowerCase();
+    if (!isCurrentSuperAdmin) {
+      alert(`⚠️ Permission Denied:\nSirf Primary Super Administrator (${superAdminEmail}) hi admin accounts ko delete kar sakta hai.`);
+      return;
+    }
+
+    // 3. SECURITY PASSWORD PROMPT
+    const confirmPassword = window.prompt(`🔐 Security Password Verification Required:\nPlease enter your Super Admin password to confirm deleting admin account "${adminAccount.name}" (${adminAccount.email}):`);
+    if (confirmPassword === null) return; // User canceled
+    if (!confirmPassword.trim()) {
+      alert('❌ Deletion Canceled: Password confirmation is required.');
+      return;
+    }
 
     try {
-      const res = await api.deleteAdmin(adminId, user?.email, user?.id);
+      const res = await api.deleteAdmin(adminAccount.id || adminAccount._id || adminAccount.email, confirmPassword.trim());
       if (res.success === false) {
-        alert(res.message);
+        alert(`❌ ${res.message || 'Failed to delete admin account.'}`);
         return;
       }
-      setAdmins(prev => prev.filter(a => (a.id || a._id) !== adminId));
-      setSuccessMsg(`Admin account "${adminAccount.name}" removed successfully.`);
+      const adminId = adminAccount.id || adminAccount._id || adminAccount.email;
+      setAdmins(prev => prev.filter(a => (a.id || a._id || a.email) !== adminId));
+      setSuccessMsg(`✨ Admin account "${adminAccount.name}" removed successfully after security verification.`);
       setTimeout(() => setSuccessMsg(''), 4000);
       loadAllAccounts();
     } catch (err) {
-      alert(err.message || 'Failed to delete admin.');
+      alert(err.response?.data?.message || err.message || 'Failed to delete admin.');
     }
   };
 
@@ -363,23 +375,32 @@ export default function AdminDashboard() {
   };
 
   const handleDeleteUserAccount = async (acc) => {
-    if (acc.email?.toLowerCase() === superAdminEmail.toLowerCase()) {
-      alert('⚠️ Primary Super Admin account cannot be deleted!');
+    const targetEmail = (acc.email || '').toLowerCase();
+    if (targetEmail === superAdminEmail.toLowerCase()) {
+      alert(`⚠️ Security Protocol Violation:\nPrimary Super Administrator account (${superAdminEmail}) is permanently protected and CANNOT be deleted!`);
       return;
     }
-    const accId = acc.id || acc._id || acc.email;
-    if (!window.confirm(`Are you sure you want to delete account "${acc.name}" (${acc.email})?`)) return;
 
+    const confirmPassword = window.prompt(`🔐 Security Password Verification Required:\nPlease enter your Super Admin password to confirm deleting account "${acc.name}" (${acc.email}):`);
+    if (confirmPassword === null) return;
+    if (!confirmPassword.trim()) {
+      alert('❌ Deletion Canceled: Password confirmation is required.');
+      return;
+    }
+
+    const accId = acc.id || acc._id || acc.email;
     try {
-      const res = await api.deleteUserAccount(accId);
-      if (res && res.success) {
-        setSuccessMsg(`Account "${acc.name}" deleted successfully.`);
-        setTimeout(() => setSuccessMsg(''), 4000);
-        setAllAccounts(prev => prev.filter(a => (a.id || a._id || a.email) !== accId));
-        setAdmins(prev => prev.filter(a => (a.id || a._id || a.email) !== accId));
+      const res = await api.deleteUserAccount(accId, confirmPassword.trim());
+      if (res && res.success === false) {
+        alert(`❌ ${res.message || 'Failed to delete account'}`);
+        return;
       }
+      setSuccessMsg(`Account "${acc.name}" deleted successfully.`);
+      setTimeout(() => setSuccessMsg(''), 4000);
+      setAllAccounts(prev => prev.filter(a => (a.id || a._id || a.email) !== accId));
+      setAdmins(prev => prev.filter(a => (a.id || a._id || a.email) !== accId));
     } catch (err) {
-      alert(err.message || 'Failed to delete account');
+      alert(err.response?.data?.message || err.message || 'Failed to delete account');
     }
   };
 

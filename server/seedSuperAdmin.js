@@ -9,25 +9,27 @@ dotenv.config();
 export const ensureSuperAdmin = async (customPassword = null) => {
   try {
     const superAdminEmail = (process.env.SUPER_ADMIN_EMAIL || 'ajitkumarsaini875@gmail.com').toLowerCase().trim();
-    const passwordToUse = customPassword || process.env.SUPER_ADMIN_PASSWORD || 'Admin@12345';
 
-    // Remove any user account registered with this email to avoid duplicates
-    await User.deleteMany({ email: superAdminEmail });
-
+    // Check if Super Admin already exists
     const existingAdmin = await Admin.findOne({ email: superAdminEmail });
 
+    if (existingAdmin && !customPassword) {
+      console.log(`👑 Super Admin account (${superAdminEmail}) verified in MongoDB Atlas.`);
+      return existingAdmin;
+    }
+
+    const passwordToUse = customPassword || process.env.SUPER_ADMIN_PASSWORD || 'Admin@12345';
     const hashedPassword = await bcrypt.hash(passwordToUse, 10);
 
-    if (existingAdmin) {
+    // Remove any traveler user record with same email to avoid duplicates
+    await User.deleteMany({ email: superAdminEmail });
+
+    if (existingAdmin && customPassword) {
       existingAdmin.password = hashedPassword;
       existingAdmin.role = 'admin';
       existingAdmin.department = 'Master Root Architecture';
       await existingAdmin.save();
-      console.log(`\n======================================================`);
-      console.log(`👑 SUPER ADMIN ACCOUNT UPDATED IN MONGODB ATLAS!`);
-      console.log(`📧 Email:    ${superAdminEmail}`);
-      console.log(`🔑 Password: ${passwordToUse}`);
-      console.log(`======================================================\n`);
+      console.log(`✅ Super Admin password updated successfully via command.`);
       return existingAdmin;
     }
 
@@ -43,26 +45,21 @@ export const ensureSuperAdmin = async (customPassword = null) => {
       createdByEmail: superAdminEmail
     });
 
-    console.log(`\n======================================================`);
-    console.log(`🎉 SUPER ADMIN CREATED IN MONGODB ATLAS!`);
-    console.log(`📧 Email:    ${superAdminEmail}`);
-    console.log(`🔑 Password: ${passwordToUse}`);
-    console.log(`======================================================\n`);
-
+    console.log(`🎉 Super Admin account (${superAdminEmail}) initialized in MongoDB Atlas.`);
     return newSuperAdmin;
   } catch (err) {
     console.error('⚠️ Error ensuring Super Admin:', err.message);
   }
 };
 
-// Executed directly if called via CLI: `node seedSuperAdmin.js`
+// Executed directly if called via CLI: `node seedSuperAdmin.js "MyNewPassword"`
 if (process.argv[1] && process.argv[1].endsWith('seedSuperAdmin.js')) {
-  const customPass = process.argv[2] || 'Admin@12345';
-  const mongoUri = process.env.MONGO_URI || 'mongodb+srv://ajitkumarsaini875_db_user:PEH-h-KtA2rU3jK@cluster1.vks5ap2.mongodb.net/bharat_yatra?retryWrites=true&w=majority&appName=Cluster1';
+  const customPass = process.argv[2] || null;
+  const mongoUri = process.env.MONGO_URI || 'mongodb+srv://ajitkumarsaini875@gmail.com';
 
   mongoose.connect(mongoUri)
     .then(async () => {
-      console.log('✅ Connected to MongoDB Atlas for Super Admin seeding...');
+      console.log('✅ Connected to MongoDB Atlas...');
       await ensureSuperAdmin(customPass);
       process.exit(0);
     })

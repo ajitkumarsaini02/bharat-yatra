@@ -14,8 +14,10 @@ import {
   deleteUserAccount,
   sendRegistrationOTP,
   verifyOnlyOTP,
-  verifyOtpAndRegister
+  verifyOtpAndRegister,
+  changePassword
 } from '../controllers/authController.js';
+
 import { 
   getDestinations, 
   getDestinationById, 
@@ -50,6 +52,7 @@ router.post('/auth/verify-otp', verifyOnlyOTP);
 router.post('/auth/verify-otp-register', verifyOtpAndRegister);
 router.post('/auth/login', login);
 router.get('/auth/profile', verifyToken, getProfile);
+router.post('/auth/change-password', verifyToken, changePassword);
 router.post('/auth/favorites/toggle', verifyToken, toggleFavorite);
 router.get('/auth/favorites', verifyToken, getFavorites);
 

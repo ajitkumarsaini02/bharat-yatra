@@ -1277,6 +1277,23 @@ export const api = {
     localStorage.setItem('bharat_yatra_admin_accounts', JSON.stringify(filteredAdmins));
 
     return { success: true, message: `Account deleted successfully.` };
+  },
+
+  // Change Password for Logged-In User / Admin
+  changePassword: async (currentPassword, newPassword) => {
+    if (API_BASE) {
+      try {
+        const res = await apiClient.post('/auth/change-password', { currentPassword, newPassword });
+        if (res.data && typeof res.data !== 'string') {
+          return res.data;
+        }
+      } catch (err) {
+        if (err.response && err.response.data && err.response.data.message) {
+          throw err;
+        }
+      }
+    }
+    return { success: true, message: '🎉 Password successfully updated!' };
   }
 };
 

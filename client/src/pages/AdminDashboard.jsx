@@ -42,6 +42,51 @@ export default function AdminDashboard() {
     department: 'Tourism Operations & Content'
   });
 
+  // Change Password State
+  const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
+  const [passForm, setPassForm] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
+  const [passMsg, setPassMsg] = useState({ type: '', text: '' });
+  const [passLoading, setPassLoading] = useState(false);
+
+  const handleChangePasswordSubmit = async (e) => {
+    e.preventDefault();
+    setPassMsg({ type: '', text: '' });
+
+    if (!passForm.currentPassword || !passForm.newPassword) {
+      setPassMsg({ type: 'error', text: 'Purana aur Naya dono passwords fill karein.' });
+      return;
+    }
+
+    if (passForm.newPassword.length < 6) {
+      setPassMsg({ type: 'error', text: 'Naya password kam se kam 6 characters ka hona chahiye.' });
+      return;
+    }
+
+    if (passForm.newPassword !== passForm.confirmPassword) {
+      setPassMsg({ type: 'error', text: 'Naya password match nahi ho raha.' });
+      return;
+    }
+
+    setPassLoading(true);
+    try {
+      const res = await api.changePassword(passForm.currentPassword, passForm.newPassword);
+      if (res && res.success) {
+        setPassMsg({ type: 'success', text: res.message || '🎉 Password successfully change ho gaya hai!' });
+        setTimeout(() => {
+          setIsChangePasswordOpen(false);
+          setPassForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
+          setPassMsg({ type: '', text: '' });
+        }, 1800);
+      } else {
+        setPassMsg({ type: 'error', text: res.message || 'Password update failed' });
+      }
+    } catch (err) {
+      setPassMsg({ type: 'error', text: err.response?.data?.message || err.message || 'Failed to change password' });
+    } finally {
+      setPassLoading(false);
+    }
+  };
+
   const [newDest, setNewDest] = useState({
     name: '',
     state: '',
@@ -492,6 +537,14 @@ export default function AdminDashboard() {
               <span>User Accounts & Access ({allAccounts.length})</span>
             </button>
           </div>
+
+          <button
+            onClick={() => setIsChangePasswordOpen(true)}
+            className="px-4 py-2.5 rounded-xl bg-[#0A192F] dark:bg-slate-800 hover:bg-slate-800 text-amber-300 dark:text-amber-400 border border-amber-500/30 text-xs font-bold transition flex items-center gap-1.5 shadow-sm cursor-pointer"
+          >
+            <Lock className="w-4 h-4 text-amber-400" />
+            <span>Change Password</span>
+          </button>
 
           {activeTab === 'destinations' ? (
             <button
@@ -1398,6 +1451,102 @@ export default function AdminDashboard() {
             </div>
           </div>
 
+        </div>
+      )}
+
+      {/* Change Password Modal */}
+      {isChangePasswordOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-fade-in">
+          <div className="bg-white dark:bg-slate-900 border border-amber-500/30 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-5">
+            <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-4">
+              <div className="flex items-center gap-2.5">
+                <div className="p-2.5 rounded-xl bg-amber-500/10 text-amber-500 border border-amber-500/20">
+                  <Lock className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-slate-900 dark:text-white">Change Admin Password</h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">Apna secret password secure tarike se update karein</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setIsChangePasswordOpen(false)}
+                className="text-slate-400 hover:text-slate-600 dark:hover:text-white font-bold text-lg p-1 cursor-pointer"
+              >
+                ✕
+              </button>
+            </div>
+
+            {passMsg.text && (
+              <div className={`p-3.5 rounded-xl text-xs font-bold ${
+                passMsg.type === 'error'
+                  ? 'bg-rose-500/10 border border-rose-500/30 text-rose-600 dark:text-rose-400'
+                  : 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400'
+              }`}>
+                {passMsg.text}
+              </div>
+            )}
+
+            <form onSubmit={handleChangePasswordSubmit} className="space-y-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                  Purana Password (Current Password) *
+                </label>
+                <input
+                  type="password"
+                  required
+                  value={passForm.currentPassword}
+                  onChange={e => setPassForm({ ...passForm, currentPassword: e.target.value })}
+                  placeholder="Purana password enter karein"
+                  className="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-medium text-slate-900 dark:text-white focus:outline-none focus:border-amber-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                  Naya Password (New Password) *
+                </label>
+                <input
+                  type="password"
+                  required
+                  value={passForm.newPassword}
+                  onChange={e => setPassForm({ ...passForm, newPassword: e.target.value })}
+                  placeholder="Min 6 characters"
+                  className="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-medium text-slate-900 dark:text-white focus:outline-none focus:border-amber-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                  Confirm Naya Password *
+                </label>
+                <input
+                  type="password"
+                  required
+                  value={passForm.confirmPassword}
+                  onChange={e => setPassForm({ ...passForm, confirmPassword: e.target.value })}
+                  placeholder="Naya password phir se likhein"
+                  className="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-medium text-slate-900 dark:text-white focus:outline-none focus:border-amber-500"
+                />
+              </div>
+
+              <div className="flex gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setIsChangePasswordOpen(false)}
+                  className="flex-1 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={passLoading}
+                  className="flex-1 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs shadow-md transition disabled:opacity-50 cursor-pointer"
+                >
+                  {passLoading ? 'Updating...' : 'Update Password'}
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       )}
 

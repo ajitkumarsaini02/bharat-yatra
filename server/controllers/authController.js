@@ -872,3 +872,70 @@ export const deleteUserAccount = async (req, res) => {
   }
 };
 
+/**
+ * Change Password for logged-in user / admin
+ */
+export const changePassword = async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ success: false, message: 'Purana aur Naya dono passwords bharna zaroori hai.' });
+    }
+
+    if (newPassword.length < 6) {
+      return res.status(400).json({ success: false, message: 'Naya password kam se kam 6 characters ka hona chahiye.' });
+    }
+
+    const userId = req.user?.id;
+    const userEmail = (req.user?.email || req.headers['x-admin-email'] || '').toLowerCase();
+    const isDbConnected = mongoose.connection.readyState === 1;
+
+    if (isDbConnected && (userId || userEmail)) {
+      let account = null;
+
+      if (userId && mongoose.Types.ObjectId.isValid(userId)) {
+        account = await Admin.findById(userId) || await User.findById(userId);
+      }
+      if (!account && userEmail) {
+        account = await Admin.findOne({ email: userEmail }) || await User.findOne({ email: userEmail });
+      }
+
+      if (!account) {
+        return res.status(404).json({ success: false, message: 'Account nahi mila.' });
+      }
+
+      // Verify current password
+      const isMatch = await bcrypt.compare(currentPassword, account.password);
+      if (!isMatch) {
+        return res.status(400).json({ success: false, message: 'Ghalat Purana Password! (Incorrect current password)' });
+      }
+
+      // Hash and update new password
+      account.password = await bcrypt.hash(newPassword, 10);
+      await account.save();
+
+      console.log(`🔑 Password changed successfully for account: ${account.email}`);
+
+      return res.json({
+        success: true,
+        message: '🎉 Password successfully change ho gaya hai!'
+      });
+    }
+
+    // In-memory fallback
+    let memAcc = inMemoryAdmins.find(a => a.email === userEmail) || inMemoryUsers.find(u => u.email === userEmail);
+    if (memAcc) {
+      const isMatch = await bcrypt.compare(currentPassword, memAcc.password);
+      if (!isMatch) {
+        return res.status(400).json({ success: false, message: 'Ghalat Purana Password!' });
+      }
+      memAcc.password = await bcrypt.hash(newPassword, 10);
+      return res.json({ success: true, message: '🎉 Password successfully change ho gaya hai!' });
+    }
+
+    res.status(400).json({ success: false, message: 'Unable to update password.' });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+

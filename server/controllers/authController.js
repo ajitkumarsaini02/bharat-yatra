@@ -8,23 +8,23 @@ import { sendOTPEmail } from '../services/emailService.js';
 const JWT_SECRET = process.env.JWT_SECRET || 'bharat_yatra_super_secret_key_2026';
 const ADMIN_SECRET = process.env.ADMIN_SECRET_KEY || 'bharat_admin_2026';
 
+const SUPER_ADMIN_EMAIL = (process.env.SUPER_ADMIN_EMAIL || 'ajitkumarsaini875@gmail.com').toLowerCase().trim();
+
 // In-memory fallback stores when MongoDB is disconnected
 let inMemoryUsers = [];
 let inMemoryAdmins = [
   {
-    _id: 'admin-root',
-    name: 'Root Administrator',
-    email: 'admin@bharatyatra.com',
+    _id: 'super-admin-root',
+    name: 'Primary Super Administrator',
+    email: SUPER_ADMIN_EMAIL,
     role: 'admin',
-    department: 'System Architecture',
+    department: 'Master Root Architecture',
     avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
     createdBy: 'system',
     createdByName: 'System Seed',
-    createdByEmail: 'system@bharatyatra.com'
+    createdByEmail: SUPER_ADMIN_EMAIL
   }
 ];
-
-const SUPER_ADMIN_EMAIL = process.env.SUPER_ADMIN_EMAIL || 'admin@bharatyatra.com';
 
 // Temporary store for registration OTPs
 const otpStore = new Map(); // key: email -> { otp, expiresAt }
@@ -406,7 +406,7 @@ export const login = async (req, res) => {
             return res.status(400).json({ success: false, message: 'Invalid password. Please check your credentials.' });
           }
 
-          const isUserAdmin = user.role === 'admin' || user.email.includes('admin');
+          const isUserAdmin = user.role === 'admin' || user.email.toLowerCase() === SUPER_ADMIN_EMAIL.toLowerCase();
           const finalRole = isUserAdmin ? 'admin' : (user.role || 'user');
 
           const token = jwt.sign(

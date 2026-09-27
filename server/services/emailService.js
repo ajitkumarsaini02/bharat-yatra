@@ -4,13 +4,13 @@ import nodemailer from 'nodemailer';
  * Send Real HTML OTP Email via Nodemailer SMTP (or automatic Ethereal Test Inbox)
  */
 export const sendOTPEmail = async (recipientEmail, otpCode) => {
-  const emailUser = process.env.EMAIL_USER;
-  const emailPass = process.env.EMAIL_PASS;
+  const cleanUser = (process.env.EMAIL_USER || '').trim();
+  const cleanPass = (process.env.EMAIL_PASS || '').replace(/\s+/g, '');
   const emailHost = process.env.EMAIL_HOST || 'smtp.gmail.com';
   const emailPort = parseInt(process.env.EMAIL_PORT || '587');
 
-  const isPlaceholderUser = !emailUser || emailUser.includes('your') || emailUser === 'bharatyatra.official@gmail.com';
-  const isPlaceholderPass = !emailPass || emailPass.includes('your_') || emailPass === 'your_gmail_app_password';
+  const isPlaceholderUser = !cleanUser || cleanUser.includes('your') || cleanUser === 'bharatyatra.official@gmail.com';
+  const isPlaceholderPass = !cleanPass || cleanPass.includes('your_') || cleanPass === 'your_gmail_app_password';
 
   let transporter;
   let fromAddress;
@@ -23,11 +23,11 @@ export const sendOTPEmail = async (recipientEmail, otpCode) => {
       port: emailPort,
       secure: emailPort === 465,
       auth: {
-        user: emailUser,
-        pass: emailPass
+        user: cleanUser,
+        pass: cleanPass
       }
     });
-    fromAddress = process.env.EMAIL_FROM || `"Bharat Yatra Security" <${emailUser}>`;
+    fromAddress = process.env.EMAIL_FROM || `"Bharat Yatra Security" <${cleanUser}>`;
   } else {
     // Fallback: Generate Ethereal Test Inbox link on the fly for test preview
     isTestAccount = true;

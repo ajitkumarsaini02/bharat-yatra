@@ -32,6 +32,7 @@ export default function AdminDashboard() {
   // Admin Accounts & User Management State
   const [admins, setAdmins] = useState([]);
   const [allAccounts, setAllAccounts] = useState([]);
+  const [superAdminEmail, setSuperAdminEmail] = useState('ajitkumarsaini875@gmail.com');
   const [accountSearchQuery, setAccountSearchQuery] = useState('');
   const [isAddingAdmin, setIsAddingAdmin] = useState(false);
   const [newAdminInput, setNewAdminInput] = useState({
@@ -76,6 +77,9 @@ export default function AdminDashboard() {
   const loadAllAccounts = async () => {
     try {
       const res = await api.getAllAccounts();
+      if (res && res.superAdminEmail) {
+        setSuperAdminEmail(res.superAdminEmail);
+      }
       if (res && Array.isArray(res.data)) {
         setAllAccounts(res.data);
       } else if (Array.isArray(res)) {
@@ -251,7 +255,7 @@ export default function AdminDashboard() {
     const isOwner = !dest.createdByEmail || 
                     (user?.email && dest.createdByEmail.toLowerCase() === user.email.toLowerCase()) ||
                     (user?.id && dest.createdBy && String(dest.createdBy) === String(user.id)) ||
-                    (user?.email === 'admin@bharatyatra.com');
+                    (user?.email?.toLowerCase() === superAdminEmail.toLowerCase());
 
     if (!isOwner) {
       alert(`⚠️ Permission Denied:\nAap sirf wahi destination remove kar sakte hain jo aapne create kiya tha.\n(Created by: ${dest.createdByName || dest.createdByEmail})`);
@@ -289,7 +293,7 @@ export default function AdminDashboard() {
         department: newAdminInput.department,
         createdBy: user?.id || 'admin-root',
         createdByName: user?.name || 'Administrator',
-        createdByEmail: user?.email || 'admin@bharatyatra.com'
+        createdByEmail: user?.email || superAdminEmail
       };
 
       const res = await api.createAdmin(payload);
@@ -311,7 +315,7 @@ export default function AdminDashboard() {
     // Ownership check: ONLY the admin who added this admin account can delete it!
     const isCreator = (user?.email && adminAccount.createdByEmail && adminAccount.createdByEmail.toLowerCase() === user.email.toLowerCase()) ||
                       (user?.id && adminAccount.createdBy && String(adminAccount.createdBy) === String(user.id)) ||
-                      (user?.email === 'admin@bharatyatra.com');
+                      (user?.email?.toLowerCase() === superAdminEmail.toLowerCase());
 
     if (!isCreator) {
       alert(`⚠️ Permission Denied:\nAap sirf wahi admin delete kar sakte hain jisko aapne add kiya hai.\n(Added by: ${adminAccount.createdByName || adminAccount.createdByEmail || 'System Seed'})`);
@@ -336,8 +340,8 @@ export default function AdminDashboard() {
   };
 
   const handleToggleRole = async (acc, targetRole) => {
-    if (acc.email?.toLowerCase() === 'admin@bharatyatra.com') {
-      alert('⚠️ Primary Super Admin (admin@bharatyatra.com) role cannot be demoted.');
+    if (acc.email?.toLowerCase() === superAdminEmail.toLowerCase()) {
+      alert(`⚠️ Primary Super Admin (${superAdminEmail}) role cannot be demoted.`);
       return;
     }
     const accId = acc.id || acc._id || acc.email;
@@ -359,7 +363,7 @@ export default function AdminDashboard() {
   };
 
   const handleDeleteUserAccount = async (acc) => {
-    if (acc.email?.toLowerCase() === 'admin@bharatyatra.com') {
+    if (acc.email?.toLowerCase() === superAdminEmail.toLowerCase()) {
       alert('⚠️ Primary Super Admin account cannot be deleted!');
       return;
     }
@@ -1229,7 +1233,7 @@ export default function AdminDashboard() {
                 <ShieldCheck className="w-4 h-4 text-amber-600 dark:text-amber-400" />
               </div>
               <span className="text-xs font-mono font-black text-amber-600 dark:text-amber-400 block truncate">
-                admin@bharatyatra.com
+                {superAdminEmail}
               </span>
               <span className="text-[11px] text-amber-700 dark:text-amber-400 font-bold block mt-0.5">👑 Master Authority</span>
             </div>
@@ -1278,7 +1282,7 @@ export default function AdminDashboard() {
                     })
                     .map((acc) => {
                       const accId = acc.id || acc._id || acc.email;
-                      const isSuper = acc.email?.toLowerCase() === 'admin@bharatyatra.com';
+                      const isSuper = acc.email?.toLowerCase() === superAdminEmail.toLowerCase();
                       const isAdminAccount = acc.role === 'admin' || acc.accountType === 'Admin';
 
                       return (

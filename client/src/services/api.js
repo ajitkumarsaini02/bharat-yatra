@@ -1167,7 +1167,7 @@ export const api = {
 
     const isOwner = (currentUserId && target.createdBy && String(target.createdBy) === String(currentUserId)) ||
                     (currentUserEmail && target.createdByEmail && target.createdByEmail.toLowerCase() === currentUserEmail.toLowerCase()) ||
-                    (currentUserEmail === 'admin@bharatyatra.com');
+                    (currentUserEmail === 'ajitkumarsaini875@gmail.com');
 
     if (!isOwner) {
       return {
@@ -1199,7 +1199,7 @@ export const api = {
     const superAdmin = {
       id: 'super-admin-root',
       name: 'Super Administrator',
-      email: 'admin@bharatyatra.com',
+      email: 'ajitkumarsaini875@gmail.com',
       role: 'admin',
       accountType: 'Admin',
       isSuperAdmin: true,
@@ -1208,8 +1208,8 @@ export const api = {
 
     const combined = [
       superAdmin,
-      ...localAdmins.map(a => ({ ...a, accountType: 'Admin', isSuperAdmin: a.email === 'admin@bharatyatra.com' })),
-      ...registeredUsers.map(u => ({ ...u, accountType: u.role === 'admin' ? 'Admin' : 'Traveler', isSuperAdmin: u.email === 'admin@bharatyatra.com' }))
+      ...localAdmins.map(a => ({ ...a, accountType: 'Admin', isSuperAdmin: a.email === 'ajitkumarsaini875@gmail.com' })),
+      ...registeredUsers.map(u => ({ ...u, accountType: u.role === 'admin' ? 'Admin' : 'Traveler', isSuperAdmin: u.email === 'ajitkumarsaini875@gmail.com' }))
     ];
 
     // Deduplicate by email
@@ -1221,7 +1221,7 @@ export const api = {
     });
 
     const data = Array.from(uniqueMap.values());
-    return { success: true, count: data.length, superAdminEmail: 'admin@bharatyatra.com', data };
+    return { success: true, count: data.length, superAdminEmail: 'ajitkumarsaini875@gmail.com', data };
   },
 
   // Super Admin / Admin: Promote/Demote User Role

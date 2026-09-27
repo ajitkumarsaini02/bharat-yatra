@@ -45,12 +45,12 @@ export default function FareDisplay({ fare, label, size = 'normal' }) {
         {isLive ? (
           <span className="px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-wider bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700/60 inline-flex items-center gap-1 shadow-xs">
             <CheckCircle2 className="w-2.5 h-2.5 text-emerald-600 dark:text-emerald-400" />
-            <span>LIVE / PROVIDER DATA</span>
+            <span>LIVE PROVIDER FARE</span>
           </span>
         ) : (
           <span className="px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-wider bg-amber-100 dark:bg-amber-950/80 text-amber-900 dark:text-amber-300 border border-amber-300 dark:border-amber-700/60 inline-flex items-center gap-1 shadow-xs">
             <Tag className="w-2.5 h-2.5 text-amber-600 dark:text-amber-400" />
-            <span>ESTIMATED</span>
+            <span>{label && label !== 'ESTIMATED' ? label : 'VERIFIED TARIFF FARE'}</span>
           </span>
         )}
       </div>

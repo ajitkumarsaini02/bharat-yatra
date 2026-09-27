@@ -10,14 +10,14 @@ export const sendOTPEmail = async (recipientEmail, otpCode) => {
   const emailPort = parseInt(process.env.EMAIL_PORT || '587');
 
   const isPlaceholderUser = !emailUser || emailUser.includes('your') || emailUser === 'bharatyatra.official@gmail.com';
-  const isPlaceholderPass = !emailPass || emailPass.includes('your_');
+  const isPlaceholderPass = !emailPass || emailPass.includes('your_') || emailPass === 'your_gmail_app_password';
 
   let transporter;
   let fromAddress;
   let isTestAccount = false;
 
   if (!isPlaceholderUser && !isPlaceholderPass) {
-    // Custom Real SMTP (e.g. User's Gmail App Password or SendGrid / Brevo)
+    // Custom Real Gmail / SMTP credentials supplied by user
     transporter = nodemailer.createTransport({
       host: emailHost,
       port: emailPort,
@@ -29,7 +29,7 @@ export const sendOTPEmail = async (recipientEmail, otpCode) => {
     });
     fromAddress = process.env.EMAIL_FROM || `"Bharat Yatra Security" <${emailUser}>`;
   } else {
-    // Generate Ethereal Test Account on the fly for real test email previews
+    // Fallback: Generate Ethereal Test Inbox link on the fly for test preview
     isTestAccount = true;
     try {
       const testAccount = await nodemailer.createTestAccount();
@@ -45,9 +45,10 @@ export const sendOTPEmail = async (recipientEmail, otpCode) => {
       fromAddress = `"Bharat Yatra Security" <${testAccount.user}>`;
     } catch (err) {
       console.log(`\n==============================================`);
-      console.log(`✉️ [OTP GENERATED FOR: ${recipientEmail}]`);
+      console.log(`✉️ [BHARAT YATRA REGISTRATION OTP]`);
+      console.log(`Recipient Email: ${recipientEmail}`);
       console.log(`Verification Code: ${otpCode}`);
-      console.log(`⚠️ SMTP Credentials not set in server/.env`);
+      console.log(`⚠️ SMTP Credentials not configured in server/.env`);
       console.log(`==============================================\n`);
       return { success: true, isTestAccount: true };
     }
@@ -82,19 +83,32 @@ export const sendOTPEmail = async (recipientEmail, otpCode) => {
     `
   };
 
-  const info = await transporter.sendMail(mailOptions);
-  const testPreviewUrl = nodemailer.getTestMessageUrl(info);
+  try {
+    const info = await transporter.sendMail(mailOptions);
+    const testPreviewUrl = nodemailer.getTestMessageUrl(info);
 
-  if (testPreviewUrl) {
+    if (testPreviewUrl) {
+      console.log(`\n==============================================`);
+      console.log(`✉️ [TEST INBOX CREATED VIA ETHEREAL MAIL]`);
+      console.log(`Recipient: ${recipientEmail}`);
+      console.log(`Verification Code: ${otpCode}`);
+      console.log(`🔗 Click to View Rendered Inbox Email:\n${testPreviewUrl}`);
+      console.log(`==============================================\n`);
+      return { success: true, previewUrl: testPreviewUrl, isTestAccount: true };
+    }
+
+    console.log(`\n✅ [REAL EMAIL DISPATCH SUCCESS] Sent OTP ${otpCode} to ${recipientEmail} via SMTP!\n`);
+    return { success: true, isTestAccount: false };
+  } catch (smtpErr) {
     console.log(`\n==============================================`);
-    console.log(`✉️ [REAL TEST INBOX CREATED VIA ETHEREAL MAIL]`);
-    console.log(`Recipient: ${recipientEmail}`);
-    console.log(`Verification Code: ${otpCode}`);
-    console.log(`🔗 Click to View Real Rendered Inbox Email:\n${testPreviewUrl}`);
+    console.log(`❌ [SMTP DISPATCH ERROR] Could not send email to ${recipientEmail}`);
+    console.log(`Error: ${smtpErr.message}`);
+    console.log(`💡 FIX: Gmail requires a 16-character App Password!`);
+    console.log(`1. Go to: https://myaccount.google.com/apppasswords`);
+    console.log(`2. Generate App Password for 'Bharat Yatra'`);
+    console.log(`3. Update server/.env: EMAIL_USER=your_email@gmail.com EMAIL_PASS=your_16_char_password`);
+    console.log(`🔑 Verification Code generated for testing: ${otpCode}`);
     console.log(`==============================================\n`);
-    return { success: true, previewUrl: testPreviewUrl, isTestAccount: true };
+    return { success: false, error: smtpErr.message, fallbackCode: otpCode };
   }
-
-  console.log(`\n✅ [REAL EMAIL DISPATCH SUCCESS] Sent OTP ${otpCode} to ${recipientEmail} via SMTP!\n`);
-  return { success: true, isTestAccount: false };
 };

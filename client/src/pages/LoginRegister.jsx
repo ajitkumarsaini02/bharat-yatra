@@ -15,7 +15,6 @@ export default function LoginRegister() {
   const [otpStep, setOtpStep] = useState(1); 
   const [otpDigits, setOtpDigits] = useState(['', '', '', '', '', '']);
   const [verifiedOtp, setVerifiedOtp] = useState('');
-  const [devOtpHint, setDevOtpHint] = useState('');
   const [countdown, setCountdown] = useState(60);
   const [canResend, setCanResend] = useState(false);
   
@@ -76,12 +75,6 @@ export default function LoginRegister() {
     }
   };
 
-  const handleAutoFillDevOtp = () => {
-    if (devOtpHint && devOtpHint.length === 6) {
-      setOtpDigits(devOtpHint.split(''));
-    }
-  };
-
   // STEP 1: Send OTP to Email
   const handleSendOTP = async (e) => {
     e.preventDefault();
@@ -97,9 +90,6 @@ export default function LoginRegister() {
     try {
       const res = await sendRegistrationOTP(email.trim());
       setSuccessMsg(res.message || `6-Digit OTP sent to ${email.trim()}`);
-      if (res.devOtpHint) {
-        setDevOtpHint(res.devOtpHint);
-      }
       setOtpStep(2);
       setCountdown(60);
       setCanResend(false);
@@ -201,9 +191,6 @@ export default function LoginRegister() {
     try {
       const res = await sendRegistrationOTP(email.trim());
       setSuccessMsg(res.message || 'A fresh OTP has been sent to your email!');
-      if (res.devOtpHint) {
-        setDevOtpHint(res.devOtpHint);
-      }
       setCountdown(60);
       setCanResend(false);
       setOtpDigits(['', '', '', '', '', '']);
@@ -440,23 +427,6 @@ export default function LoginRegister() {
                   <ArrowLeft className="w-3.5 h-3.5" />
                   <span>Back to details ({email})</span>
                 </button>
-
-                {/* Dev Helper Auto-fill Banner */}
-                {devOtpHint && (
-                  <div className="p-3 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-between text-xs">
-                    <div className="flex items-center gap-1.5 text-amber-900 dark:text-amber-300 font-semibold">
-                      <Sparkles className="w-4 h-4 text-amber-500 shrink-0" />
-                      <span>Dev Preview OTP: <strong>{devOtpHint}</strong></span>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={handleAutoFillDevOtp}
-                      className="px-2.5 py-1 bg-amber-500 text-slate-950 font-bold text-[10px] rounded-lg hover:bg-amber-400 transition cursor-pointer"
-                    >
-                      Auto-fill
-                    </button>
-                  </div>
-                )}
 
                 <div>
                   <label className="text-xs font-bold text-amber-900/70 dark:text-slate-300 uppercase block mb-2 text-center">

@@ -975,8 +975,7 @@ export const api = {
     localStorage.setItem(`otp_${email.toLowerCase()}`, JSON.stringify({ otp: mockOtp, expiresAt: Date.now() + 600000 }));
     return {
       success: true,
-      message: `6-Digit OTP sent to ${email}`,
-      devOtpHint: mockOtp
+      message: `6-Digit OTP sent to ${email}`
     };
   },
 

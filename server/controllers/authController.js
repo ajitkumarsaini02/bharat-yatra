@@ -812,6 +812,188 @@ export const deleteAdminAccount = async (req, res) => {
 };
 
 /**
+ * Get all registered user and admin accounts
+ */
+export const getAllAccounts = async (req, res) => {
+  try {
+    const isDbConnected = mongoose.connection.readyState === 1;
+    let usersList = [];
+    let adminsList = [];
+
+    if (isDbConnected) {
+      try {
+        const [users, admins] = await Promise.all([
+          User.find().select('-password').sort({ createdAt: -1 }),
+          Admin.find().select('-password').sort({ createdAt: -1 })
+        ]);
+        usersList = users;
+        adminsList = admins;
+      } catch (err) {
+        console.error('⚠️ MongoDB fetch all accounts error:', err.message);
+      }
+    }
+
+    if (!usersList || usersList.length === 0) {
+      usersList = inMemoryUsers.map(u => {
+        const { password, ...rest } = u;
+        return rest;
+      });
+    }
+
+    if (!adminsList || adminsList.length === 0) {
+      adminsList = inMemoryAdmins.map(a => {
+        const { password, ...rest } = a;
+        return rest;
+      });
+    }
+
+    // Merge deduplicated accounts list
+    const combinedMap = new Map();
+
+    adminsList.forEach(a => {
+      const obj = a._doc ? { ...a._doc } : { ...a };
+      const email = (obj.email || '').toLowerCase();
+      combinedMap.set(email, {
+        ...obj,
+        id: obj._id || obj.id,
+        role: 'admin',
+        accountType: 'Admin',
+        isSuperAdmin: email === SUPER_ADMIN_EMAIL.toLowerCase()
+      });
+    });
+
+    usersList.forEach(u => {
+      const obj = u._doc ? { ...u._doc } : { ...u };
+      const email = (obj.email || '').toLowerCase();
+      if (!combinedMap.has(email)) {
+        combinedMap.set(email, {
+          ...obj,
+          id: obj._id || obj.id,
+          role: obj.role || 'user',
+          accountType: obj.role === 'admin' ? 'Admin' : 'Traveler',
+          isSuperAdmin: email === SUPER_ADMIN_EMAIL.toLowerCase()
+        });
+      }
+    });
+
+    const combinedList = Array.from(combinedMap.values());
+
+    res.json({
+      success: true,
+      count: combinedList.length,
+      superAdminEmail: SUPER_ADMIN_EMAIL,
+      data: combinedList
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+/**
+ * Promote / Demote user role (Grant or Revoke Admin access) - STRICT SUPER ADMIN AUTHORIZATION
+ */
+export const updateUserRole = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { newRole } = req.body;
+    const requesterEmail = (req.user?.email || req.headers['x-admin-email'] || '').toLowerCase();
+
+    if (!newRole || !['user', 'admin'].includes(newRole)) {
+      return res.status(400).json({ success: false, message: 'Role must be "user" or "admin"' });
+    }
+
+    const isDbConnected = mongoose.connection.readyState === 1;
+
+    if (isDbConnected) {
+      let targetUser = (mongoose.Types.ObjectId.isValid(userId) ? await User.findById(userId) : null) ||
+                         await User.findOne({ email: userId.toLowerCase() });
+      
+      let targetAdmin = (mongoose.Types.ObjectId.isValid(userId) ? await Admin.findById(userId) : null) ||
+                          await Admin.findOne({ email: userId.toLowerCase() });
+
+      if (targetUser) {
+        if (newRole === 'admin') {
+          // Promote to admin
+          targetUser.role = 'admin';
+          await targetUser.save();
+
+          const existingAdmin = await Admin.findOne({ email: targetUser.email });
+          if (!existingAdmin) {
+            await Admin.create({
+              name: targetUser.name,
+              email: targetUser.email,
+              password: targetUser.password,
+              role: 'admin',
+              department: 'Granted Admin Operations',
+              createdBy: req.user?.id || 'super-admin',
+              createdByName: req.user?.name || 'Super Administrator',
+              createdByEmail: requesterEmail || SUPER_ADMIN_EMAIL
+            });
+          }
+          console.log(`🔑 Super Admin "${requesterEmail}" PROMOTED user "${targetUser.email}" to ADMIN`);
+          return res.json({ success: true, message: `Granted Admin Access to ${targetUser.name} (${targetUser.email})` });
+        } else {
+          // Demote to user
+          targetUser.role = 'user';
+          await targetUser.save();
+          await Admin.findOneAndDelete({ email: targetUser.email });
+          console.log(`🔒 Admin access REVOKED for "${targetUser.email}" by "${requesterEmail}"`);
+          return res.json({ success: true, message: `Revoked Admin Access for ${targetUser.name}. Set role to Traveler.` });
+        }
+      }
+
+      if (targetAdmin) {
+        if (targetAdmin.email.toLowerCase() === SUPER_ADMIN_EMAIL.toLowerCase()) {
+          return res.status(403).json({ success: false, message: 'Primary Super Admin account role cannot be demoted!' });
+        }
+        if (newRole === 'user') {
+          await Admin.findByIdAndDelete(targetAdmin._id);
+          let u = await User.findOne({ email: targetAdmin.email });
+          if (u) {
+            u.role = 'user';
+            await u.save();
+          } else {
+            await User.create({
+              name: targetAdmin.name,
+              email: targetAdmin.email,
+              password: targetAdmin.password,
+              role: 'user'
+            });
+          }
+          return res.json({ success: true, message: `Revoked Admin Access for ${targetAdmin.name}. Set role to Traveler.` });
+        }
+      }
+    }
+
+    // In-memory fallback
+    let memU = inMemoryUsers.find(u => String(u._id) === String(userId) || u.email === userId);
+    if (memU) {
+      memU.role = newRole;
+      if (newRole === 'admin') {
+        if (!inMemoryAdmins.some(a => a.email === memU.email)) {
+          inMemoryAdmins.unshift({
+            _id: 'admin-' + Date.now(),
+            name: memU.name,
+            email: memU.email,
+            password: memU.password,
+            role: 'admin',
+            department: 'Granted Admin Operations',
+            createdByEmail: requesterEmail || SUPER_ADMIN_EMAIL
+          });
+        }
+      } else {
+        inMemoryAdmins = inMemoryAdmins.filter(a => a.email !== memU.email);
+      }
+      return res.json({ success: true, message: `Role updated to ${newRole} for ${memU.name}` });
+    }
+
+    res.status(404).json({ success: false, message: 'Account not found' });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+/**
  * Delete a user or admin account (Admin / Super Admin privilege)
  */
 export const deleteUserAccount = async (req, res) => {

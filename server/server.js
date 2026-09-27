@@ -35,6 +35,7 @@ app.get('/', (req, res) => {
 });
 
 import { seedAllDestinations } from './seedDatabase.js';
+import { ensureSuperAdmin } from './seedSuperAdmin.js';
 
 mongoose.set('bufferCommands', false);
 
@@ -46,6 +47,7 @@ mongoose.connect(MONGO_URI, {
     console.log('✅ Connected to MongoDB Database successfully.');
     try {
       await seedAllDestinations();
+      await ensureSuperAdmin();
     } catch (e) {
       console.warn('⚠️ Auto-seed check notice:', e.message);
     }

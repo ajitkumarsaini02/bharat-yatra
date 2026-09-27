@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
 import User from '../models/User.js';
 import Admin from '../models/Admin.js';
+import { sendOTPEmail } from '../services/emailService.js';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'bharat_yatra_super_secret_key_2026';
 const ADMIN_SECRET = process.env.ADMIN_SECRET_KEY || 'bharat_admin_2026';
@@ -63,17 +64,20 @@ export const sendRegistrationOTP = async (req, res) => {
 
     otpStore.set(normalizedEmail, { otp: otpCode, expiresAt });
 
-    console.log(`\n==============================================`);
-    console.log(`✉️ [BHARAT YATRA OTP DISPATCH]`);
-    console.log(`Recipient: ${normalizedEmail}`);
-    console.log(`Verification Code: ${otpCode}`);
-    console.log(`Expires In: 10 Minutes`);
-    console.log(`==============================================\n`);
+    // Send Real Email via Nodemailer SMTP
+    let realEmailDispatched = false;
+    try {
+      realEmailDispatched = await sendOTPEmail(normalizedEmail, otpCode);
+    } catch (mailErr) {
+      console.error('⚠️ Real SMTP Dispatch Failed:', mailErr.message);
+    }
 
     return res.json({
       success: true,
-      message: `6-Digit OTP sent successfully to ${normalizedEmail}`,
-      devOtpHint: otpCode
+      message: realEmailDispatched 
+        ? `6-Digit OTP code sent to your email inbox (${normalizedEmail})!`
+        : `6-Digit OTP code generated for ${normalizedEmail}`,
+      devOtpHint: process.env.NODE_ENV === 'development' ? otpCode : undefined
     });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });

@@ -148,8 +148,34 @@ export default function ExploreDestinations() {
             placeholder="Search by city, monument name, heritage site or keywords..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-12 pr-4 py-3.5 rounded-2xl bg-amber-50/50 dark:bg-slate-800/80 border border-amber-200 dark:border-amber-500/30 focus:bg-white dark:focus:bg-slate-900 focus:border-amber-500 outline-hidden text-sm font-medium transition text-[#0A192F] dark:text-slate-100 placeholder:text-slate-400"
+            className="w-full pl-12 pr-4 py-3.5 rounded-2xl bg-amber-50/50 dark:bg-slate-800/80 border border-amber-200 dark:border-amber-500/30 focus:bg-white dark:focus:bg-slate-900 focus:border-amber-500 outline-hidden text-sm font-medium transition text-[#0A192F] dark:text-slate-100 placeholder:text-slate-400 shadow-2xs"
           />
+        </div>
+
+        {/* Quick Category Filter Pills */}
+        <div className="flex flex-wrap gap-2 pt-1">
+          {[
+            { value: 'All', label: 'All Destinations' },
+            { value: 'UNESCO World Heritage & Iconic Monuments', label: '🏛️ World Heritage' },
+            { value: 'Historic Forts & Citadels', label: '🏰 Forts & Citadels' },
+            { value: 'Temples & Spiritual Sites', label: '🛕 Temples & Sacred' },
+            { value: 'Beaches & Coastal Escapes', label: '🏖️ Beaches & Coastal' },
+            { value: 'Hill Stations & Tea Estates', label: '🏔️ Hill Stations' },
+            { value: 'Wildlife & Tiger Reserves', label: '🐅 Wildlife & Tigers' }
+          ].map((cat, i) => (
+            <button
+              key={i}
+              type="button"
+              onClick={() => setSelectedCategory(cat.value)}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all duration-200 cursor-pointer ${
+                selectedCategory === cat.value
+                  ? 'gradient-saffron text-slate-950 shadow-sm font-bold'
+                  : 'bg-amber-50/60 dark:bg-slate-800/60 text-slate-700 dark:text-slate-300 hover:bg-amber-100 dark:hover:bg-slate-700 border border-amber-200/60 dark:border-slate-700'
+              }`}
+            >
+              <span>{cat.label}</span>
+            </button>
+          ))}
         </div>
 
         {/* 5 Clean Dropdown Selects Grid */}

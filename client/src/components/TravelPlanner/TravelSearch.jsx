@@ -63,6 +63,43 @@ export default function TravelSearch({ onSearch, loading, error, setError }) {
         </span>
       </div>
 
+      {/* Popular Route Quick Selection Pills */}
+      <div className="space-y-2">
+        <span className="text-[10px] font-black uppercase text-amber-700 dark:text-amber-400 tracking-widest block">
+          ⚡ POPULAR EXPRESS ROUTES (CLICK TO AUTO-FILL)
+        </span>
+        <div className="flex flex-wrap gap-2">
+          {[
+            { from: 'Delhi', to: 'Agra', label: 'Delhi ➔ Agra (Taj Express)' },
+            { from: 'Mumbai', to: 'Goa', label: 'Mumbai ➔ Goa (Konkan Coast)' },
+            { from: 'Bengaluru', to: 'Kochi', label: 'Bengaluru ➔ Kochi' },
+            { from: 'Delhi', to: 'Jaipur', label: 'Delhi ➔ Jaipur (Pink City)' },
+            { from: 'Varanasi', to: 'Agra', label: 'Varanasi ➔ Agra' },
+            { from: 'Delhi', to: 'Shimla', label: 'Delhi ➔ Shimla (Himalayan)' }
+          ].map((route, i) => (
+            <button
+              key={i}
+              type="button"
+              onClick={() => {
+                setFrom(route.from);
+                setDestination(route.to);
+                if (setError) setError(null);
+                onSearch({
+                  from: route.from,
+                  destination: route.to,
+                  travelDate,
+                  travelersCount,
+                  hotelNights
+                });
+              }}
+              className="px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 dark:bg-slate-800 dark:hover:bg-slate-700 border border-amber-200/80 dark:border-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold transition-all hover:scale-102 cursor-pointer flex items-center gap-1 shadow-2xs"
+            >
+              <span>{route.label}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
       {/* Error Alert Message */}
       {error && (
         <div className="p-4 rounded-2xl bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-500/40 text-rose-800 dark:text-rose-200 text-xs font-semibold flex items-center gap-2.5 animate-shake">
@@ -74,11 +111,11 @@ export default function TravelSearch({ onSearch, loading, error, setError }) {
       {/* Inputs Form */}
       <form onSubmit={handleSubmit} className="space-y-6">
         
-        {/* Row 1: Source & Destination */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Row 1: Source & Destination with Swap Button */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
           
           {/* From Location */}
-          <div className="space-y-1.5">
+          <div className="md:col-span-5 space-y-1.5">
             <label className="text-xs font-bold text-amber-800 dark:text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
               <MapPin className="w-3.5 h-3.5 text-amber-600" />
               <span>From (Origin Location)</span>
@@ -88,13 +125,31 @@ export default function TravelSearch({ onSearch, loading, error, setError }) {
               value={from}
               onChange={(e) => setFrom(e.target.value)}
               placeholder="e.g. Delhi, Mumbai, Jaipur"
-              className="w-full p-3.5 rounded-2xl bg-amber-50/40 dark:bg-slate-800 border border-amber-200 dark:border-slate-700 text-xs sm:text-sm font-bold text-[#0A192F] dark:text-slate-100 outline-hidden focus:border-amber-600 transition"
+              className="w-full p-3.5 rounded-2xl bg-amber-50/40 dark:bg-slate-800 border border-amber-200 dark:border-slate-700 text-xs sm:text-sm font-bold text-[#0A192F] dark:text-slate-100 outline-hidden focus:border-amber-600 focus:ring-2 focus:ring-amber-400/20 transition shadow-2xs"
               required
             />
           </div>
 
+          {/* Swap Button */}
+          <div className="md:col-span-2 flex justify-center pt-2 md:pt-6">
+            <button
+              type="button"
+              title="Swap From and To locations"
+              onClick={() => {
+                const temp = from;
+                setFrom(destination);
+                setDestination(temp);
+              }}
+              className="p-3 rounded-2xl bg-amber-100 hover:bg-amber-200 dark:bg-slate-800 dark:hover:bg-slate-700 border border-amber-300 dark:border-amber-500/40 text-amber-900 dark:text-amber-300 transition-all hover:rotate-180 hover:scale-110 cursor-pointer shadow-sm"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+              </svg>
+            </button>
+          </div>
+
           {/* To Destination */}
-          <div className="space-y-1.5">
+          <div className="md:col-span-5 space-y-1.5">
             <label className="text-xs font-bold text-amber-800 dark:text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
               <MapPin className="w-3.5 h-3.5 text-amber-600" />
               <span>To (Destination)</span>
@@ -102,7 +157,7 @@ export default function TravelSearch({ onSearch, loading, error, setError }) {
             <select
               value={destination}
               onChange={(e) => setDestination(e.target.value)}
-              className="w-full p-3.5 rounded-2xl bg-amber-50/40 dark:bg-slate-800 border border-amber-200 dark:border-slate-700 text-xs sm:text-sm font-bold text-[#0A192F] dark:text-slate-100 outline-hidden focus:border-amber-600 transition"
+              className="w-full p-3.5 rounded-2xl bg-amber-50/40 dark:bg-slate-800 border border-amber-200 dark:border-slate-700 text-xs sm:text-sm font-bold text-[#0A192F] dark:text-slate-100 outline-hidden focus:border-amber-600 focus:ring-2 focus:ring-amber-400/20 transition shadow-2xs"
             >
               {destinationsData.map((d) => (
                 <option key={d.id} value={d.name}>
@@ -127,7 +182,7 @@ export default function TravelSearch({ onSearch, loading, error, setError }) {
               type="date"
               value={travelDate}
               onChange={(e) => setTravelDate(e.target.value)}
-              className="w-full p-3.5 rounded-2xl bg-amber-50/40 dark:bg-slate-800 border border-amber-200 dark:border-slate-700 text-xs sm:text-sm font-bold text-[#0A192F] dark:text-slate-100 outline-hidden focus:border-amber-600 transition"
+              className="w-full p-3.5 rounded-2xl bg-amber-50/40 dark:bg-slate-800 border border-amber-200 dark:border-slate-700 text-xs sm:text-sm font-bold text-[#0A192F] dark:text-slate-100 outline-hidden focus:border-amber-600 focus:ring-2 focus:ring-amber-400/20 transition shadow-2xs"
               required
             />
           </div>
@@ -141,7 +196,7 @@ export default function TravelSearch({ onSearch, loading, error, setError }) {
             <select
               value={travelersCount}
               onChange={(e) => setTravelersCount(Number(e.target.value))}
-              className="w-full p-3.5 rounded-2xl bg-amber-50/40 dark:bg-slate-800 border border-amber-200 dark:border-slate-700 text-xs sm:text-sm font-bold text-[#0A192F] dark:text-slate-100 outline-hidden focus:border-amber-600 transition"
+              className="w-full p-3.5 rounded-2xl bg-amber-50/40 dark:bg-slate-800 border border-amber-200 dark:border-slate-700 text-xs sm:text-sm font-bold text-[#0A192F] dark:text-slate-100 outline-hidden focus:border-amber-600 focus:ring-2 focus:ring-amber-400/20 transition shadow-2xs"
             >
               <option value={1}>1 Solo Traveler</option>
               <option value={2}>2 Travelers (Couple)</option>
@@ -161,7 +216,7 @@ export default function TravelSearch({ onSearch, loading, error, setError }) {
             <select
               value={hotelNights}
               onChange={(e) => setHotelNights(Number(e.target.value))}
-              className="w-full p-3.5 rounded-2xl bg-amber-50/40 dark:bg-slate-800 border border-amber-200 dark:border-slate-700 text-xs sm:text-sm font-bold text-[#0A192F] dark:text-slate-100 outline-hidden focus:border-amber-600 transition"
+              className="w-full p-3.5 rounded-2xl bg-amber-50/40 dark:bg-slate-800 border border-amber-200 dark:border-slate-700 text-xs sm:text-sm font-bold text-[#0A192F] dark:text-slate-100 outline-hidden focus:border-amber-600 focus:ring-2 focus:ring-amber-400/20 transition shadow-2xs"
             >
               <option value={0}>0 Nights (Day Trip)</option>
               <option value={1}>1 Night</option>

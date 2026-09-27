@@ -53,22 +53,22 @@ const createCustomIcon = (category) => {
   });
 };
 
-// Map Layer Tile Providers
+// Map Layer Tile Providers (100% Free Open-Access High-Definition Map Tiles)
 const MAP_LAYERS = {
-  voyager: {
-    name: 'Voyager (Vibrant)',
-    url: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
-    attribution: '&copy; CartoDB &copy; OpenStreetMap'
-  },
   standard: {
     name: 'OpenStreetMap',
     url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-    attribution: '&copy; OpenStreetMap contributors'
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
   },
-  dark: {
-    name: 'Dark Matter',
-    url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
-    attribution: '&copy; CartoDB &copy; OpenStreetMap'
+  terrain: {
+    name: 'Terrain & Topo HD',
+    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',
+    attribution: '&copy; Esri &copy; OpenStreetMap'
+  },
+  humanitarian: {
+    name: 'Vibrant Routes',
+    url: 'https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png',
+    attribution: '&copy; OpenStreetMap France & HOT'
   },
   satellite: {
     name: 'Satellite HD',
@@ -94,7 +94,7 @@ export default function InteractiveMap({ destinations: initialDestinations }) {
   const [selectedZone, setSelectedZone] = useState('All');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
-  const [activeTileLayer, setActiveTileLayer] = useState('voyager');
+  const [activeTileLayer, setActiveTileLayer] = useState('standard');
   const [mapCenter, setMapCenter] = useState([22.9734, 78.6569]); // Center of India
   const [mapZoom, setMapZoom] = useState(5);
 

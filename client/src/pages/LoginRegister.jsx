@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { User, Lock, Mail, ShieldCheck, Compass, KeyRound, CheckCircle2, ArrowLeft, Clock, Sparkles } from 'lucide-react';
+import { User, Lock, Mail, ShieldCheck, Compass, KeyRound, CheckCircle2, ArrowLeft, Clock, Sparkles, Check, Key } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 export default function LoginRegister() {
@@ -9,11 +9,12 @@ export default function LoginRegister() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [adminSecretKey, setAdminSecretKey] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   
-  // OTP Verification state
-  const [otpStep, setOtpStep] = useState(1); // 1: Info entry, 2: OTP verification
+  // OTP Verification state (1: Info & Send OTP, 2: Enter & Verify OTP, 3: Set Password)
+  const [otpStep, setOtpStep] = useState(1); 
   const [otpDigits, setOtpDigits] = useState(['', '', '', '', '', '']);
+  const [verifiedOtp, setVerifiedOtp] = useState('');
   const [devOtpHint, setDevOtpHint] = useState('');
   const [countdown, setCountdown] = useState(60);
   const [canResend, setCanResend] = useState(false);
@@ -24,7 +25,7 @@ export default function LoginRegister() {
 
   const otpInputsRef = useRef([]);
 
-  const { loginUser, registerUser, sendRegistrationOTP, verifyOTPAndRegister } = useAuth();
+  const { loginUser, sendRegistrationOTP, verifyOnlyOTP, verifyOTPAndRegister } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const redirectTo = location.state?.from || '/';
@@ -48,13 +49,12 @@ export default function LoginRegister() {
 
   // Handle single-digit input in OTP boxes
   const handleDigitChange = (index, value) => {
-    if (!/^\d*$/.test(value)) return; // numbers only
+    if (!/^\d*$/.test(value)) return;
     const newDigits = [...otpDigits];
     newDigits[index] = value.substring(value.length - 1);
     setOtpDigits(newDigits);
     setError('');
 
-    // Auto-advance focus to next input
     if (value && index < 5) {
       otpInputsRef.current[index + 1]?.focus();
     }
@@ -82,25 +82,21 @@ export default function LoginRegister() {
     }
   };
 
-  // Step 1: Send OTP for Registration
+  // STEP 1: Send OTP to Email
   const handleSendOTP = async (e) => {
     e.preventDefault();
     setError('');
     setSuccessMsg('');
 
-    if (!name.trim() || !email.trim() || !password) {
-      setError('Please fill in all fields (Name, Email, and Password).');
-      return;
-    }
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters long.');
+    if (!name.trim() || !email.trim()) {
+      setError('Please enter your Full Name and Email Address.');
       return;
     }
 
     setLoading(true);
     try {
       const res = await sendRegistrationOTP(email.trim());
-      setSuccessMsg(res.message || `OTP sent successfully to ${email.trim()}!`);
+      setSuccessMsg(res.message || `6-Digit OTP sent to ${email.trim()}`);
       if (res.devOtpHint) {
         setDevOtpHint(res.devOtpHint);
       }
@@ -115,8 +111,8 @@ export default function LoginRegister() {
     }
   };
 
-  // Step 2: Verify OTP and complete Registration
-  const handleVerifyOTP = async (e) => {
+  // STEP 2: Verify Only OTP Code
+  const handleVerifyOTPOnly = async (e) => {
     e.preventDefault();
     setError('');
     setSuccessMsg('');
@@ -129,8 +125,37 @@ export default function LoginRegister() {
 
     setLoading(true);
     try {
-      const res = await verifyOTPAndRegister(name.trim(), email.trim(), password, otpCode);
-      setSuccessMsg('Account created and email verified successfully!');
+      const res = await verifyOnlyOTP(email.trim(), otpCode);
+      setVerifiedOtp(otpCode);
+      setSuccessMsg(res.message || '✓ OTP Verified! Now set your account password.');
+      setOtpStep(3);
+    } catch (err) {
+      setError(err.response?.data?.message || err.message || 'Invalid or expired OTP. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // STEP 3: Create Password & Complete Registration
+  const handleCompleteRegistration = async (e) => {
+    e.preventDefault();
+    setError('');
+    setSuccessMsg('');
+
+    if (!password || password.length < 6) {
+      setError('Password must be at least 6 characters long.');
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError('Passwords do not match. Please verify your password.');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const res = await verifyOTPAndRegister(name.trim(), email.trim(), password, verifiedOtp || otpDigits.join(''));
+      setSuccessMsg('✨ Account created & email verified successfully!');
       setTimeout(() => {
         if (res?.user?.role === 'admin') {
           navigate('/admin');
@@ -139,7 +164,7 @@ export default function LoginRegister() {
         }
       }, 500);
     } catch (err) {
-      setError(err.response?.data?.message || err.message || 'Invalid or expired OTP. Please try again.');
+      setError(err.response?.data?.message || err.message || 'Failed to complete registration.');
     } finally {
       setLoading(false);
     }
@@ -202,6 +227,8 @@ export default function LoginRegister() {
           }`}>
             {!isLogin && otpStep === 2 ? (
               <KeyRound className="w-7 h-7 text-white animate-pulse" />
+            ) : !isLogin && otpStep === 3 ? (
+              <Lock className="w-7 h-7 text-white" />
             ) : role === 'admin' && isLogin ? (
               <ShieldCheck className="w-7 h-7 text-white" />
             ) : (
@@ -214,9 +241,11 @@ export default function LoginRegister() {
               ? role === 'admin'
                 ? 'Sign In to Admin Portal'
                 : 'Sign In as Traveler'
-              : otpStep === 2
-                ? 'Verify Email OTP'
-                : 'Create Traveler Account'}
+              : otpStep === 1
+                ? 'Register & Get Email OTP'
+                : otpStep === 2
+                  ? 'Verify 6-Digit OTP'
+                  : 'Create Account Password'}
           </h2>
           
           <p className="text-xs text-slate-500 dark:text-slate-400">
@@ -224,9 +253,11 @@ export default function LoginRegister() {
               ? role === 'admin'
                 ? 'Access Bharat Yatra content management & user permission database.'
                 : 'Access saved AI itineraries, budget planner, and wishlist.'
-              : otpStep === 2
-                ? `Enter the 6-digit security code sent to ${email}`
-                : 'Register with email OTP verification to discover India.'}
+              : otpStep === 1
+                ? 'Enter your name and email to receive a 6-digit verification code.'
+                : otpStep === 2
+                  ? `Enter the 6-digit code sent to ${email}`
+                  : `OTP verified for ${email}! Set a password to complete account creation.`}
           </p>
         </div>
 
@@ -350,10 +381,10 @@ export default function LoginRegister() {
             </button>
           </form>
         ) : (
-          /* ================= REGISTER FORM (2-STEP OTP) ================= */
+          /* ================= REGISTER FORM (3-STEP VERIFICATION) ================= */
           <div>
             {otpStep === 1 ? (
-              /* STEP 1: Enter Registration Info */
+              /* STEP 1: Full Name & Email Address -> Send OTP */
               <form onSubmit={handleSendOTP} className="space-y-4">
                 <div>
                   <label className="text-xs font-bold text-amber-900/70 dark:text-slate-300 uppercase block mb-1">
@@ -389,23 +420,6 @@ export default function LoginRegister() {
                   </div>
                 </div>
 
-                <div>
-                  <label className="text-xs font-bold text-amber-900/70 dark:text-slate-300 uppercase block mb-1">
-                    Password
-                  </label>
-                  <div className="relative">
-                    <Lock className="w-4 h-4 text-amber-600 absolute left-3.5 top-1/2 -translate-y-1/2" />
-                    <input
-                      type="password"
-                      required
-                      placeholder="At least 6 characters"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      className="w-full pl-10 pr-3 py-3 rounded-xl bg-amber-50/40 dark:bg-slate-800/60 border border-amber-200 dark:border-slate-700 text-xs font-semibold outline-hidden focus:border-amber-600 text-[#0A192F] dark:text-slate-100"
-                    />
-                  </div>
-                </div>
-
                 <button
                   type="submit"
                   disabled={loading}
@@ -415,9 +429,9 @@ export default function LoginRegister() {
                   <span>{loading ? 'Sending OTP Code...' : 'Send 6-Digit OTP to Email'}</span>
                 </button>
               </form>
-            ) : (
-              /* STEP 2: Enter 6-Digit OTP Code */
-              <form onSubmit={handleVerifyOTP} className="space-y-5">
+            ) : otpStep === 2 ? (
+              /* STEP 2: Enter & Verify 6-Digit OTP Code */
+              <form onSubmit={handleVerifyOTPOnly} className="space-y-5">
                 <button
                   type="button"
                   onClick={() => setOtpStep(1)}
@@ -490,7 +504,67 @@ export default function LoginRegister() {
                   className="w-full py-3.5 rounded-xl text-xs font-bold bg-[#0A192F] hover:bg-[#020C1B] text-amber-300 dark:bg-amber-500 dark:text-slate-950 dark:hover:bg-amber-400 transition shadow-md disabled:opacity-50 cursor-pointer flex items-center justify-center gap-2"
                 >
                   <CheckCircle2 className="w-4 h-4 text-emerald-400 dark:text-slate-950" />
-                  <span>{loading ? 'Verifying OTP...' : 'Verify OTP & Create Account'}</span>
+                  <span>{loading ? 'Verifying OTP...' : 'Verify 6-Digit OTP'}</span>
+                </button>
+              </form>
+            ) : (
+              /* STEP 3: OTP Verified -> Create Account Password */
+              <form onSubmit={handleCompleteRegistration} className="space-y-4">
+                <div className="p-3 rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 flex items-center justify-between text-xs">
+                  <div className="flex items-center gap-2 text-emerald-800 dark:text-emerald-300 font-bold">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                    <span>Verified: {email}</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setOtpStep(1)}
+                    className="text-[10px] text-slate-500 underline font-semibold cursor-pointer"
+                  >
+                    Edit
+                  </button>
+                </div>
+
+                <div>
+                  <label className="text-xs font-bold text-amber-900/70 dark:text-slate-300 uppercase block mb-1">
+                    Create Password
+                  </label>
+                  <div className="relative">
+                    <Lock className="w-4 h-4 text-amber-600 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                    <input
+                      type="password"
+                      required
+                      placeholder="At least 6 characters"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="w-full pl-10 pr-3 py-3 rounded-xl bg-amber-50/40 dark:bg-slate-800/60 border border-amber-200 dark:border-slate-700 text-xs font-semibold outline-hidden focus:border-amber-600 text-[#0A192F] dark:text-slate-100"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-xs font-bold text-amber-900/70 dark:text-slate-300 uppercase block mb-1">
+                    Confirm Password
+                  </label>
+                  <div className="relative">
+                    <Lock className="w-4 h-4 text-amber-600 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                    <input
+                      type="password"
+                      required
+                      placeholder="Re-enter password"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      className="w-full pl-10 pr-3 py-3 rounded-xl bg-amber-50/40 dark:bg-slate-800/60 border border-amber-200 dark:border-slate-700 text-xs font-semibold outline-hidden focus:border-amber-600 text-[#0A192F] dark:text-slate-100"
+                    />
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full py-3.5 rounded-xl text-xs font-bold bg-[#0A192F] hover:bg-[#020C1B] text-amber-300 dark:bg-amber-500 dark:text-slate-950 dark:hover:bg-amber-400 transition shadow-md disabled:opacity-50 cursor-pointer flex items-center justify-center gap-2"
+                >
+                  <CheckCircle2 className="w-4 h-4 text-emerald-400 dark:text-slate-950" />
+                  <span>{loading ? 'Creating Account...' : 'Complete Sign Up & Start Exploring'}</span>
                 </button>
               </form>
             )}
@@ -501,4 +575,5 @@ export default function LoginRegister() {
     </div>
   );
 }
+
 

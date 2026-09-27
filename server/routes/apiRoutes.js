@@ -13,6 +13,7 @@ import {
   updateUserRole,
   deleteUserAccount,
   sendRegistrationOTP,
+  verifyOnlyOTP,
   verifyOtpAndRegister
 } from '../controllers/authController.js';
 import { 
@@ -45,6 +46,7 @@ router.use('/travel', travelRoutes);
 // --- Auth & Favorites Routes ---
 router.post('/auth/register', register);
 router.post('/auth/send-otp', sendRegistrationOTP);
+router.post('/auth/verify-otp', verifyOnlyOTP);
 router.post('/auth/verify-otp-register', verifyOtpAndRegister);
 router.post('/auth/login', login);
 router.get('/auth/profile', verifyToken, getProfile);

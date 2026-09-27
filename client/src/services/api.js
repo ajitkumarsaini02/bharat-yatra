@@ -976,8 +976,40 @@ export const api = {
     return {
       success: true,
       message: `6-Digit OTP sent to ${email}`,
-      devOtp: mockOtp
+      devOtpHint: mockOtp
     };
+  },
+
+  // Auth: Verify OTP Only
+  verifyOnlyOTP: async (email, otp) => {
+    if (API_BASE) {
+      try {
+        const res = await apiClient.post('/auth/verify-otp', { email, otp });
+        if (res.data && typeof res.data !== 'string') {
+          return res.data;
+        }
+      } catch (err) {
+        if (err.response && err.response.data && err.response.data.message) {
+          throw err;
+        }
+      }
+    }
+    const storedStr = localStorage.getItem(`otp_${email.toLowerCase()}`);
+    if (storedStr) {
+      const stored = JSON.parse(storedStr);
+      if (Date.now() > stored.expiresAt) {
+        const expErr = new Error('OTP code has expired. Please click Resend OTP.');
+        expErr.response = { data: { message: 'OTP code has expired. Please click Resend OTP.' } };
+        throw expErr;
+      }
+      if (stored.otp !== otp) {
+        const invalidErr = new Error('Invalid 6-digit OTP code. Please check and try again.');
+        invalidErr.response = { data: { message: 'Invalid 6-digit OTP code. Please check and try again.' } };
+        throw invalidErr;
+      }
+      return { success: true, message: 'OTP Code Verified Successfully!' };
+    }
+    return { success: true, message: 'OTP Code Verified Successfully!' };
   },
 
   // Auth: Verify OTP and Register

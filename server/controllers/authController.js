@@ -73,7 +73,42 @@ export const sendRegistrationOTP = async (req, res) => {
     return res.json({
       success: true,
       message: `6-Digit OTP sent successfully to ${normalizedEmail}`,
-      devOtp: otpCode
+      devOtpHint: otpCode
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+/**
+ * Verify OTP Code Only (Step 2 of Registration)
+ */
+export const verifyOnlyOTP = async (req, res) => {
+  try {
+    const { email, otp } = req.body;
+    if (!email || !otp) {
+      return res.status(400).json({ success: false, message: 'Email and 6-digit OTP code are required.' });
+    }
+
+    const normalizedEmail = email.toLowerCase().trim();
+    const stored = otpStore.get(normalizedEmail);
+
+    if (!stored) {
+      return res.status(400).json({ success: false, message: 'OTP not requested or expired. Please click Resend OTP.' });
+    }
+
+    if (Date.now() > stored.expiresAt) {
+      otpStore.delete(normalizedEmail);
+      return res.status(400).json({ success: false, message: 'OTP code has expired. Please click Resend OTP.' });
+    }
+
+    if (stored.otp !== otp.toString().trim()) {
+      return res.status(400).json({ success: false, message: 'Invalid 6-digit OTP code. Please check and try again.' });
+    }
+
+    return res.json({
+      success: true,
+      message: 'OTP Code Verified Successfully! Please set your password to complete registration.'
     });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });

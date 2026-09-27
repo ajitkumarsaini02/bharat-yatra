@@ -76,11 +76,16 @@ export default function AdminDashboard() {
   const loadAllAccounts = async () => {
     try {
       const res = await api.getAllAccounts();
-      if (res && res.data) {
+      if (res && Array.isArray(res.data)) {
         setAllAccounts(res.data);
+      } else if (Array.isArray(res)) {
+        setAllAccounts(res);
+      } else {
+        setAllAccounts([]);
       }
     } catch (err) {
       console.error('Error fetching accounts:', err);
+      setAllAccounts([]);
     }
   };
 
@@ -98,8 +103,13 @@ export default function AdminDashboard() {
         if (adminRes.status === 'fulfilled' && adminRes.value?.data) {
           setAdmins(adminRes.value.data);
         }
-        if (accRes.status === 'fulfilled' && accRes.value?.data) {
-          setAllAccounts(accRes.value.data);
+        if (accRes.status === 'fulfilled') {
+          const val = accRes.value;
+          if (val && Array.isArray(val.data)) {
+            setAllAccounts(val.data);
+          } else if (Array.isArray(val)) {
+            setAllAccounts(val);
+          }
         }
       } catch (err) {
         console.error('Fetch error:', err);
@@ -443,7 +453,10 @@ export default function AdminDashboard() {
               <span>Admin Team ({admins.length})</span>
             </button>
             <button
-              onClick={() => setActiveTab('accounts')}
+              onClick={() => {
+                setActiveTab('accounts');
+                loadAllAccounts();
+              }}
               className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
                 activeTab === 'accounts'
                   ? 'bg-[#0A192F] text-amber-300 dark:bg-amber-500 dark:text-slate-950 shadow-sm'
@@ -1256,8 +1269,9 @@ export default function AdminDashboard() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-amber-100/60 dark:divide-slate-800">
-                  {allAccounts
+                  {(Array.isArray(allAccounts) ? allAccounts : [])
                     .filter(acc => {
+                      if (!acc) return false;
                       if (!accountSearchQuery.trim()) return true;
                       const q = accountSearchQuery.toLowerCase().trim();
                       return (acc.name || '').toLowerCase().includes(q) || (acc.email || '').toLowerCase().includes(q);

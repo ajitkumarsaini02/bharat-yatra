@@ -158,6 +158,10 @@ export const AuthProvider = ({ children }) => {
     return await api.sendRegistrationOTP(email);
   };
 
+  const verifyOnlyOTP = async (email, otp) => {
+    return await api.verifyOnlyOTP(email, otp);
+  };
+
   const verifyOTPAndRegister = async (name, email, password, otp) => {
     const res = await api.verifyOtpAndRegister({ name, email, password, otp });
     if (res.user) {
@@ -182,6 +186,7 @@ export const AuthProvider = ({ children }) => {
       loginUser,
       registerUser,
       sendRegistrationOTP,
+      verifyOnlyOTP,
       verifyOTPAndRegister,
       logoutUser,
       isAuthenticated: !!user,

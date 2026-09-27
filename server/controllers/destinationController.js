@@ -360,7 +360,8 @@ export const deleteDestination = async (req, res) => {
   try {
     const { id } = req.params;
     const requesterId = req.user?.id || req.query.adminId || req.headers['x-admin-id'];
-    const requesterEmail = req.user?.email || req.query.adminEmail || req.headers['x-admin-email'];
+    const requesterEmail = (req.user?.email || req.query.adminEmail || req.headers['x-admin-email'] || '').toLowerCase();
+    const superAdminEmail = (process.env.SUPER_ADMIN_EMAIL || 'ajitkumarsaini875@gmail.com').toLowerCase().trim();
     const isDbConnected = mongoose.connection.readyState === 1;
 
     let targetDest = null;
@@ -376,18 +377,18 @@ export const deleteDestination = async (req, res) => {
       return res.status(404).json({ success: false, message: 'Destination not found' });
     }
 
-    // Ownership Verification: Only the Admin who created this destination can remove it!
-    if (targetDest.createdBy || targetDest.createdByEmail) {
-      const isOwner = (requesterId && targetDest.createdBy && String(targetDest.createdBy) === String(requesterId)) ||
-                      (requesterEmail && targetDest.createdByEmail && targetDest.createdByEmail.toLowerCase() === requesterEmail.toLowerCase()) ||
-                      (targetDest.createdByEmail === 'admin@bharatyatra.com'); // Root admin compatibility
+    // STRICT CREATOR OWNERSHIP CHECK:
+    // 1. Super Admin (ajitkumarsaini875@gmail.com) is Root Owner who can delete any destination.
+    // 2. Sub-Admins can ONLY delete destinations they created!
+    const isSuperAdmin = requesterEmail === superAdminEmail;
+    const isCreator = (requesterEmail && targetDest.createdByEmail && targetDest.createdByEmail.toLowerCase() === requesterEmail) ||
+                      (requesterId && targetDest.createdBy && String(targetDest.createdBy) === String(requesterId));
 
-      if (!isOwner && requesterEmail) {
-        return res.status(403).json({
-          success: false,
-          message: `Permission Denied: Aap sirf wahi destination remove kar sakte hain jo aapne create kiya tha. (Added by: ${targetDest.createdByName || targetDest.createdByEmail})`
-        });
-      }
+    if (!isSuperAdmin && !isCreator) {
+      return res.status(403).json({
+        success: false,
+        message: `Permission Denied: Aap sirf wahi destination delete kar sakte hain jo aapne khud add kiya hai. (Added by: ${targetDest.createdByName || targetDest.createdByEmail || 'Super Administrator'})`
+      });
     }
 
     if (isDbConnected) {

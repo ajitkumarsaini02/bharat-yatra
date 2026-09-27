@@ -296,14 +296,13 @@ export default function AdminDashboard() {
   };
 
   const handleDelete = async (dest) => {
-    // Ownership check: Only the admin who created it can remove it
-    const isOwner = !dest.createdByEmail || 
-                    (user?.email && dest.createdByEmail.toLowerCase() === user.email.toLowerCase()) ||
-                    (user?.id && dest.createdBy && String(dest.createdBy) === String(user.id)) ||
-                    (user?.email?.toLowerCase() === superAdminEmail.toLowerCase());
+    // Creator ownership check: Sub-admins can ONLY delete destinations they created. Super Admin can delete any destination.
+    const isSuperAdmin = user?.email?.toLowerCase() === superAdminEmail.toLowerCase();
+    const isCreator = (user?.email && dest.createdByEmail && dest.createdByEmail.toLowerCase() === user.email.toLowerCase()) ||
+                      (user?.id && dest.createdBy && String(dest.createdBy) === String(user.id));
 
-    if (!isOwner) {
-      alert(`⚠️ Permission Denied:\nAap sirf wahi destination remove kar sakte hain jo aapne create kiya tha.\n(Created by: ${dest.createdByName || dest.createdByEmail})`);
+    if (!isSuperAdmin && !isCreator) {
+      alert(`⚠️ Permission Denied:\nAap sirf wahi destination delete kar sakte hain jo aapne khud add kiya hai.\n(Added by: ${dest.createdByName || dest.createdByEmail || 'Super Administrator'})`);
       return;
     }
 

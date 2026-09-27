@@ -64,19 +64,22 @@ export const sendRegistrationOTP = async (req, res) => {
 
     otpStore.set(normalizedEmail, { otp: otpCode, expiresAt });
 
-    // Send Real Email via Nodemailer SMTP
-    let realEmailDispatched = false;
+    // Send Real Email via Nodemailer SMTP (or Ethereal Mail)
+    let emailResult = null;
     try {
-      realEmailDispatched = await sendOTPEmail(normalizedEmail, otpCode);
+      emailResult = await sendOTPEmail(normalizedEmail, otpCode);
     } catch (mailErr) {
-      console.error('⚠️ Real SMTP Dispatch Failed:', mailErr.message);
+      console.error('⚠️ SMTP Dispatch Error:', mailErr.message);
     }
+
+    const hasPreview = emailResult && emailResult.previewUrl;
 
     return res.json({
       success: true,
-      message: realEmailDispatched 
-        ? `6-Digit OTP code sent to your email inbox (${normalizedEmail})!`
-        : `6-Digit OTP code generated for ${normalizedEmail}`,
+      message: hasPreview
+        ? `6-Digit OTP code sent! Check preview inbox or server logs.`
+        : `6-Digit OTP code sent to ${normalizedEmail}`,
+      previewUrl: hasPreview ? emailResult.previewUrl : undefined,
       devOtpHint: process.env.NODE_ENV === 'development' ? otpCode : undefined
     });
   } catch (error) {

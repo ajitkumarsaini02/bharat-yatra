@@ -1,7 +1,7 @@
 import nodemailer from 'nodemailer';
 
 /**
- * Send Real HTML OTP Email via Nodemailer SMTP
+ * Send Real HTML OTP Email via Nodemailer SMTP (or automatic Ethereal Test Inbox)
  */
 export const sendOTPEmail = async (recipientEmail, otpCode) => {
   const emailUser = process.env.EMAIL_USER;
@@ -9,28 +9,52 @@ export const sendOTPEmail = async (recipientEmail, otpCode) => {
   const emailHost = process.env.EMAIL_HOST || 'smtp.gmail.com';
   const emailPort = parseInt(process.env.EMAIL_PORT || '587');
 
-  if (!emailUser || !emailPass) {
-    console.log(`\n==============================================`);
-    console.log(`✉️ [OTP CREATED FOR: ${recipientEmail}]`);
-    console.log(`Verification Code: ${otpCode}`);
-    console.log(`⚠️ SMTP credentials not set in server/.env (EMAIL_USER & EMAIL_PASS).`);
-    console.log(`To receive real emails in inbox, set EMAIL_USER & EMAIL_PASS in server/.env`);
-    console.log(`==============================================\n`);
-    return false;
+  const isPlaceholderUser = !emailUser || emailUser.includes('your') || emailUser === 'bharatyatra.official@gmail.com';
+  const isPlaceholderPass = !emailPass || emailPass.includes('your_');
+
+  let transporter;
+  let fromAddress;
+  let isTestAccount = false;
+
+  if (!isPlaceholderUser && !isPlaceholderPass) {
+    // Custom Real SMTP (e.g. User's Gmail App Password or SendGrid / Brevo)
+    transporter = nodemailer.createTransport({
+      host: emailHost,
+      port: emailPort,
+      secure: emailPort === 465,
+      auth: {
+        user: emailUser,
+        pass: emailPass
+      }
+    });
+    fromAddress = process.env.EMAIL_FROM || `"Bharat Yatra Security" <${emailUser}>`;
+  } else {
+    // Generate Ethereal Test Account on the fly for real test email previews
+    isTestAccount = true;
+    try {
+      const testAccount = await nodemailer.createTestAccount();
+      transporter = nodemailer.createTransport({
+        host: 'smtp.ethereal.email',
+        port: 587,
+        secure: false,
+        auth: {
+          user: testAccount.user,
+          pass: testAccount.pass
+        }
+      });
+      fromAddress = `"Bharat Yatra Security" <${testAccount.user}>`;
+    } catch (err) {
+      console.log(`\n==============================================`);
+      console.log(`✉️ [OTP GENERATED FOR: ${recipientEmail}]`);
+      console.log(`Verification Code: ${otpCode}`);
+      console.log(`⚠️ SMTP Credentials not set in server/.env`);
+      console.log(`==============================================\n`);
+      return { success: true, isTestAccount: true };
+    }
   }
 
-  const transporter = nodemailer.createTransport({
-    host: emailHost,
-    port: emailPort,
-    secure: emailPort === 465,
-    auth: {
-      user: emailUser,
-      pass: emailPass
-    }
-  });
-
   const mailOptions = {
-    from: process.env.EMAIL_FROM || `"Bharat Yatra Security" <${emailUser}>`,
+    from: fromAddress,
     to: recipientEmail,
     subject: `🔐 Your Bharat Yatra Verification Code is ${otpCode}`,
     html: `
@@ -58,7 +82,19 @@ export const sendOTPEmail = async (recipientEmail, otpCode) => {
     `
   };
 
-  await transporter.sendMail(mailOptions);
+  const info = await transporter.sendMail(mailOptions);
+  const testPreviewUrl = nodemailer.getTestMessageUrl(info);
+
+  if (testPreviewUrl) {
+    console.log(`\n==============================================`);
+    console.log(`✉️ [REAL TEST INBOX CREATED VIA ETHEREAL MAIL]`);
+    console.log(`Recipient: ${recipientEmail}`);
+    console.log(`Verification Code: ${otpCode}`);
+    console.log(`🔗 Click to View Real Rendered Inbox Email:\n${testPreviewUrl}`);
+    console.log(`==============================================\n`);
+    return { success: true, previewUrl: testPreviewUrl, isTestAccount: true };
+  }
+
   console.log(`\n✅ [REAL EMAIL DISPATCH SUCCESS] Sent OTP ${otpCode} to ${recipientEmail} via SMTP!\n`);
-  return true;
+  return { success: true, isTestAccount: false };
 };

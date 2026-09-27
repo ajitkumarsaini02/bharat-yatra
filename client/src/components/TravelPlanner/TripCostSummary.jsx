@@ -17,6 +17,15 @@ export default function TripCostSummary({ costData, from, destination, travelDat
 
   const travelers = costData.travelersCount || 2;
   const nights = costData.hotelNights || 2;
+  const tripDays = Math.max(1, (nights || 1) + 1);
+
+  const queryParams = new URLSearchParams({
+    destination: destination || '',
+    from: from || '',
+    days: tripDays,
+    travelers: travelers,
+    date: travelDate || ''
+  }).toString();
 
   return (
     <div className="bg-gradient-to-br from-[#020C1B] to-[#0A192F] text-white rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6 border border-amber-400/20">
@@ -45,52 +54,106 @@ export default function TripCostSummary({ costData, from, destination, travelDat
 
       {/* Itemized Cost Breakdown Table */}
       <div className="space-y-3">
-        <span className="text-xs font-bold text-slate-300 uppercase tracking-wider block">
-          Itemized Trip Cost Allocation
-        </span>
+        <div className="flex items-center justify-between">
+          <span className="text-xs font-bold text-slate-300 uppercase tracking-wider block">
+            Itemized Trip Cost Allocation
+          </span>
+          <span className="text-[10px] text-amber-300/80 font-medium">
+            💡 Click any row to auto-fill details into Planner/Calculator
+          </span>
+        </div>
 
         <div className="space-y-2 text-xs">
-          <div className="flex justify-between items-center p-3 rounded-xl bg-white/5 border border-white/5">
-            <span className="text-slate-300 font-semibold">Intercity Travel Cost (Air/Rail/Bus)</span>
+          <Link
+            to={`/budget-calculator?${queryParams}&mode=Train`}
+            className="flex justify-between items-center p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-amber-400/30 transition group cursor-pointer"
+            title="Auto-fill into Budget Calculator"
+          >
+            <span className="text-slate-300 group-hover:text-amber-300 font-semibold flex items-center gap-1.5">
+              <span>Intercity Travel Cost (Air/Rail/Bus)</span>
+              <ArrowRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition text-amber-300" />
+            </span>
             <span className="font-mono font-bold text-amber-300">₹{travelCost.toLocaleString('en-IN')}</span>
-          </div>
+          </Link>
 
-          <div className="flex justify-between items-center p-3 rounded-xl bg-white/5 border border-white/5">
-            <span className="text-slate-300 font-semibold">Hotel Accommodation ({nights} Nights)</span>
+          <Link
+            to={`/budget-calculator?${queryParams}&tier=Moderate`}
+            className="flex justify-between items-center p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-amber-400/30 transition group cursor-pointer"
+            title="Auto-fill into Budget Calculator"
+          >
+            <span className="text-slate-300 group-hover:text-amber-300 font-semibold flex items-center gap-1.5">
+              <span>Hotel Accommodation ({nights} Nights)</span>
+              <ArrowRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition text-amber-300" />
+            </span>
             <span className="font-mono font-bold text-amber-300">₹{hotelCost.toLocaleString('en-IN')}</span>
-          </div>
+          </Link>
 
-          <div className="flex justify-between items-center p-3 rounded-xl bg-white/5 border border-white/5">
-            <span className="text-slate-300 font-semibold">Local Transport (Commute & Cab)</span>
+          <Link
+            to={`/budget-calculator?${queryParams}&mode=Cab`}
+            className="flex justify-between items-center p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-amber-400/30 transition group cursor-pointer"
+            title="Auto-fill into Budget Calculator"
+          >
+            <span className="text-slate-300 group-hover:text-amber-300 font-semibold flex items-center gap-1.5">
+              <span>Local Transport (Commute & Cab)</span>
+              <ArrowRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition text-amber-300" />
+            </span>
             <span className="font-mono font-bold text-amber-300">₹{localTransportCost.toLocaleString('en-IN')}</span>
-          </div>
+          </Link>
 
-          <div className="flex justify-between items-center p-3 rounded-xl bg-white/5 border border-white/5">
-            <span className="text-slate-300 font-semibold">Food & Regional Dining</span>
+          <Link
+            to={`/ai-planner?${queryParams}&interest=Food`}
+            className="flex justify-between items-center p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-amber-400/30 transition group cursor-pointer"
+            title="Auto-fill into AI Itinerary Planner"
+          >
+            <span className="text-slate-300 group-hover:text-amber-300 font-semibold flex items-center gap-1.5">
+              <span>Food & Regional Dining</span>
+              <ArrowRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition text-amber-300" />
+            </span>
             <span className="font-mono font-bold text-amber-300">₹{foodCost.toLocaleString('en-IN')}</span>
-          </div>
+          </Link>
 
-          <div className="flex justify-between items-center p-3 rounded-xl bg-white/5 border border-white/5">
-            <span className="text-slate-300 font-semibold">Attraction & Monument Entry Tickets</span>
+          <Link
+            to={`/ai-planner?${queryParams}&interest=Heritage`}
+            className="flex justify-between items-center p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-amber-400/30 transition group cursor-pointer"
+            title="Auto-fill into AI Itinerary Planner"
+          >
+            <span className="text-slate-300 group-hover:text-amber-300 font-semibold flex items-center gap-1.5">
+              <span>Attraction & Monument Entry Tickets</span>
+              <ArrowRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition text-amber-300" />
+            </span>
             <span className="font-mono font-bold text-amber-300">₹{attractionTicketsCost.toLocaleString('en-IN')}</span>
-          </div>
+          </Link>
 
-          <div className="flex justify-between items-center p-3 rounded-xl bg-white/5 border border-white/5">
-            <span className="text-slate-300 font-semibold">Emergency & Shopping Buffer (10%)</span>
+          <Link
+            to={`/budget-calculator?${queryParams}`}
+            className="flex justify-between items-center p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-amber-400/30 transition group cursor-pointer"
+            title="Auto-fill into Budget Calculator"
+          >
+            <span className="text-slate-300 group-hover:text-amber-300 font-semibold flex items-center gap-1.5">
+              <span>Emergency & Shopping Buffer (10%)</span>
+              <ArrowRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition text-amber-300" />
+            </span>
             <span className="font-mono font-bold text-amber-300">₹{emergencyBuffer.toLocaleString('en-IN')}</span>
-          </div>
+          </Link>
 
-          <div className="flex justify-between items-center p-3.5 rounded-xl bg-amber-500/20 border border-amber-400/40 text-sm font-bold pt-3 mt-1">
-            <span className="text-white uppercase tracking-wider font-extrabold">Estimated Total Trip Cost</span>
+          <Link
+            to={`/budget-calculator?${queryParams}`}
+            className="flex justify-between items-center p-3.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400/40 text-sm font-bold pt-3 mt-1 transition group cursor-pointer"
+            title="Auto-fill total cost into Smart Budget Calculator"
+          >
+            <span className="text-white uppercase tracking-wider font-extrabold flex items-center gap-2">
+              <span>Estimated Total Trip Cost</span>
+              <ArrowRight className="w-4 h-4 text-amber-400 group-hover:translate-x-1 transition" />
+            </span>
             <span className="font-mono text-amber-400 text-base font-black">₹{estimatedTotal.toLocaleString('en-IN')}</span>
-          </div>
+          </Link>
         </div>
       </div>
 
       {/* Cross-Module Integration Actions */}
       <div className="pt-2 grid grid-cols-1 sm:grid-cols-2 gap-3">
         <Link
-          to={`/ai-planner?destination=${encodeURIComponent(destination)}`}
+          to={`/ai-planner?${queryParams}`}
           className="py-3.5 px-4 rounded-xl gradient-saffron text-slate-950 font-black text-xs uppercase tracking-wider flex items-center justify-center space-x-2 shadow-lg shadow-amber-500/25 hover:opacity-95 transition"
         >
           <Sparkles className="w-4 h-4 text-slate-950" />
@@ -99,7 +162,7 @@ export default function TripCostSummary({ costData, from, destination, travelDat
         </Link>
 
         <Link
-          to={`/budget-calculator?destination=${encodeURIComponent(destination)}`}
+          to={`/budget-calculator?${queryParams}`}
           className="py-3.5 px-4 rounded-xl bg-white/10 hover:bg-white/15 text-amber-300 border border-amber-400/30 font-bold text-xs uppercase tracking-wider flex items-center justify-center space-x-2 transition"
         >
           <Calculator className="w-4 h-4 text-amber-400" />

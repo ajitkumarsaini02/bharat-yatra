@@ -949,6 +949,74 @@ export const api = {
     return loginLocally(credentials);
   },
 
+  // Auth: Send OTP
+  sendRegistrationOTP: async (email) => {
+    if (API_BASE) {
+      try {
+        const res = await apiClient.post('/auth/send-otp', { email });
+        if (res.data && typeof res.data !== 'string') {
+          return res.data;
+        }
+      } catch (err) {
+        if (err.response && err.response.data && err.response.data.message) {
+          throw err;
+        }
+      }
+    }
+    // Local fallback for dev/offline testing
+    const registeredUsers = JSON.parse(localStorage.getItem('bharat_yatra_registered_users') || '[]');
+    const exists = registeredUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
+    if (exists) {
+      const existErr = new Error('This email is already registered. Please sign in.');
+      existErr.response = { data: { message: 'This email is already registered. Please sign in.' } };
+      throw existErr;
+    }
+    const mockOtp = Math.floor(100000 + Math.random() * 900000).toString();
+    localStorage.setItem(`otp_${email.toLowerCase()}`, JSON.stringify({ otp: mockOtp, expiresAt: Date.now() + 600000 }));
+    return {
+      success: true,
+      message: `6-Digit OTP sent to ${email}`,
+      devOtp: mockOtp
+    };
+  },
+
+  // Auth: Verify OTP and Register
+  verifyOtpAndRegister: async (registerPayload) => {
+    if (API_BASE) {
+      try {
+        const res = await apiClient.post('/auth/verify-otp-register', registerPayload);
+        if (res.data && typeof res.data !== 'string' && res.data.user) {
+          if (res.data.token) {
+            localStorage.setItem('bharat_yatra_token', res.data.token);
+          }
+          return res.data;
+        }
+      } catch (err) {
+        if (err.response && err.response.data && err.response.data.message) {
+          throw err;
+        }
+      }
+    }
+    // Local fallback check for OTP verification
+    const { email, otp } = registerPayload;
+    const storedStr = localStorage.getItem(`otp_${email.toLowerCase()}`);
+    if (storedStr) {
+      const stored = JSON.parse(storedStr);
+      if (Date.now() > stored.expiresAt) {
+        const expErr = new Error('OTP code has expired. Please click Resend OTP.');
+        expErr.response = { data: { message: 'OTP code has expired. Please click Resend OTP.' } };
+        throw expErr;
+      }
+      if (stored.otp !== otp) {
+        const invalidErr = new Error('Invalid 6-digit OTP code. Please check and try again.');
+        invalidErr.response = { data: { message: 'Invalid 6-digit OTP code. Please check and try again.' } };
+        throw invalidErr;
+      }
+      localStorage.removeItem(`otp_${email.toLowerCase()}`);
+    }
+    return registerLocally(registerPayload);
+  },
+
   // Auth: Register
   register: async (userData) => {
     if (API_BASE) {
@@ -1081,5 +1149,97 @@ export const api = {
     localStorage.setItem('bharat_yatra_admin_accounts', JSON.stringify(filtered));
 
     return { success: true, message: `Admin account "${target.name}" deleted successfully.` };
+  },
+
+  // Super Admin: Get all accounts (Users & Admins)
+  getAllAccounts: async () => {
+    if (API_BASE) {
+      try {
+        const res = await apiClient.get('/admin/all-accounts');
+        if (res.data && typeof res.data !== 'string' && res.data.success) {
+          return res.data;
+        }
+      } catch (err) {
+        // Fallback
+      }
+    }
+    const registeredUsers = JSON.parse(localStorage.getItem('bharat_yatra_registered_users') || '[]');
+    const localAdmins = JSON.parse(localStorage.getItem('bharat_yatra_admin_accounts') || '[]');
+    const superAdmin = {
+      id: 'super-admin-root',
+      name: 'Super Administrator',
+      email: 'admin@bharatyatra.com',
+      role: 'admin',
+      accountType: 'Admin',
+      isSuperAdmin: true,
+      department: 'Master Architecture'
+    };
+
+    const combined = [
+      superAdmin,
+      ...localAdmins.map(a => ({ ...a, accountType: 'Admin', isSuperAdmin: a.email === 'admin@bharatyatra.com' })),
+      ...registeredUsers.map(u => ({ ...u, accountType: u.role === 'admin' ? 'Admin' : 'Traveler', isSuperAdmin: u.email === 'admin@bharatyatra.com' }))
+    ];
+
+    // Deduplicate by email
+    const uniqueMap = new Map();
+    combined.forEach(item => {
+      if (item.email && !uniqueMap.has(item.email.toLowerCase())) {
+        uniqueMap.set(item.email.toLowerCase(), item);
+      }
+    });
+
+    const data = Array.from(uniqueMap.values());
+    return { success: true, count: data.length, superAdminEmail: 'admin@bharatyatra.com', data };
+  },
+
+  // Super Admin / Admin: Promote/Demote User Role
+  updateUserRole: async (userId, newRole) => {
+    if (API_BASE) {
+      try {
+        const res = await apiClient.put(`/admin/users/${userId}/role`, { newRole });
+        if (res.data && typeof res.data !== 'string') {
+          return res.data;
+        }
+      } catch (err) {
+        if (err.response && err.response.data && err.response.data.message) {
+          throw err;
+        }
+      }
+    }
+    const registeredUsers = JSON.parse(localStorage.getItem('bharat_yatra_registered_users') || '[]');
+    const found = registeredUsers.find(u => u.id === userId || u._id === userId || u.email === userId);
+    if (found) {
+      found.role = newRole;
+      localStorage.setItem('bharat_yatra_registered_users', JSON.stringify(registeredUsers));
+      return { success: true, message: `Role updated to ${newRole} for ${found.name}` };
+    }
+    return { success: true, message: `Role updated to ${newRole}` };
+  },
+
+  // Super Admin / Admin: Delete User or Admin account
+  deleteUserAccount: async (userId) => {
+    if (API_BASE) {
+      try {
+        const res = await apiClient.delete(`/admin/all-users/${userId}`);
+        if (res.data && typeof res.data !== 'string') {
+          return res.data;
+        }
+      } catch (err) {
+        if (err.response && err.response.data && err.response.data.message) {
+          throw err;
+        }
+      }
+    }
+    const registeredUsers = JSON.parse(localStorage.getItem('bharat_yatra_registered_users') || '[]');
+    const filteredUsers = registeredUsers.filter(u => u.id !== userId && u._id !== userId && u.email !== userId);
+    localStorage.setItem('bharat_yatra_registered_users', JSON.stringify(filteredUsers));
+
+    const localAdmins = JSON.parse(localStorage.getItem('bharat_yatra_admin_accounts') || '[]');
+    const filteredAdmins = localAdmins.filter(a => a.id !== userId && a._id !== userId && a.email !== userId);
+    localStorage.setItem('bharat_yatra_admin_accounts', JSON.stringify(filteredAdmins));
+
+    return { success: true, message: `Account deleted successfully.` };
   }
 };
+

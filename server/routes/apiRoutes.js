@@ -8,7 +8,12 @@ import {
   getFavorites,
   getAllAdmins,
   createAdminAccount,
-  deleteAdminAccount
+  deleteAdminAccount,
+  getAllAccounts,
+  updateUserRole,
+  deleteUserAccount,
+  sendRegistrationOTP,
+  verifyOtpAndRegister
 } from '../controllers/authController.js';
 import { 
   getDestinations, 
@@ -39,15 +44,20 @@ router.use('/travel', travelRoutes);
 
 // --- Auth & Favorites Routes ---
 router.post('/auth/register', register);
+router.post('/auth/send-otp', sendRegistrationOTP);
+router.post('/auth/verify-otp-register', verifyOtpAndRegister);
 router.post('/auth/login', login);
 router.get('/auth/profile', verifyToken, getProfile);
 router.post('/auth/favorites/toggle', verifyToken, toggleFavorite);
 router.get('/auth/favorites', verifyToken, getFavorites);
 
-// --- Admin Accounts Management Routes ---
+// --- Admin Accounts & User Management Routes ---
 router.get('/admin/users', verifyAdmin, getAllAdmins);
 router.post('/admin/users', verifyAdmin, createAdminAccount);
 router.delete('/admin/users/:id', verifyAdmin, deleteAdminAccount);
+router.get('/admin/all-accounts', verifyAdmin, getAllAccounts);
+router.put('/admin/users/:userId/role', verifyAdmin, updateUserRole);
+router.delete('/admin/all-users/:userId', verifyAdmin, deleteUserAccount);
 
 // --- Extended External Search & Proximity Discovery Routes ---
 router.get('/destinations/search', searchExternalDestinations);

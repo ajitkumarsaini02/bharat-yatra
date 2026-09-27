@@ -10,15 +10,55 @@ import {
 import { api } from '../services/api';
 import { destinationsData } from '../data/mockData';
 
+// Helper function for matching destination string to destinationsData
+const matchDestination = (param) => {
+  if (!param) return 'Jaipur (The Pink City)';
+  const p = param.trim().toLowerCase();
+  const found = destinationsData.find(d => 
+    d.name.toLowerCase() === p ||
+    d.name.toLowerCase().includes(p) ||
+    p.includes(d.name.toLowerCase()) ||
+    (d.state && d.state.toLowerCase() === p)
+  );
+  return found ? found.name : param;
+};
+
 export default function BudgetPlannerPage() {
   const [searchParams] = useSearchParams();
-  const initialDest = searchParams.get('destination') || 'Jaipur (The Pink City)';
+  const destParam = searchParams.get('destination');
+  const daysParam = searchParams.get('days') || searchParams.get('duration');
+  const travelersParam = searchParams.get('travelers') || searchParams.get('travelersCount');
+  const modeParam = searchParams.get('mode');
+  const tierParam = searchParams.get('tier');
 
-  const [destination, setDestination] = useState(initialDest);
-  const [travelersCount, setTravelersCount] = useState(2);
-  const [durationDays, setDurationDays] = useState(4);
-  const [travelTier, setTravelTier] = useState('Moderate');
-  const [transitMode, setTransitMode] = useState('Train');
+  const [destination, setDestination] = useState(() => matchDestination(destParam));
+  const [travelersCount, setTravelersCount] = useState(() => travelersParam ? Math.min(Math.max(Number(travelersParam), 1), 8) : 2);
+  const [durationDays, setDurationDays] = useState(() => daysParam ? Math.min(Math.max(Number(daysParam), 1), 14) : 4);
+  const [travelTier, setTravelTier] = useState(() => tierParam || 'Moderate');
+  const [transitMode, setTransitMode] = useState(() => {
+    if (modeParam) {
+      const lower = modeParam.toLowerCase();
+      if (lower.includes('cab')) return 'Cab';
+      if (lower.includes('flight') || lower.includes('air')) return 'Flight';
+      if (lower.includes('bus')) return 'Bus';
+      return 'Train';
+    }
+    return 'Train';
+  });
+
+  // Keep state in sync if URL query params change
+  useEffect(() => {
+    if (destParam) setDestination(matchDestination(destParam));
+    if (daysParam) setDurationDays(Math.min(Math.max(Number(daysParam), 1), 14));
+    if (travelersParam) setTravelersCount(Math.min(Math.max(Number(travelersParam), 1), 8));
+    if (tierParam) setTravelTier(tierParam);
+    if (modeParam) {
+      const lower = modeParam.toLowerCase();
+      if (lower.includes('cab')) setTransitMode('Cab');
+      else if (lower.includes('flight')) setTransitMode('Flight');
+      else setTransitMode('Train');
+    }
+  }, [destParam, daysParam, travelersParam, modeParam, tierParam]);
 
   const [budgetResult, setBudgetResult] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -75,6 +115,9 @@ export default function BudgetPlannerPage() {
               onChange={(e) => setDestination(e.target.value)}
               className="w-full p-3.5 rounded-2xl bg-amber-50/40 dark:bg-slate-800 border border-amber-200 dark:border-slate-700 text-xs sm:text-sm font-bold text-[#0A192F] dark:text-slate-100 outline-hidden focus:border-amber-600"
             >
+              {!destinationsData.some(d => d.name === destination) && (
+                <option value={destination}>{destination}</option>
+              )}
               {destinationsData.map((d) => (
                 <option key={d.id} value={d.name}>
                   {d.name} ({d.state})

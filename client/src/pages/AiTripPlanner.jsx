@@ -18,19 +18,61 @@ import { useAuth } from '../context/AuthContext';
 import { destinationsData } from '../data/mockData';
 import { downloadItineraryPDF } from '../utils/itineraryPdf';
 
+// Helper functions for matching query parameters
+const matchDestination = (param) => {
+  if (!param) return 'Jaipur (The Pink City)';
+  const p = param.trim().toLowerCase();
+  const found = destinationsData.find(d => 
+    d.name.toLowerCase() === p ||
+    d.name.toLowerCase().includes(p) ||
+    p.includes(d.name.toLowerCase()) ||
+    (d.state && d.state.toLowerCase() === p)
+  );
+  return found ? found.name : param;
+};
+
+const getTravelerTypeFromCount = (count) => {
+  if (!count) return 'Friends Group';
+  const num = Number(count);
+  if (num === 1) return 'Solo Traveler';
+  if (num === 2) return 'Couples Retreat';
+  if (num >= 3 && num <= 5) return 'Friends Group';
+  return 'Family with Kids';
+};
+
 export default function AiTripPlanner() {
   const [searchParams] = useSearchParams();
-  const initialDest = searchParams.get('destination') || 'Jaipur (The Pink City)';
+  const destParam = searchParams.get('destination');
+  const fromParam = searchParams.get('from') || searchParams.get('startingCity');
+  const daysParam = searchParams.get('days') || searchParams.get('duration');
+  const travelersParam = searchParams.get('travelers') || searchParams.get('travelersCount');
+  const interestParam = searchParams.get('interest');
 
   const { saveItinerary } = useAuth();
 
-  // Generator Configuration State
-  const [selectedDestination, setSelectedDestination] = useState(initialDest);
-  const [startingCity, setStartingCity] = useState('New Delhi');
-  const [daysCount, setDaysCount] = useState(3);
-  const [travelerType, setTravelerType] = useState('Friends Group');
+  // Generator Configuration State with Auto-fill from URL parameters
+  const [selectedDestination, setSelectedDestination] = useState(() => matchDestination(destParam));
+  const [startingCity, setStartingCity] = useState(() => fromParam || 'New Delhi');
+  const [daysCount, setDaysCount] = useState(() => daysParam ? Math.min(Math.max(Number(daysParam), 1), 14) : 3);
+  const [travelerType, setTravelerType] = useState(() => getTravelerTypeFromCount(travelersParam));
   const [travelStyle, setTravelStyle] = useState('Moderate');
-  const [selectedInterests, setSelectedInterests] = useState(['Heritage & Monuments', 'Food & Culinary Trail', 'Photography']);
+  const [selectedInterests, setSelectedInterests] = useState(() => {
+    if (interestParam === 'Food') {
+      return ['Food & Culinary Trail', 'Local Bazaars & Crafts'];
+    }
+    if (interestParam === 'Heritage') {
+      return ['Heritage & Monuments', 'Photography & Views'];
+    }
+    return ['Heritage & Monuments', 'Food & Culinary Trail', 'Photography & Views'];
+  });
+
+  // Keep state in sync if URL search params change
+  useEffect(() => {
+    if (destParam) setSelectedDestination(matchDestination(destParam));
+    if (fromParam) setStartingCity(fromParam);
+    if (daysParam) setDaysCount(Math.min(Math.max(Number(daysParam), 1), 14));
+    if (travelersParam) setTravelerType(getTravelerTypeFromCount(travelersParam));
+  }, [destParam, fromParam, daysParam, travelersParam]);
 
   // Processing & Output
   const [isGenerating, setIsGenerating] = useState(false);
@@ -140,6 +182,9 @@ export default function AiTripPlanner() {
               onChange={(e) => setSelectedDestination(e.target.value)}
               className="w-full p-3.5 rounded-2xl bg-amber-50/40 dark:bg-slate-800 border border-amber-200 dark:border-slate-700 text-xs sm:text-sm font-bold text-[#0A192F] dark:text-slate-100 outline-hidden focus:border-amber-600"
             >
+              {!destinationsData.some(d => d.name === selectedDestination) && (
+                <option value={selectedDestination}>{selectedDestination}</option>
+              )}
               {destinationsData.map((d) => (
                 <option key={d.id} value={d.name}>
                   {d.name} ({d.state})

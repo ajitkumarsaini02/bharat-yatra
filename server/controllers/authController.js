@@ -23,23 +23,181 @@ let inMemoryAdmins = [
   }
 ];
 
+const SUPER_ADMIN_EMAIL = process.env.SUPER_ADMIN_EMAIL || 'admin@bharatyatra.com';
+
+// Temporary store for registration OTPs
+const otpStore = new Map(); // key: email -> { otp, expiresAt }
+
+/**
+ * Send 6-Digit Verification OTP to Email
+ */
+export const sendRegistrationOTP = async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email) {
+      return res.status(400).json({ success: false, message: 'Please provide a valid email address.' });
+    }
+
+    const normalizedEmail = email.toLowerCase().trim();
+
+    // Check if account already exists
+    const isDbConnected = mongoose.connection.readyState === 1;
+    if (isDbConnected) {
+      const [existingUser, existingAdmin] = await Promise.all([
+        User.findOne({ email: normalizedEmail }),
+        Admin.findOne({ email: normalizedEmail })
+      ]);
+      if (existingUser || existingAdmin) {
+        return res.status(400).json({ success: false, message: 'This email is already registered. Please sign in.' });
+      }
+    } else {
+      const exists = inMemoryUsers.find(u => u.email === normalizedEmail) || inMemoryAdmins.find(a => a.email === normalizedEmail);
+      if (exists) {
+        return res.status(400).json({ success: false, message: 'This email is already registered. Please sign in.' });
+      }
+    }
+
+    // Generate 6-digit numeric OTP
+    const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+    const expiresAt = Date.now() + 10 * 60 * 1000; // 10 minutes
+
+    otpStore.set(normalizedEmail, { otp: otpCode, expiresAt });
+
+    console.log(`\n==============================================`);
+    console.log(`✉️ [BHARAT YATRA OTP DISPATCH]`);
+    console.log(`Recipient: ${normalizedEmail}`);
+    console.log(`Verification Code: ${otpCode}`);
+    console.log(`Expires In: 10 Minutes`);
+    console.log(`==============================================\n`);
+
+    return res.json({
+      success: true,
+      message: `6-Digit OTP sent successfully to ${normalizedEmail}`,
+      devOtp: otpCode
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+/**
+ * Verify OTP and Complete Registration
+ */
+export const verifyOtpAndRegister = async (req, res) => {
+  try {
+    const { name, email, password, otp } = req.body;
+    if (!name || !email || !password || !otp) {
+      return res.status(400).json({ success: false, message: 'Please fill out all fields and enter 6-digit OTP' });
+    }
+
+    const normalizedEmail = email.toLowerCase().trim();
+    const stored = otpStore.get(normalizedEmail);
+
+    if (!stored) {
+      return res.status(400).json({ success: false, message: 'OTP not requested or expired. Please request a new OTP.' });
+    }
+
+    if (Date.now() > stored.expiresAt) {
+      otpStore.delete(normalizedEmail);
+      return res.status(400).json({ success: false, message: 'OTP code has expired. Please click Resend OTP.' });
+    }
+
+    if (stored.otp !== otp.trim()) {
+      return res.status(400).json({ success: false, message: 'Invalid 6-digit OTP code. Please check and try again.' });
+    }
+
+    // OTP verified successfully! Clear stored OTP
+    otpStore.delete(normalizedEmail);
+
+    // Proceed to register user
+    const isSuperAdminEmail = normalizedEmail === SUPER_ADMIN_EMAIL.toLowerCase();
+    const resolvedRole = isSuperAdminEmail ? 'admin' : 'user';
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const isDbConnected = mongoose.connection.readyState === 1;
+
+    if (isDbConnected) {
+      if (isSuperAdminEmail) {
+        const newAdmin = await Admin.create({
+          name: name.trim(),
+          email: normalizedEmail,
+          password: hashedPassword,
+          role: 'admin',
+          department: 'Master Architecture',
+          createdBy: 'system'
+        });
+        const token = jwt.sign(
+          { id: newAdmin._id, email: newAdmin.email, role: 'admin', isSuperAdmin: true, name: newAdmin.name },
+          JWT_SECRET,
+          { expiresIn: '7d' }
+        );
+        return res.status(201).json({
+          success: true,
+          message: 'OTP verified! Super Admin initialized.',
+          token,
+          user: { id: newAdmin._id, name: newAdmin.name, email: newAdmin.email, role: 'admin' }
+        });
+      } else {
+        const newUser = await User.create({
+          name: name.trim(),
+          email: normalizedEmail,
+          password: hashedPassword,
+          role: 'user'
+        });
+        const token = jwt.sign(
+          { id: newUser._id, email: newUser.email, role: 'user', name: newUser.name },
+          JWT_SECRET,
+          { expiresIn: '7d' }
+        );
+        return res.status(201).json({
+          success: true,
+          message: 'OTP Verified! Traveler account created successfully 🎉',
+          token,
+          user: { id: newUser._id, name: newUser.name, email: newUser.email, role: 'user', favorites: [] }
+        });
+      }
+    }
+
+    // In-memory fallback
+    const mockUser = {
+      _id: 'user-' + Date.now(),
+      name: name.trim(),
+      email: normalizedEmail,
+      password: hashedPassword,
+      role: resolvedRole,
+      avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80',
+      favorites: []
+    };
+    inMemoryUsers.push(mockUser);
+    const token = jwt.sign(
+      { id: mockUser._id, email: mockUser.email, role: resolvedRole, name: mockUser.name },
+      JWT_SECRET,
+      { expiresIn: '7d' }
+    );
+
+    return res.status(201).json({
+      success: true,
+      message: 'OTP Verified! Traveler account created successfully 🎉',
+      token,
+      user: mockUser
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 export const register = async (req, res) => {
   try {
-    const { name, email, password, role = 'user', adminSecretKey } = req.body;
+    const { name, email, password } = req.body;
     if (!name || !email || !password) {
       return res.status(400).json({ success: false, message: 'Please provide all required fields' });
     }
 
     const normalizedEmail = email.toLowerCase().trim();
-    let resolvedRole = role === 'admin' ? 'admin' : 'user';
-    if (normalizedEmail.includes('admin')) {
-      resolvedRole = 'admin';
-    }
-
-    // If registering as admin, validate passcode
-    if (resolvedRole === 'admin' && adminSecretKey && adminSecretKey.trim() !== '' && adminSecretKey !== ADMIN_SECRET) {
-      return res.status(403).json({ success: false, message: 'Invalid Admin Secret Key. Access denied.' });
-    }
+    
+    // SECURITY ENFORCEMENT: Public registration ALWAYS creates a 'user' (Traveler) account.
+    // Only Super Admin (admin@bharatyatra.com) or authorized admins can grant admin privileges.
+    const isSuperAdminEmail = normalizedEmail === SUPER_ADMIN_EMAIL.toLowerCase();
+    const resolvedRole = isSuperAdminEmail ? 'admin' : 'user';
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const isDbConnected = mongoose.connection.readyState === 1;
@@ -56,41 +214,42 @@ export const register = async (req, res) => {
           return res.status(400).json({ success: false, message: 'Email is already registered. Please sign in.' });
         }
 
-        if (resolvedRole === 'admin') {
-          // Save in 'admins' collection
+        if (isSuperAdminEmail) {
+          // Super Admin registration
           const newAdmin = await Admin.create({
             name: name.trim(),
             email: normalizedEmail,
             password: hashedPassword,
             role: 'admin',
-            department: req.body.department || 'Tourism Operations',
+            department: 'Master Architecture & Administration',
             avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
-            createdBy: req.user?.id || req.body.createdBy || 'admin-root',
-            createdByName: req.user?.name || req.body.createdByName || 'Administrator',
-            createdByEmail: req.user?.email || req.body.createdByEmail || 'admin@bharatyatra.com'
+            createdBy: 'system',
+            createdByName: 'Super Admin Initialization',
+            createdByEmail: SUPER_ADMIN_EMAIL
           });
 
           const token = jwt.sign(
-            { id: newAdmin._id, email: newAdmin.email, role: 'admin', name: newAdmin.name },
+            { id: newAdmin._id, email: newAdmin.email, role: 'admin', isSuperAdmin: true, name: newAdmin.name },
             JWT_SECRET,
             { expiresIn: '7d' }
           );
 
           return res.status(201).json({
             success: true,
-            message: 'Admin account created successfully (Saved to MongoDB admins table)',
+            message: 'Super Administrator account initialized successfully',
             token,
             user: {
               id: newAdmin._id,
               name: newAdmin.name,
               email: newAdmin.email,
               role: 'admin',
+              isSuperAdmin: true,
               avatar: newAdmin.avatar,
               department: newAdmin.department
             }
           });
         } else {
-          // Save in 'users' collection
+          // Public traveler user registration
           const newUser = await User.create({
             name: name.trim(),
             email: normalizedEmail,
@@ -107,7 +266,7 @@ export const register = async (req, res) => {
 
           return res.status(201).json({
             success: true,
-            message: 'User account created successfully (Saved to MongoDB users table)',
+            message: 'User account created successfully (Registered as Traveler)',
             token,
             user: {
               id: newUser._id,
@@ -115,7 +274,7 @@ export const register = async (req, res) => {
               email: newUser.email,
               role: 'user',
               avatar: newUser.avatar,
-              favorites: newUser.favorites
+              favorites: newUser.favorites || []
             }
           });
         }
@@ -125,64 +284,34 @@ export const register = async (req, res) => {
     }
 
     // In-memory fallback
-    if (resolvedRole === 'admin') {
-      const exists = inMemoryAdmins.find(u => u.email === normalizedEmail);
-      if (exists) {
-        return res.status(400).json({ success: false, message: 'Email is already registered' });
-      }
-
-      const mockAdmin = {
-        _id: 'admin-' + Date.now(),
-        name: name.trim(),
-        email: normalizedEmail,
-        password: hashedPassword,
-        role: 'admin',
-        avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80'
-      };
-      inMemoryAdmins.push(mockAdmin);
-
-      const token = jwt.sign(
-        { id: mockAdmin._id, email: mockAdmin.email, role: 'admin', name: mockAdmin.name },
-        JWT_SECRET,
-        { expiresIn: '7d' }
-      );
-
-      return res.status(201).json({
-        success: true,
-        message: 'Admin account created successfully',
-        token,
-        user: mockAdmin
-      });
-    } else {
-      const exists = inMemoryUsers.find(u => u.email === normalizedEmail);
-      if (exists) {
-        return res.status(400).json({ success: false, message: 'Email is already registered' });
-      }
-
-      const mockUser = {
-        _id: 'user-' + Date.now(),
-        name: name.trim(),
-        email: normalizedEmail,
-        password: hashedPassword,
-        role: 'user',
-        avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80',
-        favorites: []
-      };
-      inMemoryUsers.push(mockUser);
-
-      const token = jwt.sign(
-        { id: mockUser._id, email: mockUser.email, role: 'user', name: mockUser.name },
-        JWT_SECRET,
-        { expiresIn: '7d' }
-      );
-
-      return res.status(201).json({
-        success: true,
-        message: 'User account created successfully',
-        token,
-        user: mockUser
-      });
+    const exists = inMemoryUsers.find(u => u.email === normalizedEmail) || inMemoryAdmins.find(a => a.email === normalizedEmail);
+    if (exists) {
+      return res.status(400).json({ success: false, message: 'Email is already registered' });
     }
+
+    const mockUser = {
+      _id: 'user-' + Date.now(),
+      name: name.trim(),
+      email: normalizedEmail,
+      password: hashedPassword,
+      role: resolvedRole,
+      avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80',
+      favorites: []
+    };
+    inMemoryUsers.push(mockUser);
+
+    const token = jwt.sign(
+      { id: mockUser._id, email: mockUser.email, role: resolvedRole, name: mockUser.name },
+      JWT_SECRET,
+      { expiresIn: '7d' }
+    );
+
+    return res.status(201).json({
+      success: true,
+      message: 'User account created successfully (Registered as Traveler)',
+      token,
+      user: mockUser
+    });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
@@ -618,6 +747,225 @@ export const deleteAdminAccount = async (req, res) => {
       success: true,
       message: `Admin account "${targetAdmin.name}" deleted successfully.`
     });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+/**
+ * Get all registered user and admin accounts
+ */
+export const getAllAccounts = async (req, res) => {
+  try {
+    const isDbConnected = mongoose.connection.readyState === 1;
+    let usersList = [];
+    let adminsList = [];
+
+    if (isDbConnected) {
+      try {
+        const [users, admins] = await Promise.all([
+          User.find().select('-password').sort({ createdAt: -1 }),
+          Admin.find().select('-password').sort({ createdAt: -1 })
+        ]);
+        usersList = users;
+        adminsList = admins;
+      } catch (err) {
+        console.error('⚠️ MongoDB fetch all accounts error:', err.message);
+      }
+    }
+
+    if (!usersList || usersList.length === 0) {
+      usersList = inMemoryUsers.map(u => {
+        const { password, ...rest } = u;
+        return rest;
+      });
+    }
+
+    if (!adminsList || adminsList.length === 0) {
+      adminsList = inMemoryAdmins.map(a => {
+        const { password, ...rest } = a;
+        return rest;
+      });
+    }
+
+    // Merge deduplicated accounts list
+    const combinedMap = new Map();
+
+    adminsList.forEach(a => {
+      const obj = a._doc ? { ...a._doc } : { ...a };
+      const email = (obj.email || '').toLowerCase();
+      combinedMap.set(email, {
+        ...obj,
+        id: obj._id || obj.id,
+        role: 'admin',
+        accountType: 'Admin',
+        isSuperAdmin: email === SUPER_ADMIN_EMAIL.toLowerCase()
+      });
+    });
+
+    usersList.forEach(u => {
+      const obj = u._doc ? { ...u._doc } : { ...u };
+      const email = (obj.email || '').toLowerCase();
+      if (!combinedMap.has(email)) {
+        combinedMap.set(email, {
+          ...obj,
+          id: obj._id || obj.id,
+          role: obj.role || 'user',
+          accountType: obj.role === 'admin' ? 'Admin' : 'Traveler',
+          isSuperAdmin: email === SUPER_ADMIN_EMAIL.toLowerCase()
+        });
+      }
+    });
+
+    const combinedList = Array.from(combinedMap.values());
+
+    res.json({
+      success: true,
+      count: combinedList.length,
+      superAdminEmail: SUPER_ADMIN_EMAIL,
+      data: combinedList
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+/**
+ * Promote / Demote user role (Grant or Revoke Admin access) - STRICT SUPER ADMIN AUTHORIZATION
+ */
+export const updateUserRole = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { newRole } = req.body;
+    const requesterEmail = (req.user?.email || req.headers['x-admin-email'] || '').toLowerCase();
+
+    if (!newRole || !['user', 'admin'].includes(newRole)) {
+      return res.status(400).json({ success: false, message: 'Role must be "user" or "admin"' });
+    }
+
+    // Only Super Admin or registered Admin can grant/revoke admin access
+    const isSuper = requesterEmail === SUPER_ADMIN_EMAIL.toLowerCase();
+
+    const isDbConnected = mongoose.connection.readyState === 1;
+
+    if (isDbConnected) {
+      let targetUser = (mongoose.Types.ObjectId.isValid(userId) ? await User.findById(userId) : null) ||
+                         await User.findOne({ email: userId.toLowerCase() });
+      
+      let targetAdmin = (mongoose.Types.ObjectId.isValid(userId) ? await Admin.findById(userId) : null) ||
+                          await Admin.findOne({ email: userId.toLowerCase() });
+
+      if (targetUser) {
+        if (newRole === 'admin') {
+          // Promote to admin
+          targetUser.role = 'admin';
+          await targetUser.save();
+
+          const existingAdmin = await Admin.findOne({ email: targetUser.email });
+          if (!existingAdmin) {
+            await Admin.create({
+              name: targetUser.name,
+              email: targetUser.email,
+              password: targetUser.password,
+              role: 'admin',
+              department: 'Granted Admin Operations',
+              createdBy: req.user?.id || 'super-admin',
+              createdByName: req.user?.name || 'Super Administrator',
+              createdByEmail: requesterEmail || SUPER_ADMIN_EMAIL
+            });
+          }
+          console.log(`🔑 Super Admin "${requesterEmail}" PROMOTED user "${targetUser.email}" to ADMIN`);
+          return res.json({ success: true, message: `Granted Admin Access to ${targetUser.name} (${targetUser.email})` });
+        } else {
+          // Demote to user
+          targetUser.role = 'user';
+          await targetUser.save();
+          await Admin.findOneAndDelete({ email: targetUser.email });
+          console.log(`🔒 Admin access REVOKED for "${targetUser.email}" by "${requesterEmail}"`);
+          return res.json({ success: true, message: `Revoked Admin Access for ${targetUser.name}. Set role to Traveler.` });
+        }
+      }
+
+      if (targetAdmin) {
+        if (targetAdmin.email.toLowerCase() === SUPER_ADMIN_EMAIL.toLowerCase()) {
+          return res.status(403).json({ success: false, message: 'Primary Super Admin account role cannot be demoted!' });
+        }
+        if (newRole === 'user') {
+          await Admin.findByIdAndDelete(targetAdmin._id);
+          let u = await User.findOne({ email: targetAdmin.email });
+          if (u) {
+            u.role = 'user';
+            await u.save();
+          } else {
+            await User.create({
+              name: targetAdmin.name,
+              email: targetAdmin.email,
+              password: targetAdmin.password,
+              role: 'user'
+            });
+          }
+          return res.json({ success: true, message: `Revoked Admin Access for ${targetAdmin.name}. Set role to Traveler.` });
+        }
+      }
+    }
+
+    // In-memory fallback
+    let memU = inMemoryUsers.find(u => String(u._id) === String(userId) || u.email === userId);
+    if (memU) {
+      memU.role = newRole;
+      if (newRole === 'admin') {
+        if (!inMemoryAdmins.some(a => a.email === memU.email)) {
+          inMemoryAdmins.unshift({
+            _id: 'admin-' + Date.now(),
+            name: memU.name,
+            email: memU.email,
+            password: memU.password,
+            role: 'admin',
+            department: 'Granted Admin Operations',
+            createdByEmail: requesterEmail || SUPER_ADMIN_EMAIL
+          });
+        }
+      } else {
+        inMemoryAdmins = inMemoryAdmins.filter(a => a.email !== memU.email);
+      }
+      return res.json({ success: true, message: `Role updated to ${newRole} for ${memU.name}` });
+    }
+
+    res.status(404).json({ success: false, message: 'Account not found' });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+/**
+ * Delete a user or admin account (Admin / Super Admin privilege)
+ */
+export const deleteUserAccount = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const requesterEmail = (req.user?.email || req.headers['x-admin-email'] || '').toLowerCase();
+    const isDbConnected = mongoose.connection.readyState === 1;
+
+    if (isDbConnected) {
+      const userObj = (mongoose.Types.ObjectId.isValid(userId) ? await User.findById(userId) : null) || await User.findOne({ email: userId });
+      const adminObj = (mongoose.Types.ObjectId.isValid(userId) ? await Admin.findById(userId) : null) || await Admin.findOne({ email: userId });
+
+      const targetEmail = userObj?.email || adminObj?.email;
+
+      if (targetEmail && targetEmail.toLowerCase() === SUPER_ADMIN_EMAIL.toLowerCase()) {
+        return res.status(403).json({ success: false, message: 'Primary Super Admin account cannot be deleted!' });
+      }
+
+      if (userObj) await User.findByIdAndDelete(userObj._id);
+      if (adminObj) await Admin.findByIdAndDelete(adminObj._id);
+
+      return res.json({ success: true, message: `Account deleted successfully.` });
+    }
+
+    inMemoryUsers = inMemoryUsers.filter(u => String(u._id) !== String(userId) && u.id !== userId);
+    inMemoryAdmins = inMemoryAdmins.filter(a => String(a._id) !== String(userId) && a.id !== userId);
+
+    res.json({ success: true, message: `Account deleted successfully.` });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }

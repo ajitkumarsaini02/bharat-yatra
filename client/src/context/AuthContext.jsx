@@ -154,6 +154,18 @@ export const AuthProvider = ({ children }) => {
     return res;
   };
 
+  const sendRegistrationOTP = async (email) => {
+    return await api.sendRegistrationOTP(email);
+  };
+
+  const verifyOTPAndRegister = async (name, email, password, otp) => {
+    const res = await api.verifyOtpAndRegister({ name, email, password, otp });
+    if (res.user) {
+      setUser(res.user);
+    }
+    return res;
+  };
+
   const logoutUser = () => {
     localStorage.removeItem('bharat_yatra_token');
     setUser(null);
@@ -169,6 +181,8 @@ export const AuthProvider = ({ children }) => {
       removeItinerary,
       loginUser,
       registerUser,
+      sendRegistrationOTP,
+      verifyOTPAndRegister,
       logoutUser,
       isAuthenticated: !!user,
       isAdmin: user?.role === 'admin'

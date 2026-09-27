@@ -64,6 +64,10 @@ export const sendRegistrationOTP = async (req, res) => {
 
     otpStore.set(normalizedEmail, { otp: otpCode, expiresAt });
 
+    console.log(`\n==============================================`);
+    console.log(`🔐 REGISTRATION OTP FOR ${normalizedEmail}: ${otpCode}`);
+    console.log(`==============================================\n`);
+
     // Send Real Email via Nodemailer SMTP (or Ethereal Mail)
     let emailResult = null;
     try {

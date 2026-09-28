@@ -573,7 +573,7 @@ export default function AdminDashboard() {
         </div>
       )}
 
-      {/* Security Policy Reminder Banner */}
+      {/* Security Policy Reminder Banner
       <div className="p-4 rounded-2xl bg-amber-500/15 dark:bg-amber-500/10 border border-amber-400/60 dark:border-amber-500/30 text-amber-950 dark:text-amber-200 text-xs flex items-center gap-3 shadow-xs">
         <ShieldAlert className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0" />
         <div>
@@ -582,7 +582,7 @@ export default function AdminDashboard() {
             Aap Admin Dashboard me wahi record ya Admin account delete kar sakte hain jo aapne add/create kiya tha. Dusre Admin ke add kiye admin accounts deletion permissions locked zone me rahenge.
           </span>
         </div>
-      </div>
+      </div> */}
 
       {/* TAB 1: DESTINATIONS MANAGEMENT */}
       {activeTab === 'destinations' && (
@@ -1488,7 +1488,7 @@ export default function AdminDashboard() {
             <form onSubmit={handleChangePasswordSubmit} className="space-y-4">
               <div>
                 <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                  Purana Password (Current Password) *
+                  Current Password *
                 </label>
                 <input
                   type="password"
@@ -1502,7 +1502,7 @@ export default function AdminDashboard() {
 
               <div>
                 <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                  Naya Password (New Password) *
+                  New Password *
                 </label>
                 <input
                   type="password"
@@ -1516,7 +1516,7 @@ export default function AdminDashboard() {
 
               <div>
                 <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                  Confirm Naya Password *
+                  Confirm Password *
                 </label>
                 <input
                   type="password"

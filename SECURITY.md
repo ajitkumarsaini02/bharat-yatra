@@ -10,8 +10,8 @@ Security patches and updates are actively maintained for the following versions:
 
 | Version | Release Status | Security Support |
 | :--- | :--- | :--- |
-| `v1.2.x` (Latest) | Active Development | :white_check_mark: Fully Supported |
-| `v1.1.x` | Stable Release | :white_check_mark: Supported (Critical Only) |
+| `v2.0.x` (Latest) | Active Production ([https://bharatyatra-india.vercel.app](https://bharatyatra-india.vercel.app)) | :white_check_mark: Fully Supported |
+| `v1.2.x` | Stable Release | :white_check_mark: Supported |
 | `v1.0.x` | Initial Prototype | :x: End of Life |
 
 ---

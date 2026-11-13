@@ -1,7 +1,7 @@
 # 🇮🇳 BHARAT YATRA (भारत यात्रा)
 ### Centralized Indian Tourism Discovery, AI-Assisted Trip Planner & Transport Comparison Platform
 
-**Live Website:** [https://bharatyatra-india.vercel.app/](https://bharatyatra-india.vercel.app/)
+**Live Website:** [https://bharatyatra-india.vercel.app](https://bharatyatra-india.vercel.app)
 
 ---
 
@@ -108,6 +108,7 @@ To ensure authentic travel information, every price and distance clearly identif
 | `GET` | `/api/destinations` | List all 112+ destinations with filters | Public |
 | `POST` | `/api/planner/generate` | Generate personalized day-wise AI itinerary | Public |
 | `POST` | `/api/budget/calculate` | Calculate customized travel budget breakdown | Public |
+| `POST` | `/api/contact` | Submit traveler inquiry or support message | Public |
 
 ---
 
@@ -137,17 +138,19 @@ bharat-yatra/
 │   └── .env.example
 ├── client/
 │   ├── src/
-│   │   ├── components/    # Navbar, Footer, TransportMap, FareDisplay, AvailabilityBadge, TravelDetailsModal
+│   │   ├── components/    # Navbar, Footer, ScrollToTopButton, InteractiveMap, DestinationCard, HeroSection
 │   │   │   └── TravelPlanner/ # TravelSearch, TravelModeTabs, TransportResultCard, TrainCard, BusCard, FlightCard, CabCard
 │   │   ├── context/       # AuthContext, ThemeContext
-│   │   ├── pages/         # Home, ExploreDestinations, DestinationDetail, TravelPlanner, AiTripPlanner,
-│   │   │                  # BudgetPlannerPage, CuisineExplorer, FavoritesWishlist, AdminDashboard, LoginRegister
+│   │   ├── pages/         # Home, AboutUs, Contact, ExploreDestinations, DestinationDetail,
+│   │   │                  # TravelPlanner, AiTripPlanner, BudgetPlannerPage, CuisineExplorer,
+│   │   │                  # FavoritesWishlist, AdminDashboard, LoginRegister
 │   │   ├── services/      # api.js (Axios client with automatic server & local fallback)
-│   │   ├── App.jsx        # Route definitions
-│   │   └── index.css      # Indian heritage styling system & dark mode
+│   │   ├── App.jsx        # Clean React router definitions (No hash /# links)
+│   │   └── index.css      # Ocean Blue (#123B5D) & Sunset Orange (#F28C45) design system
 │   ├── vite.config.js
 │   └── package.json
 ├── .env.example
+├── SECURITY.md
 └── README.md
 ```
 

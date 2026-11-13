@@ -1,7 +1,7 @@
 # 🇮🇳 BHARAT YATRA (भारत यात्रा)
 ### Centralized Indian Tourism Discovery, AI-Assisted Trip Planner & Transport Comparison Platform
 
-**Live Website:** [https://bharat-yatra-psi.vercel.app/](https://bharat-yatra-psi.vercel.app/)
+**Live Website:** [https://bharatyatra-india.vercel.app/](https://bharatyatra-india.vercel.app/)
 
 ---
 
@@ -13,14 +13,16 @@
 
 ## 🎯 2. Platform Navigation & Modules
 
-The platform is structured into **6 core navigation modules**:
+The platform is structured into **8 core navigation modules**:
 
-1. 🏛️ **Explore Destinations (`/explore`)**: Browse 112+ monuments with multi-criteria filters (State, Category, Zone, Budget, Search Query) and verified photography.
+1. 🏛️ **Destinations Directory (`/destinations` & `/explore`)**: Browse 114+ handpicked monuments with multi-criteria filters (State, Category, Zone, Budget, Search Query) and verified photography.
 2. 🤖 **AI Trip Planner (`/ai-planner`)**: Generate custom **1 to 7 day itineraries** tailored by destination, traveler persona, interests, transit fare, and budget.
 3. 💰 **Budget Planner (`/budget-calculator`)**: Calculate total trip expenses with integrated selected transport fare (${\text{Transport Cost} = \text{Selected Fare} \times \text{Travellers}}$) plus Stay, Food, Local Commute, Tickets, and Buffer.
 4. 🚍 **Travel Planner (`/travel-planner`)**: Comprehensive intercity and local transport distance & fare comparison matrix covering **Train, Bus, Flight, Cab/Taxi, and Auto**.
 5. 🍱 **Regional Cuisine (`/cuisine`)**: Discover state-wise traditional thalis, street foods, and regional food specialties.
 6. 🗺️ **Live Map (`/map`)**: Standalone GIS Explorer mapping heritage monuments, beaches, high-altitude mountain circuits, and transit hubs across India.
+7. ℹ️ **About Us (`/about`)**: Cultural heritage and tourism platform mission.
+8. 📞 **Contact Us (`/contact`)**: Dedicated contact page with verified 24x7 tourist helplines (1363, 139, 112) and traveler inquiry form.
 
 ---
 

@@ -1294,6 +1294,24 @@ export const api = {
       }
     }
     return { success: true, message: '🎉 Password successfully updated!' };
+  },
+
+  // Contact Us inquiry submission
+  submitContact: async (contactData) => {
+    if (API_BASE) {
+      try {
+        const res = await apiClient.post('/contact', contactData);
+        if (res.data && typeof res.data !== 'string') {
+          return res.data;
+        }
+      } catch (err) {
+        // Fallback
+      }
+    }
+    const contacts = JSON.parse(localStorage.getItem('bharat_yatra_contact_inquiries') || '[]');
+    contacts.push({ ...contactData, id: 'contact-' + Date.now(), timestamp: new Date().toISOString() });
+    localStorage.setItem('bharat_yatra_contact_inquiries', JSON.stringify(contacts));
+    return { success: true, message: 'Thank you for reaching out! Your message has been logged.' };
   }
 };
 

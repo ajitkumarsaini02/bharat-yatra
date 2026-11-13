@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { Compass, MapPin, Route, Navigation, ShieldCheck, Sparkles, Layers, CheckCircle2 } from 'lucide-react';
+import { useSearchParams, Link } from 'react-router-dom';
+import { Compass, MapPin, Route, Navigation, ShieldCheck, Sparkles, Layers, CheckCircle2, Train, Plane, Bus, Car, ArrowRight } from 'lucide-react';
 import { api } from '../services/api';
 
 import TravelSearch from '../components/TravelPlanner/TravelSearch';
@@ -23,11 +23,19 @@ export default function TravelPlanner() {
   const [searchParams] = useSearchParams();
   const initialFrom = searchParams.get('from') || 'Delhi';
   const initialTo = searchParams.get('destination') || 'Agra';
+  const initialMode = searchParams.get('mode') || 'all';
+  const initialDate = searchParams.get('travelDate') || (() => {
+    const nextMonth = new Date();
+    nextMonth.setMonth(nextMonth.getMonth() + 1);
+    return nextMonth.toISOString().split('T')[0];
+  })();
+  const initialTravelers = parseInt(searchParams.get('travelersCount')) || 2;
+  const initialNights = parseInt(searchParams.get('hotelNights')) || 2;
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [travelPlan, setTravelPlan] = useState(null);
-  const [activeTab, setActiveTab] = useState('all'); // 'all', 'train', 'bus', 'flight', 'hotel', 'local', 'comparison'
+  const [activeTab, setActiveTab] = useState(initialMode); // 'all', 'train', 'bus', 'flight', 'hotel', 'cab', 'local', 'comparison'
   const [selectedModalOption, setSelectedModalOption] = useState(null);
   const [saveSuccessMessage, setSaveSuccessMessage] = useState(null);
 
@@ -50,18 +58,18 @@ export default function TravelPlanner() {
 
   // Run initial search on mount
   useEffect(() => {
-    const nextMonth = new Date();
-    nextMonth.setMonth(nextMonth.getMonth() + 1);
-    const dateStr = nextMonth.toISOString().split('T')[0];
+    if (initialMode && initialMode !== 'all') {
+      setActiveTab(initialMode);
+    }
 
     executeSearch({
       from: initialFrom,
       destination: initialTo,
-      travelDate: dateStr,
-      travelersCount: 2,
-      hotelNights: 2
+      travelDate: initialDate,
+      travelersCount: initialTravelers,
+      hotelNights: initialNights
     });
-  }, [initialFrom, initialTo]);
+  }, [initialFrom, initialTo, initialMode, initialDate, initialTravelers, initialNights]);
 
   // Handle saving a travel plan option to backend database
   const handleSavePlan = async (option) => {
@@ -93,25 +101,75 @@ export default function TravelPlanner() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
       
-      {/* Page Title Header */}
-      <div className="text-center max-w-3xl mx-auto space-y-3">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-100 dark:bg-amber-950/80 text-amber-900 dark:text-amber-300 text-xs font-bold border border-amber-300 dark:border-amber-500/40">
-          <Route className="w-3.5 h-3.5 text-amber-600" />
-          <span>Bharat Yatra Distance & Cost Estimation Module</span>
+      {/* Hero Banner */}
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#123B5D] via-[#1D5D85] to-[#123B5D] p-8 sm:p-12 text-white shadow-2xl">
+        <div className="absolute -right-20 -top-20 w-80 h-80 rounded-full bg-[#F28C45]/15 blur-3xl pointer-events-none" />
+        <div className="absolute -left-20 -bottom-20 w-80 h-80 rounded-full bg-[#1D5D85]/40 blur-3xl pointer-events-none" />
+        
+        <div className="relative z-10 max-w-3xl space-y-4">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-[#FFB36B] text-xs font-bold tracking-wide">
+            <Route className="w-4 h-4 text-[#FFB36B]" />
+            <span>Multi-Modal Transit & Fare Intelligence</span>
+          </div>
+          <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight">
+            Compare <span className="text-[#FFB36B]">Trains, Buses, Flights & Cabs</span> Side-by-Side
+          </h1>
+          <p className="text-white/85 text-sm sm:text-base leading-relaxed font-medium">
+            Calculate accurate road distances, IRCTC express train timings, state AC bus tariffs, flight duration, and outstation cab rates between any Indian origin and destination.
+          </p>
         </div>
-        
-        <h1 className="text-3xl sm:text-5xl font-black text-[#0A192F] dark:text-white tracking-tight">
-          Travel Distance & Fare Planner
-        </h1>
-        
-        <p className="text-slate-600 dark:text-slate-300 text-sm sm:text-base">
-          Compare Rail, Bus, Flight, Hotel and Local Commute options between any two Indian cities with exact Haversine geographic and road distance calculations.
-        </p>
+      </div>
+
+      {/* 4 Impact Stat Cards */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+        <div className="bg-white rounded-3xl p-5 sm:p-6 border border-[#E5EAF0] shadow-sm hover:shadow-md transition-all group">
+          <div className="flex items-center justify-between mb-3">
+            <div className="w-12 h-12 rounded-2xl bg-[#EAF4FA] flex items-center justify-center text-[#123B5D] group-hover:bg-[#123B5D] group-hover:text-white transition-colors">
+              <Train className="w-6 h-6" />
+            </div>
+            <span className="text-xs font-bold text-[#F28C45] bg-[#EAF4FA] px-2.5 py-1 rounded-full">IRCTC</span>
+          </div>
+          <div className="text-2xl sm:text-3xl font-black text-[#123B5D] tracking-tight group-hover:text-[#F28C45] transition-colors">Railways</div>
+          <div className="text-xs sm:text-sm font-semibold text-[#718096] mt-0.5">Vande Bharat, Rajdhani</div>
+        </div>
+
+        <div className="bg-white rounded-3xl p-5 sm:p-6 border border-[#E5EAF0] shadow-sm hover:shadow-md transition-all group">
+          <div className="flex items-center justify-between mb-3">
+            <div className="w-12 h-12 rounded-2xl bg-[#EAF4FA] flex items-center justify-center text-[#123B5D] group-hover:bg-[#123B5D] group-hover:text-white transition-colors">
+              <Plane className="w-6 h-6" />
+            </div>
+            <span className="text-xs font-bold text-[#1D5D85] bg-[#EAF4FA] px-2.5 py-1 rounded-full">Aviation</span>
+          </div>
+          <div className="text-2xl sm:text-3xl font-black text-[#123B5D] tracking-tight group-hover:text-[#F28C45] transition-colors">Flights</div>
+          <div className="text-xs sm:text-sm font-semibold text-[#718096] mt-0.5">IndiGo, Air India, Akasa</div>
+        </div>
+
+        <div className="bg-white rounded-3xl p-5 sm:p-6 border border-[#E5EAF0] shadow-sm hover:shadow-md transition-all group">
+          <div className="flex items-center justify-between mb-3">
+            <div className="w-12 h-12 rounded-2xl bg-[#EAF4FA] flex items-center justify-center text-[#123B5D] group-hover:bg-[#123B5D] group-hover:text-white transition-colors">
+              <Bus className="w-6 h-6" />
+            </div>
+            <span className="text-xs font-bold text-[#F28C45] bg-[#EAF4FA] px-2.5 py-1 rounded-full">Highway</span>
+          </div>
+          <div className="text-2xl sm:text-3xl font-black text-[#123B5D] tracking-tight group-hover:text-[#F28C45] transition-colors">AC Buses</div>
+          <div className="text-xs sm:text-sm font-semibold text-[#718096] mt-0.5">Volvo & Multi-Axle</div>
+        </div>
+
+        <div className="bg-white rounded-3xl p-5 sm:p-6 border border-[#E5EAF0] shadow-sm hover:shadow-md transition-all group">
+          <div className="flex items-center justify-between mb-3">
+            <div className="w-12 h-12 rounded-2xl bg-[#EAF4FA] flex items-center justify-center text-[#123B5D] group-hover:bg-[#123B5D] group-hover:text-white transition-colors">
+              <Car className="w-6 h-6" />
+            </div>
+            <span className="text-xs font-bold text-[#1D5D85] bg-[#EAF4FA] px-2.5 py-1 rounded-full">Doorstep</span>
+          </div>
+          <div className="text-2xl sm:text-3xl font-black text-[#123B5D] tracking-tight group-hover:text-[#F28C45] transition-colors">Outstation</div>
+          <div className="text-xs sm:text-sm font-semibold text-[#718096] mt-0.5">Sedan, SUV & Tempo</div>
+        </div>
       </div>
 
       {/* Save Success Banner */}
       {saveSuccessMessage && (
-        <div className="max-w-3xl mx-auto p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-950/80 border border-emerald-300 dark:border-emerald-500/40 text-emerald-900 dark:text-emerald-200 text-xs font-extrabold flex items-center justify-between shadow-md">
+        <div className="max-w-3xl mx-auto p-4 rounded-2xl bg-emerald-50 border border-emerald-300 text-emerald-900 text-xs font-extrabold flex items-center justify-between shadow-md">
           <div className="flex items-center gap-2">
             <CheckCircle2 className="w-4 h-4 text-emerald-600" />
             <span>{saveSuccessMessage}</span>
@@ -125,6 +183,11 @@ export default function TravelPlanner() {
         loading={loading}
         error={error}
         setError={setError}
+        initialFrom={initialFrom}
+        initialTo={initialTo}
+        initialDate={initialDate}
+        initialTravelers={initialTravelers}
+        initialNights={initialNights}
       />
 
       {/* Loading Skeleton */}
@@ -138,10 +201,10 @@ export default function TravelPlanner() {
         <div className="space-y-10 animate-fade-in">
           
           {/* Geographic Distance Highlight Banner */}
-          <div className="bg-gradient-to-r from-[#0A192F] via-[#112240] to-[#0A192F] text-white rounded-3xl p-6 sm:p-8 shadow-xl border border-amber-400/20 space-y-4">
+          <div className="bg-gradient-to-r from-[#123B5D] via-[#1D5D85] to-[#123B5D] text-white rounded-3xl p-6 sm:p-8 shadow-xl border border-white/10 space-y-4">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/10 pb-4">
               <div>
-                <span className="text-[10px] font-black uppercase text-amber-400 tracking-widest block">
+                <span className="text-[10px] font-black uppercase text-[#FFB36B] tracking-widest block">
                   GEOGRAPHIC & TERRAIN DISTANCE METRICS
                 </span>
                 <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight mt-0.5">
@@ -149,8 +212,8 @@ export default function TravelPlanner() {
                 </h2>
               </div>
               <div className="text-right">
-                <span className="text-xs text-slate-400 block font-medium">Travel Date</span>
-                <span className="text-sm font-bold text-amber-300 font-mono">{travelPlan.query?.travelDate}</span>
+                <span className="text-xs text-[#EAF4FA]/80 block font-medium">Travel Date</span>
+                <span className="text-sm font-bold text-[#FFB36B] font-mono">{travelPlan.query?.travelDate}</span>
               </div>
             </div>
 
@@ -158,40 +221,40 @@ export default function TravelPlanner() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
               
               {/* Haversine Air Distance */}
-              <div className="p-4 rounded-2xl bg-white/5 border border-amber-400/20 space-y-1">
-                <span className="text-amber-300 font-bold block uppercase text-[10px] tracking-wider">
+              <div className="p-4 rounded-2xl bg-white/10 border border-white/15 space-y-1">
+                <span className="text-[#FFB36B] font-bold block uppercase text-[10px] tracking-wider">
                   Air / Geographic Distance
                 </span>
                 <div className="text-lg font-black text-white font-mono">
                   {travelPlan.distance?.geographicDistanceFormatted}
                 </div>
-                <p className="text-[11px] text-slate-400 leading-tight">
+                <p className="text-[11px] text-[#EAF4FA]/80 leading-tight">
                   Straight-line Haversine spherical distance between coordinates.
                 </p>
               </div>
 
               {/* Road Distance */}
-              <div className="p-4 rounded-2xl bg-white/5 border border-amber-400/20 space-y-1">
-                <span className="text-yellow-300 font-bold block uppercase text-[10px] tracking-wider">
+              <div className="p-4 rounded-2xl bg-white/10 border border-white/15 space-y-1">
+                <span className="text-amber-200 font-bold block uppercase text-[10px] tracking-wider">
                   Road Highway Distance
                 </span>
                 <div className="text-lg font-black text-white font-mono">
                   Road Distance: {travelPlan.distance?.roadDistanceKm} km
                 </div>
-                <p className="text-[11px] text-slate-400 leading-tight">
+                <p className="text-[11px] text-[#EAF4FA]/80 leading-tight">
                   Driving route highway length ({travelPlan.distance?.roadProvider || 'OSRM / Geoapify'}).
                 </p>
               </div>
 
               {/* Rail Distance */}
-              <div className="p-4 rounded-2xl bg-white/5 border border-amber-400/20 space-y-1">
-                <span className="text-emerald-300 font-bold block uppercase text-[10px] tracking-wider">
+              <div className="p-4 rounded-2xl bg-white/10 border border-white/15 space-y-1">
+                <span className="text-emerald-200 font-bold block uppercase text-[10px] tracking-wider">
                   Railway Track Distance
                 </span>
                 <div className="text-lg font-black text-white font-mono">
                   Rail Distance: ~{Math.round(travelPlan.distance?.geographicDistanceKm * 1.15)} km
                 </div>
-                <p className="text-[11px] text-slate-400 leading-tight">
+                <p className="text-[11px] text-[#EAF4FA]/80 leading-tight">
                   Estimated railway track route distance between stations.
                 </p>
               </div>
@@ -211,7 +274,7 @@ export default function TravelPlanner() {
           )}
 
           {/* Navigation Category Filter Tabs */}
-          <div className="flex items-center gap-2 overflow-x-auto pb-2 border-b border-amber-200/60 dark:border-slate-800">
+          <div className="flex items-center gap-2 overflow-x-auto pb-2 border-b border-[#E5EAF0]">
             {[
               { id: 'all', label: 'All Travel & Stay Options' },
               { id: 'comparison', label: 'Mode Comparison Table' },
@@ -227,8 +290,8 @@ export default function TravelPlanner() {
                 onClick={() => setActiveTab(tab.id)}
                 className={`px-4 py-2.5 rounded-2xl text-xs font-bold whitespace-nowrap transition-all duration-200 cursor-pointer ${
                   activeTab === tab.id
-                    ? 'bg-[#0A192F] dark:bg-amber-500 text-amber-300 dark:text-slate-950 shadow-md font-bold'
-                    : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:bg-amber-50 dark:hover:bg-slate-800 border border-amber-200/60 dark:border-slate-800'
+                    ? 'bg-[#123B5D] text-white shadow-md font-bold'
+                    : 'bg-white text-[#29445A] hover:bg-[#EAF4FA] border border-[#E5EAF0]'
                 }`}
               >
                 {tab.label}
@@ -239,8 +302,8 @@ export default function TravelPlanner() {
           {/* Tab 1: Modes Cards Grid (Train, Bus, Flight, Cab) */}
           {(activeTab === 'all' || activeTab === 'train' || activeTab === 'bus' || activeTab === 'flight' || activeTab === 'cab') && (
             <div className="space-y-4">
-              <h3 className="text-xl font-black text-[#0A192F] dark:text-slate-100 tracking-tight flex items-center gap-2">
-                <Navigation className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+              <h3 className="text-xl font-black text-[#123B5D] tracking-tight flex items-center gap-2">
+                <Navigation className="w-5 h-5 text-[#F28C45]" />
                 <span>Intercity & Local Travel Options (Train, Bus, Flight, Cab)</span>
               </h3>
 
@@ -327,6 +390,34 @@ export default function TravelPlanner() {
 
         </div>
       )}
+
+      {/* Bottom Call to Action */}
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#123B5D] via-[#1D5D85] to-[#123B5D] p-8 sm:p-12 text-center text-white shadow-2xl">
+        <div className="relative z-10 max-w-2xl mx-auto space-y-4">
+          <h2 className="text-2xl sm:text-4xl font-black text-white tracking-tight">
+            Ready to Plan an Entire Day-by-Day Vacation?
+          </h2>
+          <p className="text-white/80 text-sm sm:text-base font-medium">
+            Use our AI engine to generate detailed daily activity plans, verified culinary hotspots, and cultural tips for your journey.
+          </p>
+          <div className="pt-2 flex flex-wrap justify-center gap-4">
+            <Link
+              to={`/ai-planner?destination=${encodeURIComponent(initialTo)}&from=${encodeURIComponent(initialFrom)}`}
+              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-[#F28C45] hover:bg-[#d97736] text-white font-bold text-sm shadow-lg hover:shadow-xl transition-all cursor-pointer"
+            >
+              <Sparkles className="w-4 h-4" />
+              <span>Generate AI Itinerary</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+            <Link
+              to={`/budget-calculator?destination=${encodeURIComponent(initialTo)}`}
+              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/25 text-white font-bold text-sm transition-all"
+            >
+              <span>Calculate Total Budget</span>
+            </Link>
+          </div>
+        </div>
+      </div>
 
       {/* Travel Option Details Modal */}
       {selectedModalOption && (

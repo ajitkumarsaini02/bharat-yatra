@@ -1,12 +1,11 @@
-# ==========================================
-# Bharat Yatra - Root .gitignore
-# ==========================================
-
 # Environment Variables, Keys & Secrets
 .env
 .env.*
-!.env.example
+.env.local
+.env.*.local
 *.env
+*.env.local
+!.env.example
 server/.env
 server/.env.*
 client/.env
@@ -15,7 +14,7 @@ client/.env.*
 *.key
 *.cert
 
-# Node Dependencies
+# Node Dependencies & Package Managers
 node_modules/
 */node_modules/
 npm-debug.log*
@@ -23,6 +22,9 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+.pnpm-store/
+.yarn/cache/
+.npm/
 
 # Production & Build Outputs
 dist/
@@ -31,7 +33,9 @@ dist-ssr/
 build/
 out/
 .vite/
+client/.vite/
 client/dist/
+*.tsbuildinfo
 
 # Operating System Files
 .DS_Store
@@ -50,6 +54,8 @@ Thumbs.db
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+.cursor/
+*.code-workspace
 *.suo
 *.ntvs*
 *.njsproj
@@ -57,17 +63,28 @@ Thumbs.db
 *.sw?
 *.sublime-workspace
 *.sublime-project
+*.agents
+
+# AI Tooling, Sandboxes & Temporary Caches
+.gemini/
+.claude/
+.tempmediaStorage/
+.system_generated/
+scratch/
+temp_*/
+AGENTS.md
+CLAUDE.md
+GEMINI.md
 
 # Logs, Diagnostics & Temp
 logs/
 *.log
 *.tmp
 *.temp
+temp/
+tmp/
 .cache/
 .eslintcache
-.tempmediaStorage/
-.system_generated/
-scratch/
 
 # Testing & Coverage
 coverage/

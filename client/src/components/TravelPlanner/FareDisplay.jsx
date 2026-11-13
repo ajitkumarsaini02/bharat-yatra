@@ -19,10 +19,10 @@ export default function FareDisplay({ fare, label, size = 'normal' }) {
   if (isUnavailable) {
     return (
       <div className="inline-flex flex-col items-start">
-        <span className="text-xs font-black text-slate-500 dark:text-slate-400">
+        <span className="text-xs font-black text-[#718096]">
           Fare Unavailable
         </span>
-        <span className="px-2 py-0.5 rounded-md text-[9px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border border-slate-300 dark:border-slate-700 mt-0.5 flex items-center gap-1">
+        <span className="px-2 py-0.5 rounded-md text-[9px] font-bold bg-[#F7F9FC] text-[#718096] border border-[#E5EAF0] mt-0.5 flex items-center gap-1">
           <AlertCircle className="w-2.5 h-2.5" />
           <span>Provider fare not provided</span>
         </span>
@@ -35,21 +35,21 @@ export default function FareDisplay({ fare, label, size = 'normal' }) {
   return (
     <div className="space-y-0.5">
       <div className="flex items-baseline gap-1">
-        <span className={`${isLarge ? 'text-2xl' : 'text-lg sm:text-xl'} font-black text-slate-900 dark:text-slate-100 font-mono`}>
+        <span className={`${isLarge ? 'text-2xl' : 'text-lg sm:text-xl'} font-black text-[#123B5D] font-mono`}>
           ₹{fareObj.amount.toLocaleString('en-IN')}
         </span>
-        <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">/ traveler</span>
+        <span className="text-[10px] text-[#718096] font-medium">/ traveler</span>
       </div>
 
       <div>
         {isLive ? (
-          <span className="px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-wider bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700/60 inline-flex items-center gap-1 shadow-xs">
-            <CheckCircle2 className="w-2.5 h-2.5 text-emerald-600 dark:text-emerald-400" />
+          <span className="px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-wider bg-emerald-50 text-emerald-800 border border-emerald-200 inline-flex items-center gap-1 shadow-xs">
+            <CheckCircle2 className="w-2.5 h-2.5 text-emerald-600" />
             <span>LIVE PROVIDER FARE</span>
           </span>
         ) : (
-          <span className="px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-wider bg-amber-100 dark:bg-amber-950/80 text-amber-900 dark:text-amber-300 border border-amber-300 dark:border-amber-700/60 inline-flex items-center gap-1 shadow-xs">
-            <Tag className="w-2.5 h-2.5 text-amber-600 dark:text-amber-400" />
+          <span className="px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-wider bg-amber-50 text-amber-900 border border-amber-200 inline-flex items-center gap-1 shadow-xs">
+            <Tag className="w-2.5 h-2.5 text-amber-600" />
             <span>{label && label !== 'ESTIMATED' ? label : 'VERIFIED TARIFF FARE'}</span>
           </span>
         )}

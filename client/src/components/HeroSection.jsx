@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Search, MapPin, Compass, Route as RouteIcon } from 'lucide-react';
+import { Search, MapPin, Compass, Sparkles, ArrowRight, ShieldCheck } from 'lucide-react';
 import { destinationsData } from '../data/mockData';
 import { api } from '../services/api';
 
@@ -8,7 +8,7 @@ export default function HeroSection({ destinations = [] }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentBgIndex, setCurrentBgIndex] = useState(0);
 
-  // Initialize with ALL destinations from the comprehensive dataset
+  // Initialize with ALL destinations from dataset
   const [backgroundSlides, setBackgroundSlides] = useState(() => {
     const list = destinations.length > 0 ? destinations : destinationsData;
     return list.map(d => ({
@@ -21,7 +21,7 @@ export default function HeroSection({ destinations = [] }) {
 
   const navigate = useNavigate();
 
-  // Sync when live destinations prop or API updates
+  // Sync with live data
   useEffect(() => {
     if (destinations && destinations.length > 0) {
       setBackgroundSlides(destinations.map(d => ({
@@ -50,12 +50,12 @@ export default function HeroSection({ destinations = [] }) {
     }
   }, [destinations]);
 
-  // Smooth Auto-advance background slideshow across all destinations every 5 seconds
+  // Smooth Auto-advance background slideshow every 6 seconds
   useEffect(() => {
     if (!backgroundSlides || backgroundSlides.length === 0) return;
     const timer = setInterval(() => {
       setCurrentBgIndex((prev) => (prev + 1) % backgroundSlides.length);
-    }, 5000);
+    }, 6000);
     return () => clearInterval(timer);
   }, [backgroundSlides.length]);
 
@@ -68,28 +68,27 @@ export default function HeroSection({ destinations = [] }) {
     }
   };
 
-  const trendingPills = [
-    { label: 'Taj Mahal', query: 'Taj Mahal' },
-    { label: 'Amer Fort', query: 'Amer Fort' },
-    { label: 'Red Fort', query: 'Delhi' },
-    { label: 'Hampi Chariot', query: 'Hampi' },
-    { label: 'Golden Temple', query: 'Amritsar' },
-    { label: 'Charminar', query: 'Hyderabad' },
-    { label: 'Konark Sun Temple', query: 'Konark' },
-    { label: 'Victoria Memorial', query: 'Kolkata' }
+  const popularPills = [
+    { label: 'Jaipur', query: 'Jaipur' },
+    { label: 'Agra', query: 'Agra' },
+    { label: 'Manali', query: 'Manali' },
+    { label: 'Goa', query: 'Goa' },
+    { label: 'Varanasi', query: 'Varanasi' },
+    { label: 'Kerala', query: 'Kerala' },
+    { label: 'Kashmir', query: 'Kashmir' }
   ];
 
   const currentBg = backgroundSlides[currentBgIndex] || backgroundSlides[0] || {
     url: "/monuments/taj-mahal.jpg",
-    title: "Taj Mahal (Crown of Palaces)",
+    title: "Taj Mahal",
     state: "Uttar Pradesh",
-    category: "UNESCO World Heritage & Iconic Monuments"
+    category: "UNESCO World Heritage"
   };
 
   return (
-    <div className="relative overflow-hidden bg-[#0A192F] text-white min-h-[calc(100vh-5rem)] lg:h-[calc(100vh-5rem)] max-h-[920px] flex flex-col justify-center py-4 sm:py-6">
+    <div className="relative overflow-hidden bg-[#123B5D] text-white min-h-[580px] lg:min-h-[660px] flex flex-col justify-center py-16 sm:py-20">
       
-      {/* Dynamic Auto-Scrolling Background Slideshow across ALL destinations */}
+      {/* Background Slideshow Image Container */}
       <div className="absolute inset-0 z-0 overflow-hidden">
         {backgroundSlides.map((slide, index) => {
           const isActive = index === currentBgIndex;
@@ -101,8 +100,8 @@ export default function HeroSection({ destinations = [] }) {
             <div
               key={slide.url + index}
               className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
-                isActive ? 'opacity-70 scale-105' : 'opacity-0 scale-100'
-              } transition-transform duration-[7000ms]`}
+                isActive ? 'opacity-85 scale-105' : 'opacity-0 scale-100'
+              } transition-transform duration-[8000ms]`}
             >
               <img
                 src={slide.url}
@@ -117,102 +116,99 @@ export default function HeroSection({ destinations = [] }) {
           );
         })}
 
-        {/* Balanced Navy Vignette Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#020C1B]/80 via-[#0A192F]/50 to-[#0A192F]/95"></div>
+        {/* Ocean Blue Gradient Overlay for High Readability */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#123B5D]/75 via-[#123B5D]/60 to-[#123B5D]/95"></div>
       </div>
 
-      {/* Decorative ambient glowing orbs */}
-      <div className="absolute top-1/4 left-10 w-80 h-80 bg-amber-500/15 rounded-full blur-3xl pointer-events-none"></div>
-      <div className="absolute bottom-10 right-10 w-80 h-80 bg-yellow-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      {/* Subtle Ambient Glowing Orbs */}
+      <div className="absolute top-1/4 left-10 w-80 h-80 bg-[#FFB36B]/15 rounded-full blur-3xl pointer-events-none"></div>
+      <div className="absolute bottom-10 right-10 w-80 h-80 bg-[#F28C45]/15 rounded-full blur-3xl pointer-events-none"></div>
 
-      {/* Background Current Location Tag Indicator (Bottom Right) */}
-      <div className="absolute bottom-3 right-3 sm:bottom-4 sm:right-6 z-20 hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-black/70 backdrop-blur-md border border-amber-400/30 text-xs shadow-lg animate-fade-in">
-        <MapPin className="w-3.5 h-3.5 text-amber-400" />
-        <span className="text-white font-medium">{currentBg.title}</span>
-        <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/25 text-amber-200 border border-amber-400/40 font-semibold">
-          {currentBg.category}
-        </span>
+      {/* Location Badge on Bottom Right */}
+      <div className="absolute bottom-4 right-4 sm:bottom-6 sm:right-8 z-20 hidden sm:flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-white/20 text-xs shadow-lg">
+        <MapPin className="w-3.5 h-3.5 text-[#FFB36B]" />
+        <span className="text-white font-semibold">{currentBg.title}</span>
+        <span className="text-white/40">•</span>
+        <span className="text-white/80">{currentBg.state}</span>
       </div>
 
       {/* Main Foreground Hero Content */}
-      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center text-center w-full my-auto">
+      <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center text-center w-full my-auto space-y-6">
         
-        {/* Main Headline */}
-        <h1 className="text-3xl sm:text-5xl lg:text-5xl font-black tracking-tight text-white max-w-3xl leading-[1.15] drop-shadow-md">
-          Explore the Timeless Magic of <span className="bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-200 bg-clip-text text-transparent drop-shadow-sm">Incredible Bharat</span>
+        {/* Sub-badge */}
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/15 backdrop-blur-md border border-white/25 text-white text-xs font-bold shadow-sm">
+          <Sparkles className="w-3.5 h-3.5 text-[#FFB36B]" />
+          <span>Centralized Indian Tourism & AI Travel Platform</span>
+        </div>
+
+        {/* Exact Required Heading */}
+        <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white max-w-4xl leading-[1.12] drop-shadow-md">
+          Discover the Incredible Beauty of <span className="text-[#FFB36B] drop-shadow-sm">India</span>
         </h1>
 
-        <p className="mt-2.5 sm:mt-3 text-xs sm:text-sm lg:text-base text-slate-200 max-w-xl font-medium leading-relaxed drop-shadow-xs">
-          The centralized AI-powered tourism discovery platform. Tailor day-wise travel itineraries, estimate realistic travel budgets, and unearth local culinary secrets across India.
+        {/* Subtitle */}
+        <p className="text-sm sm:text-base lg:text-lg text-[#EAF4FA] max-w-2xl mx-auto font-medium leading-relaxed drop-shadow-xs">
+          Explore India’s timeless culture, ancient heritage, majestic mountains, and sun-kissed beaches with intelligent AI trip planning and verified travel guides.
         </p>
 
-        {/* Search & Action Bar */}
+        {/* Modern Clean Search Bar */}
         <form 
           onSubmit={handleSearch}
-          className="mt-4 sm:mt-5 w-full max-w-2xl glass-royal p-1.5 sm:p-2 rounded-2xl sm:rounded-3xl border border-amber-400/40 shadow-2xl flex flex-col sm:flex-row items-center gap-2"
+          className="w-full max-w-2xl bg-white p-2 rounded-2xl sm:rounded-3xl shadow-2xl border border-white/40 flex flex-col sm:flex-row items-center gap-2 mt-2"
         >
-          <div className="relative flex-1 w-full flex items-center pl-3 sm:pl-4">
-            <Search className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400 mr-2.5 flex-shrink-0" />
+          <div className="relative flex-1 w-full flex items-center pl-4 py-1">
+            <Search className="w-5 h-5 text-[#1D5D85] mr-3 shrink-0" />
             <input
               type="text"
-              placeholder="Search monuments, states, beaches (e.g. Taj Mahal, Amer Fort, Hampi)..."
+              placeholder="Search destinations, monuments, hill stations (e.g. Jaipur, Manali, Goa)..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-transparent text-white placeholder-slate-300 text-xs sm:text-sm outline-hidden py-2 sm:py-2.5 font-medium"
+              className="w-full bg-transparent text-[#29445A] placeholder-[#718096] text-xs sm:text-sm font-semibold outline-hidden py-1.5"
             />
           </div>
 
-          <div className="flex flex-col sm:flex-row w-full sm:w-auto items-center gap-2">
-            <button
-              type="submit"
-              className="w-full sm:w-auto px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl gradient-saffron text-slate-950 font-black text-xs sm:text-sm hover:opacity-95 transition shadow-lg shadow-amber-500/25 flex items-center justify-center gap-1.5 cursor-pointer"
-            >
-              <Compass className="w-4 h-4 text-slate-950" />
-              <span>Explore</span>
-            </button>
-
-            <Link
-              to="/travel-planner"
-              className="w-full sm:w-auto px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl bg-white/10 hover:bg-white/20 text-amber-300 border border-amber-400/40 font-black text-xs sm:text-sm transition flex items-center justify-center gap-1.5 cursor-pointer shadow-md whitespace-nowrap"
-            >
-              <RouteIcon className="w-4 h-4 text-amber-400" />
-              <span>Plan Your Complete Trip</span>
-            </Link>
-          </div>
+          <button
+            type="submit"
+            className="w-full sm:w-auto px-6 sm:px-7 py-3 rounded-xl sm:rounded-2xl bg-gradient-to-r from-[#F28C45] to-[#FFB36B] hover:from-[#e0752f] hover:to-[#f29c4b] text-white font-extrabold text-xs sm:text-sm transition-all shadow-md shadow-[#F28C45]/30 flex items-center justify-center gap-1.5 cursor-pointer shrink-0"
+          >
+            <Search className="w-4 h-4 stroke-[2.5]" />
+            <span>Search</span>
+          </button>
         </form>
 
-        {/* Trending Quick Pills */}
-        <div className="mt-3 sm:mt-3.5 flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 text-xs">
-          <span className="text-amber-200 font-semibold drop-shadow-xs text-[11px] sm:text-xs">Trending Destinations:</span>
-          {trendingPills.map((pill) => (
+        {/* Prominent CTA Actions */}
+        <div className="flex flex-wrap items-center justify-center gap-3 pt-1">
+          <Link
+            to="/explore"
+            className="px-6 py-3 rounded-xl sm:rounded-2xl bg-[#F28C45] hover:bg-[#e0752f] text-white font-extrabold text-xs sm:text-sm shadow-lg shadow-[#F28C45]/30 hover:scale-105 active:scale-95 transition-all flex items-center gap-2 cursor-pointer"
+          >
+            <Compass className="w-4 h-4" />
+            <span>Explore Destinations</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
+
+          <Link
+            to="/ai-planner"
+            className="px-6 py-3 rounded-xl sm:rounded-2xl bg-white/15 hover:bg-white/25 text-white border border-white/30 backdrop-blur-md font-bold text-xs sm:text-sm transition-all hover:scale-105 active:scale-95 flex items-center gap-2 cursor-pointer"
+          >
+            <Sparkles className="w-4 h-4 text-[#FFB36B]" />
+            <span>AI Trip Planner</span>
+          </Link>
+        </div>
+
+        {/* Popular Destination Pills */}
+        <div className="flex flex-wrap items-center justify-center gap-2 text-xs pt-3">
+          <span className="text-[#EAF4FA]/80 font-semibold text-xs">Popular Searches:</span>
+          {popularPills.map((pill) => (
             <button
               key={pill.label}
+              type="button"
               onClick={() => navigate(`/explore?search=${encodeURIComponent(pill.query)}`)}
-              className="px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full bg-slate-950/70 backdrop-blur-md border border-amber-400/30 text-amber-100 hover:bg-white/20 hover:text-white transition font-medium text-[11px] sm:text-xs cursor-pointer"
+              className="px-3 py-1 rounded-full bg-white/15 hover:bg-white/25 text-white border border-white/20 backdrop-blur-md text-xs font-semibold transition-all hover:scale-105 cursor-pointer"
             >
               {pill.label}
             </button>
           ))}
-        </div>
-
-        {/* Highlight Stats Strip */}
-        <div className="mt-4 sm:mt-6 grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-4 w-full max-w-3xl">
-          <div className="glass-royal p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl border border-amber-400/30 text-center backdrop-blur-md">
-            <span className="text-xl sm:text-2xl font-extrabold text-amber-400 block">All-India</span>
-            <span className="text-[11px] sm:text-xs text-slate-300 mt-0.5 block font-medium">Tourism Directory</span>
-          </div>
-          <div className="glass-royal p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl border border-amber-400/30 text-center backdrop-blur-md">
-            <span className="text-xl sm:text-2xl font-extrabold text-yellow-300 block">AI Planner</span>
-            <span className="text-[11px] sm:text-xs text-slate-300 mt-0.5 block font-medium">Day-Wise Tailored Routes</span>
-          </div>
-          <div className="glass-royal p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl border border-amber-400/30 text-center backdrop-blur-md">
-            <span className="text-xl sm:text-2xl font-extrabold text-amber-300 block">Smart Budget</span>
-            <span className="text-[11px] sm:text-xs text-slate-300 mt-0.5 block font-medium">Category-Wise Breakdown</span>
-          </div>
-          <div className="glass-royal p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl border border-amber-400/30 text-center backdrop-blur-md">
-            <span className="text-xl sm:text-2xl font-extrabold text-emerald-400 block">100% Free</span>
-            <span className="text-[11px] sm:text-xs text-slate-300 mt-0.5 block font-medium">Open Community Platform</span>
-          </div>
         </div>
 
       </div>

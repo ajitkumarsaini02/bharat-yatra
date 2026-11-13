@@ -59,26 +59,26 @@ export default function TransportMap({ fromCoords, toCoords, fromName, toName, d
   const routeLine = [sourcePos, destPos];
 
   return (
-    <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-amber-900/10 dark:border-slate-800 shadow-xs space-y-4">
+    <div className="p-6 rounded-3xl bg-white border border-[#E5EAF0] shadow-xs space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-xl font-bold text-[#0A192F] dark:text-slate-100 flex items-center gap-2">
-            <Navigation className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+          <h3 className="text-xl font-bold text-[#123B5D] flex items-center gap-2">
+            <Navigation className="w-5 h-5 text-[#1D5D85]" />
             <span>GIS Intercity Transport Route Map</span>
           </h3>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+          <p className="text-xs text-[#718096] mt-0.5">
             Visualizing intercity transit path between {fromName || 'Source'} and {toName || 'Destination'}
           </p>
         </div>
         <div className="flex items-center gap-2 text-[10px] font-bold">
-          <span className="flex items-center gap-1 text-amber-600 dark:text-amber-400">
-            <span className="w-2.5 h-0.5 bg-amber-500 inline-block"></span> Direct Air/Rail Route
+          <span className="flex items-center gap-1 text-[#F28C45]">
+            <span className="w-2.5 h-0.5 bg-[#F28C45] inline-block"></span> Direct Air/Rail Route
           </span>
         </div>
       </div>
 
       {/* Map Container */}
-      <div className="h-72 w-full rounded-2xl overflow-hidden border border-amber-900/10 dark:border-slate-800 relative z-10 shadow-inner">
+      <div className="h-72 w-full rounded-2xl overflow-hidden border border-[#E5EAF0] relative z-10 shadow-inner">
         <MapContainer
           center={center}
           zoom={6}
@@ -91,23 +91,23 @@ export default function TransportMap({ fromCoords, toCoords, fromName, toName, d
           />
 
           {/* Source Marker */}
-          <Marker position={sourcePos} icon={createCustomIcon('#3B82F6')}>
+          <Marker position={sourcePos} icon={createCustomIcon('#123B5D')}>
             <Popup>
               <div className="p-1 space-y-1">
-                <span className="text-[10px] font-bold text-blue-600 uppercase block">Source</span>
-                <h4 className="font-bold text-xs text-slate-900">{fromName || 'Source'}</h4>
-                <p className="text-[10px] font-mono text-slate-500">Lat: {sourcePos[0]}, Lng: {sourcePos[1]}</p>
+                <span className="text-[10px] font-bold text-[#1D5D85] uppercase block">Source</span>
+                <h4 className="font-bold text-xs text-[#123B5D]">{fromName || 'Source'}</h4>
+                <p className="text-[10px] font-mono text-[#718096]">Lat: {sourcePos[0]}, Lng: {sourcePos[1]}</p>
               </div>
             </Popup>
           </Marker>
 
           {/* Destination Marker */}
-          <Marker position={destPos} icon={createCustomIcon('#D97706')}>
+          <Marker position={destPos} icon={createCustomIcon('#F28C45')}>
             <Popup>
               <div className="p-1 space-y-1">
-                <span className="text-[10px] font-bold text-amber-600 uppercase block">Destination</span>
-                <h4 className="font-bold text-xs text-slate-900">{toName || 'Destination'}</h4>
-                <p className="text-[10px] font-mono text-slate-500">Lat: {destPos[0]}, Lng: {destPos[1]}</p>
+                <span className="text-[10px] font-bold text-[#F28C45] uppercase block">Destination</span>
+                <h4 className="font-bold text-xs text-[#123B5D]">{toName || 'Destination'}</h4>
+                <p className="text-[10px] font-mono text-[#718096]">Lat: {destPos[0]}, Lng: {destPos[1]}</p>
               </div>
             </Popup>
           </Marker>
@@ -116,7 +116,7 @@ export default function TransportMap({ fromCoords, toCoords, fromName, toName, d
           <Polyline
             positions={routeLine}
             pathOptions={{
-              color: '#D97706',
+              color: '#F28C45',
               weight: 4,
               opacity: 0.85,
               dashArray: '8, 8'
@@ -126,11 +126,11 @@ export default function TransportMap({ fromCoords, toCoords, fromName, toName, d
       </div>
 
       {/* Distance Legend Banner */}
-      <div className="flex flex-wrap items-center justify-between gap-2 p-3 rounded-xl bg-amber-50/60 dark:bg-slate-800/60 border border-amber-200/50 dark:border-slate-700/60 text-xs">
-        <span className="font-medium text-slate-700 dark:text-slate-300">
+      <div className="flex flex-wrap items-center justify-between gap-2 p-3 rounded-xl bg-[#F7F9FC] border border-[#E5EAF0] text-xs">
+        <span className="font-medium text-[#29445A]">
           📍 {distanceInfo?.geographicDistanceFormatted || `Distance: ~${distanceInfo?.geographicDistanceKm || 200} km`}
         </span>
-        <span className="text-[10px] font-mono text-amber-800 dark:text-amber-400 font-bold">
+        <span className="text-[10px] font-mono text-[#1D5D85] font-bold">
           Road: {distanceInfo?.roadDistanceKm || '~240'} km ({distanceInfo?.roadProvider || 'OSRM'})
         </span>
       </div>

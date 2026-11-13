@@ -208,27 +208,23 @@ export default function LoginRegister() {
 
   return (
     <div className="min-h-[85vh] flex items-center justify-center px-4 py-12">
-      <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-amber-900/10 dark:border-amber-500/20 shadow-2xl space-y-6 transition-colors">
+      <div className="w-full max-w-md bg-white rounded-3xl p-6 sm:p-8 border border-[#E5EAF0] shadow-2xl space-y-6 transition-colors">
         
         {/* Header */}
         <div className="text-center space-y-2">
-          <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mx-auto shadow-md transition-colors ${
-            role === 'admin' && isLogin
-              ? 'bg-amber-600 text-white shadow-amber-600/30' 
-              : 'gradient-saffron shadow-amber-500/25'
-          }`}>
+          <div className="w-12 h-12 rounded-2xl flex items-center justify-center mx-auto shadow-md transition-colors bg-gradient-to-br from-[#123B5D] to-[#1D5D85] text-white">
             {!isLogin && otpStep === 2 ? (
-              <KeyRound className="w-7 h-7 text-white animate-pulse" />
+              <KeyRound className="w-6 h-6 text-white animate-pulse" />
             ) : !isLogin && otpStep === 3 ? (
-              <Lock className="w-7 h-7 text-white" />
+              <Lock className="w-6 h-6 text-white" />
             ) : role === 'admin' && isLogin ? (
-              <ShieldCheck className="w-7 h-7 text-white" />
+              <ShieldCheck className="w-6 h-6 text-[#FFB36B]" />
             ) : (
-              <Compass className="w-7 h-7 text-white" />
+              <Compass className="w-6 h-6 text-[#FFB36B]" />
             )}
           </div>
           
-          <h2 className="text-2xl font-black text-[#0A192F] dark:text-slate-100 tracking-tight">
+          <h2 className="text-2xl font-black text-[#123B5D] tracking-tight">
             {isLogin
               ? role === 'admin'
                 ? 'Sign In to Admin Portal'
@@ -240,7 +236,7 @@ export default function LoginRegister() {
                   : 'Create Account Password'}
           </h2>
           
-          <p className="text-xs text-slate-500 dark:text-slate-400">
+          <p className="text-xs text-[#718096] font-medium">
             {isLogin
               ? role === 'admin'
                 ? 'Access Bharat Yatra content management & user permission database.'
@@ -254,12 +250,12 @@ export default function LoginRegister() {
         </div>
 
         {/* Tab Switcher (Sign In vs Register) */}
-        <div className="flex bg-amber-50/80 dark:bg-slate-800 p-1.5 rounded-2xl border border-amber-100 dark:border-slate-700">
+        <div className="flex bg-[#EAF4FA] p-1.5 rounded-2xl border border-[#E5EAF0]">
           <button
             type="button"
             onClick={() => { setIsLogin(true); setOtpStep(1); setError(''); setSuccessMsg(''); }}
             className={`flex-1 py-2 text-xs font-bold rounded-xl transition cursor-pointer ${
-              isLogin ? 'bg-white dark:bg-slate-900 text-[#0A192F] dark:text-amber-300 shadow-xs' : 'text-amber-900 dark:text-slate-400 hover:text-[#0A192F]'
+              isLogin ? 'bg-white text-[#123B5D] shadow-xs' : 'text-[#718096] hover:text-[#123B5D]'
             }`}
           >
             Sign In
@@ -268,7 +264,7 @@ export default function LoginRegister() {
             type="button"
             onClick={() => { setIsLogin(false); setOtpStep(1); setError(''); setSuccessMsg(''); }}
             className={`flex-1 py-2 text-xs font-bold rounded-xl transition cursor-pointer ${
-              !isLogin ? 'bg-white dark:bg-slate-900 text-[#0A192F] dark:text-amber-300 shadow-xs' : 'text-amber-900 dark:text-slate-400 hover:text-[#0A192F]'
+              !isLogin ? 'bg-white text-[#123B5D] shadow-xs' : 'text-[#718096] hover:text-[#123B5D]'
             }`}
           >
             Register
@@ -277,14 +273,14 @@ export default function LoginRegister() {
 
         {/* Alerts */}
         {error && (
-          <div className="p-3 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-300 text-xs font-semibold flex items-start gap-2">
+          <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold flex items-start gap-2">
             <span className="shrink-0 font-bold">⚠️</span>
             <span>{error}</span>
           </div>
         )}
         {successMsg && (
-          <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 text-xs font-semibold flex items-start gap-2">
-            <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-600 dark:text-emerald-400 mt-0.5" />
+          <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-semibold flex items-start gap-2">
+            <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-600 mt-0.5" />
             <span>{successMsg}</span>
           </div>
         )}
@@ -294,7 +290,7 @@ export default function LoginRegister() {
           /* ================= SIGN IN FORM ================= */
           <form onSubmit={handleLoginSubmit} className="space-y-4">
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-amber-900/70 dark:text-slate-300 uppercase block">
+              <label className="text-xs font-bold text-[#123B5D] uppercase block">
                 Select Sign In Portal
               </label>
               <div className="grid grid-cols-2 gap-2">
@@ -303,11 +299,11 @@ export default function LoginRegister() {
                   onClick={() => { setRole('user'); setError(''); }}
                   className={`p-3 rounded-xl border text-xs font-bold flex flex-col items-center justify-center gap-1.5 transition cursor-pointer ${
                     role === 'user'
-                      ? 'bg-amber-500/15 border-amber-500 text-amber-900 dark:text-amber-300 shadow-xs font-black'
-                      : 'bg-slate-50 dark:bg-slate-800/40 border-slate-200 dark:border-slate-700 text-slate-500 hover:border-slate-300'
+                      ? 'bg-[#EAF4FA] border-[#F28C45] text-[#123B5D] shadow-xs font-black'
+                      : 'bg-[#F7F9FC] border border-[#E5EAF0] text-[#718096] hover:border-slate-300'
                   }`}
                 >
-                  <Compass className="w-5 h-5 text-emerald-500" />
+                  <Compass className="w-5 h-5 text-[#F28C45]" />
                   <span>Traveler (User)</span>
                 </button>
 
@@ -316,46 +312,46 @@ export default function LoginRegister() {
                   onClick={() => { setRole('admin'); setError(''); }}
                   className={`p-3 rounded-xl border text-xs font-bold flex flex-col items-center justify-center gap-1.5 transition cursor-pointer ${
                     role === 'admin'
-                      ? 'bg-amber-500/15 border-amber-500 text-amber-900 dark:text-amber-300 shadow-xs font-black'
-                      : 'bg-slate-50 dark:bg-slate-800/40 border-slate-200 dark:border-slate-700 text-slate-500 hover:border-slate-300'
+                      ? 'bg-[#EAF4FA] border-[#F28C45] text-[#123B5D] shadow-xs font-black'
+                      : 'bg-[#F7F9FC] border border-[#E5EAF0] text-[#718096] hover:border-slate-300'
                   }`}
                 >
-                  <ShieldCheck className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+                  <ShieldCheck className="w-5 h-5 text-[#123B5D]" />
                   <span>Admin (Manager)</span>
                 </button>
               </div>
             </div>
 
             <div>
-              <label className="text-xs font-bold text-amber-900/70 dark:text-slate-300 uppercase block mb-1">
+              <label className="text-xs font-bold text-[#123B5D] uppercase block mb-1">
                 {role === 'admin' ? 'Admin Email Address' : 'Email Address'}
               </label>
               <div className="relative">
-                <Mail className="w-4 h-4 text-amber-600 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <Mail className="w-4 h-4 text-[#F28C45] absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
                   type="email"
                   required
                   placeholder={role === 'admin' ? 'admin@bharatyatra.com' : 'your.email@example.com'}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-10 pr-3 py-3 rounded-xl bg-amber-50/40 dark:bg-slate-800/60 border border-amber-200 dark:border-slate-700 text-xs font-semibold outline-hidden focus:border-amber-600 text-[#0A192F] dark:text-slate-100"
+                  className="w-full pl-10 pr-3 py-3 rounded-xl bg-[#F7F9FC] border border-[#E5EAF0] text-xs font-semibold outline-hidden focus:border-[#F28C45] text-[#29445A]"
                 />
               </div>
             </div>
 
             <div>
-              <label className="text-xs font-bold text-amber-900/70 dark:text-slate-300 uppercase block mb-1">
+              <label className="text-xs font-bold text-[#123B5D] uppercase block mb-1">
                 Password
               </label>
               <div className="relative">
-                <Lock className="w-4 h-4 text-amber-600 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <Lock className="w-4 h-4 text-[#F28C45] absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
                   type="password"
                   required
                   placeholder="Enter password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-10 pr-3 py-3 rounded-xl bg-amber-50/40 dark:bg-slate-800/60 border border-amber-200 dark:border-slate-700 text-xs font-semibold outline-hidden focus:border-amber-600 text-[#0A192F] dark:text-slate-100"
+                  className="w-full pl-10 pr-3 py-3 rounded-xl bg-[#F7F9FC] border border-[#E5EAF0] text-xs font-semibold outline-hidden focus:border-[#F28C45] text-[#29445A]"
                 />
               </div>
             </div>
@@ -363,11 +359,7 @@ export default function LoginRegister() {
             <button
               type="submit"
               disabled={loading}
-              className={`w-full py-3.5 rounded-xl text-xs font-bold transition shadow-md disabled:opacity-50 cursor-pointer ${
-                role === 'admin'
-                  ? 'bg-amber-600 hover:bg-amber-700 text-white dark:bg-amber-500 dark:text-slate-950 dark:hover:bg-amber-400'
-                  : 'bg-[#0A192F] hover:bg-[#020C1B] text-amber-300 dark:bg-amber-500 dark:text-slate-950 dark:hover:bg-amber-400'
-              }`}
+              className="w-full py-3.5 rounded-xl text-xs font-bold transition shadow-md disabled:opacity-50 cursor-pointer bg-gradient-to-r from-[#F28C45] to-[#FFB36B] hover:from-[#e0752f] hover:to-[#f29c4b] text-white"
             >
               {loading ? 'Signing in...' : role === 'admin' ? 'Sign In to Admin Portal' : 'Sign In as Traveler'}
             </button>
@@ -379,35 +371,35 @@ export default function LoginRegister() {
               /* STEP 1: Full Name & Email Address -> Send OTP */
               <form onSubmit={handleSendOTP} className="space-y-4">
                 <div>
-                  <label className="text-xs font-bold text-amber-900/70 dark:text-slate-300 uppercase block mb-1">
+                  <label className="text-xs font-bold text-[#123B5D] uppercase block mb-1">
                     Full Name
                   </label>
                   <div className="relative">
-                    <User className="w-4 h-4 text-amber-600 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                    <User className="w-4 h-4 text-[#F28C45] absolute left-3.5 top-1/2 -translate-y-1/2" />
                     <input
                       type="text"
                       required
                       placeholder="Enter your full name"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
-                      className="w-full pl-10 pr-3 py-3 rounded-xl bg-amber-50/40 dark:bg-slate-800/60 border border-amber-200 dark:border-slate-700 text-xs font-semibold outline-hidden focus:border-amber-600 text-[#0A192F] dark:text-slate-100"
+                      className="w-full pl-10 pr-3 py-3 rounded-xl bg-[#F7F9FC] border border-[#E5EAF0] text-xs font-semibold outline-hidden focus:border-[#F28C45] text-[#29445A]"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="text-xs font-bold text-amber-900/70 dark:text-slate-300 uppercase block mb-1">
+                  <label className="text-xs font-bold text-[#123B5D] uppercase block mb-1">
                     Email Address
                   </label>
                   <div className="relative">
-                    <Mail className="w-4 h-4 text-amber-600 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                    <Mail className="w-4 h-4 text-[#F28C45] absolute left-3.5 top-1/2 -translate-y-1/2" />
                     <input
                       type="email"
                       required
                       placeholder="your.email@example.com"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="w-full pl-10 pr-3 py-3 rounded-xl bg-amber-50/40 dark:bg-slate-800/60 border border-amber-200 dark:border-slate-700 text-xs font-semibold outline-hidden focus:border-amber-600 text-[#0A192F] dark:text-slate-100"
+                      className="w-full pl-10 pr-3 py-3 rounded-xl bg-[#F7F9FC] border border-[#E5EAF0] text-xs font-semibold outline-hidden focus:border-[#F28C45] text-[#29445A]"
                     />
                   </div>
                 </div>
@@ -415,9 +407,9 @@ export default function LoginRegister() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-3.5 rounded-xl text-xs font-bold bg-[#0A192F] hover:bg-[#020C1B] text-amber-300 dark:bg-amber-500 dark:text-slate-950 dark:hover:bg-amber-400 transition shadow-md disabled:opacity-50 cursor-pointer flex items-center justify-center gap-2"
+                  className="w-full py-3.5 rounded-xl text-xs font-bold bg-gradient-to-r from-[#F28C45] to-[#FFB36B] hover:from-[#e0752f] text-white transition shadow-md disabled:opacity-50 cursor-pointer flex items-center justify-center gap-2"
                 >
-                  <KeyRound className="w-4 h-4 text-amber-400 dark:text-slate-950" />
+                  <KeyRound className="w-4 h-4 text-white" />
                   <span>{loading ? 'Sending OTP Code...' : 'Send 6-Digit OTP to Email'}</span>
                 </button>
               </form>
@@ -427,14 +419,14 @@ export default function LoginRegister() {
                 <button
                   type="button"
                   onClick={() => setOtpStep(1)}
-                  className="text-xs text-amber-700 dark:text-amber-400 font-bold flex items-center gap-1 hover:underline cursor-pointer"
+                  className="text-xs text-[#123B5D] font-bold flex items-center gap-1 hover:underline cursor-pointer"
                 >
                   <ArrowLeft className="w-3.5 h-3.5" />
                   <span>Back to details ({email})</span>
                 </button>
 
                 <div>
-                  <label className="text-xs font-bold text-amber-900/70 dark:text-slate-300 uppercase block mb-2 text-center">
+                  <label className="text-xs font-bold text-[#123B5D] uppercase block mb-2 text-center">
                     Enter 6-Digit OTP Code
                   </label>
                   <div className="flex items-center justify-center gap-2" onPaste={handlePaste}>
@@ -448,7 +440,7 @@ export default function LoginRegister() {
                         value={digit}
                         onChange={(e) => handleDigitChange(idx, e.target.value)}
                         onKeyDown={(e) => handleKeyDown(idx, e)}
-                        className="w-11 h-13 text-center text-xl font-black rounded-xl bg-amber-50/50 dark:bg-slate-800 border-2 border-amber-200 dark:border-slate-700 focus:border-amber-500 dark:focus:border-amber-400 text-[#0A192F] dark:text-amber-300 outline-hidden transition shadow-sm"
+                        className="w-11 h-13 text-center text-xl font-black rounded-xl bg-[#F7F9FC] border-2 border-[#E5EAF0] focus:border-[#F28C45] text-[#123B5D] outline-hidden transition shadow-xs"
                       />
                     ))}
                   </div>
@@ -457,8 +449,8 @@ export default function LoginRegister() {
                 {/* Countdown / Resend UI */}
                 <div className="text-center text-xs space-y-1">
                   {countdown > 0 ? (
-                    <p className="text-slate-500 dark:text-slate-400 flex items-center justify-center gap-1 font-medium">
-                      <Clock className="w-3.5 h-3.5 text-amber-600" />
+                    <p className="text-[#718096] flex items-center justify-center gap-1 font-medium">
+                      <Clock className="w-3.5 h-3.5 text-[#F28C45]" />
                       <span>Resend OTP available in <strong>{countdown}s</strong></span>
                     </p>
                   ) : (
@@ -466,7 +458,7 @@ export default function LoginRegister() {
                       type="button"
                       onClick={handleResendOTP}
                       disabled={loading}
-                      className="text-amber-600 dark:text-amber-400 font-bold hover:underline cursor-pointer"
+                      className="text-[#F28C45] font-bold hover:underline cursor-pointer"
                     >
                       Didn't receive OTP? Resend Code
                     </button>
@@ -476,18 +468,18 @@ export default function LoginRegister() {
                 <button
                   type="submit"
                   disabled={loading || otpDigits.join('').length !== 6}
-                  className="w-full py-3.5 rounded-xl text-xs font-bold bg-[#0A192F] hover:bg-[#020C1B] text-amber-300 dark:bg-amber-500 dark:text-slate-950 dark:hover:bg-amber-400 transition shadow-md disabled:opacity-50 cursor-pointer flex items-center justify-center gap-2"
+                  className="w-full py-3.5 rounded-xl text-xs font-bold bg-gradient-to-r from-[#F28C45] to-[#FFB36B] hover:from-[#e0752f] text-white transition shadow-md disabled:opacity-50 cursor-pointer flex items-center justify-center gap-2"
                 >
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400 dark:text-slate-950" />
+                  <CheckCircle2 className="w-4 h-4 text-white" />
                   <span>{loading ? 'Verifying OTP...' : 'Verify 6-Digit OTP'}</span>
                 </button>
               </form>
             ) : (
               /* STEP 3: OTP Verified -> Create Account Password */
               <form onSubmit={handleCompleteRegistration} className="space-y-4">
-                <div className="p-3 rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 flex items-center justify-between text-xs">
-                  <div className="flex items-center gap-2 text-emerald-800 dark:text-emerald-300 font-bold">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                <div className="p-3 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-between text-xs">
+                  <div className="flex items-center gap-2 text-emerald-800 font-bold">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
                     <span>Verified: {email}</span>
                   </div>
                   <button
@@ -500,35 +492,35 @@ export default function LoginRegister() {
                 </div>
 
                 <div>
-                  <label className="text-xs font-bold text-amber-900/70 dark:text-slate-300 uppercase block mb-1">
+                  <label className="text-xs font-bold text-[#123B5D] uppercase block mb-1">
                     Create Password
                   </label>
                   <div className="relative">
-                    <Lock className="w-4 h-4 text-amber-600 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                    <Lock className="w-4 h-4 text-[#F28C45] absolute left-3.5 top-1/2 -translate-y-1/2" />
                     <input
                       type="password"
                       required
                       placeholder="At least 6 characters"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className="w-full pl-10 pr-3 py-3 rounded-xl bg-amber-50/40 dark:bg-slate-800/60 border border-amber-200 dark:border-slate-700 text-xs font-semibold outline-hidden focus:border-amber-600 text-[#0A192F] dark:text-slate-100"
+                      className="w-full pl-10 pr-3 py-3 rounded-xl bg-[#F7F9FC] border border-[#E5EAF0] text-xs font-semibold outline-hidden focus:border-[#F28C45] text-[#29445A]"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="text-xs font-bold text-amber-900/70 dark:text-slate-300 uppercase block mb-1">
+                  <label className="text-xs font-bold text-[#123B5D] uppercase block mb-1">
                     Confirm Password
                   </label>
                   <div className="relative">
-                    <Lock className="w-4 h-4 text-amber-600 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                    <Lock className="w-4 h-4 text-[#F28C45] absolute left-3.5 top-1/2 -translate-y-1/2" />
                     <input
                       type="password"
                       required
                       placeholder="Re-enter password"
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
-                      className="w-full pl-10 pr-3 py-3 rounded-xl bg-amber-50/40 dark:bg-slate-800/60 border border-amber-200 dark:border-slate-700 text-xs font-semibold outline-hidden focus:border-amber-600 text-[#0A192F] dark:text-slate-100"
+                      className="w-full pl-10 pr-3 py-3 rounded-xl bg-[#F7F9FC] border border-[#E5EAF0] text-xs font-semibold outline-hidden focus:border-[#F28C45] text-[#29445A]"
                     />
                   </div>
                 </div>
@@ -536,9 +528,9 @@ export default function LoginRegister() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-3.5 rounded-xl text-xs font-bold bg-[#0A192F] hover:bg-[#020C1B] text-amber-300 dark:bg-amber-500 dark:text-slate-950 dark:hover:bg-amber-400 transition shadow-md disabled:opacity-50 cursor-pointer flex items-center justify-center gap-2"
+                  className="w-full py-3.5 rounded-xl text-xs font-bold bg-gradient-to-r from-[#F28C45] to-[#FFB36B] hover:from-[#e0752f] text-white transition shadow-md disabled:opacity-50 cursor-pointer flex items-center justify-center gap-2"
                 >
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400 dark:text-slate-950" />
+                  <CheckCircle2 className="w-4 h-4 text-white" />
                   <span>{loading ? 'Creating Account...' : 'Complete Sign Up & Start Exploring'}</span>
                 </button>
               </form>

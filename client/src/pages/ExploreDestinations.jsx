@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { Search, RotateCcw, MapPin, Tag, Wallet, ArrowUpDown, Compass, Layers } from 'lucide-react';
+import { useSearchParams, Link } from 'react-router-dom';
+import { Search, RotateCcw, MapPin, Tag, Wallet, ArrowUpDown, Compass, Layers, Sparkles, Globe, Landmark, ArrowRight } from 'lucide-react';
 import DestinationCard from '../components/DestinationCard';
 import { api } from '../services/api';
 
@@ -127,28 +127,84 @@ export default function ExploreDestinations() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
       
-      {/* Header */}
-      <div className="text-center max-w-3xl mx-auto space-y-3">
-        <h1 className="text-3xl sm:text-5xl font-black text-[#0A192F] dark:text-white tracking-tight">
-          Explore Incredible Destinations
-        </h1>
-        <p className="text-slate-600 dark:text-slate-300 text-sm sm:text-base">
-          Discover India's heritage monuments, sacred temples, historic forts, royal palaces, coastal beaches, and Himalayan mountain passes.
-        </p>
+      {/* Hero Banner */}
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#123B5D] via-[#1D5D85] to-[#123B5D] p-8 sm:p-12 text-white shadow-2xl">
+        <div className="absolute -right-20 -top-20 w-80 h-80 rounded-full bg-[#F28C45]/15 blur-3xl pointer-events-none" />
+        <div className="absolute -left-20 -bottom-20 w-80 h-80 rounded-full bg-[#1D5D85]/40 blur-3xl pointer-events-none" />
+        
+        <div className="relative z-10 max-w-3xl space-y-4">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-[#FFB36B] text-xs font-bold tracking-wide">
+            <Compass className="w-4 h-4 text-[#FFB36B]" />
+            <span>Complete Tourism Directory & Discovery</span>
+          </div>
+          <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight">
+            Explore Incredible <span className="text-[#FFB36B]">Destinations</span> of India
+          </h1>
+          <p className="text-white/85 text-sm sm:text-base leading-relaxed font-medium">
+            Discover 114+ hand-curated Indian monuments, sacred spiritual centers, hill stations, and sun-kissed coastlines with verified travel intelligence, live coordinates, and seasonal timings.
+          </p>
+        </div>
+      </div>
+
+      {/* 4 Impact Stat Cards */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+        <div className="bg-white rounded-3xl p-5 sm:p-6 border border-[#E5EAF0] shadow-sm hover:shadow-md transition-all group">
+          <div className="flex items-center justify-between mb-3">
+            <div className="w-12 h-12 rounded-2xl bg-[#EAF4FA] flex items-center justify-center text-[#123B5D] group-hover:bg-[#123B5D] group-hover:text-white transition-colors">
+              <Compass className="w-6 h-6" />
+            </div>
+            <span className="text-xs font-bold text-[#F28C45] bg-[#EAF4FA] px-2.5 py-1 rounded-full">Curated</span>
+          </div>
+          <div className="text-2xl sm:text-3xl font-black text-[#123B5D] tracking-tight group-hover:text-[#F28C45] transition-colors">114+</div>
+          <div className="text-xs sm:text-sm font-semibold text-[#718096] mt-0.5">Handpicked Sites</div>
+        </div>
+
+        <div className="bg-white rounded-3xl p-5 sm:p-6 border border-[#E5EAF0] shadow-sm hover:shadow-md transition-all group">
+          <div className="flex items-center justify-between mb-3">
+            <div className="w-12 h-12 rounded-2xl bg-[#EAF4FA] flex items-center justify-center text-[#123B5D] group-hover:bg-[#123B5D] group-hover:text-white transition-colors">
+              <Globe className="w-6 h-6" />
+            </div>
+            <span className="text-xs font-bold text-[#1D5D85] bg-[#EAF4FA] px-2.5 py-1 rounded-full">Pan India</span>
+          </div>
+          <div className="text-2xl sm:text-3xl font-black text-[#123B5D] tracking-tight group-hover:text-[#F28C45] transition-colors">28+8</div>
+          <div className="text-xs sm:text-sm font-semibold text-[#718096] mt-0.5">States & Union Terr.</div>
+        </div>
+
+        <div className="bg-white rounded-3xl p-5 sm:p-6 border border-[#E5EAF0] shadow-sm hover:shadow-md transition-all group">
+          <div className="flex items-center justify-between mb-3">
+            <div className="w-12 h-12 rounded-2xl bg-[#EAF4FA] flex items-center justify-center text-[#123B5D] group-hover:bg-[#123B5D] group-hover:text-white transition-colors">
+              <Landmark className="w-6 h-6" />
+            </div>
+            <span className="text-xs font-bold text-[#F28C45] bg-[#EAF4FA] px-2.5 py-1 rounded-full">Heritage</span>
+          </div>
+          <div className="text-2xl sm:text-3xl font-black text-[#123B5D] tracking-tight group-hover:text-[#F28C45] transition-colors">5 Zones</div>
+          <div className="text-xs sm:text-sm font-semibold text-[#718096] mt-0.5">North to North-East</div>
+        </div>
+
+        <div className="bg-white rounded-3xl p-5 sm:p-6 border border-[#E5EAF0] shadow-sm hover:shadow-md transition-all group">
+          <div className="flex items-center justify-between mb-3">
+            <div className="w-12 h-12 rounded-2xl bg-[#EAF4FA] flex items-center justify-center text-[#123B5D] group-hover:bg-[#123B5D] group-hover:text-white transition-colors">
+              <Sparkles className="w-6 h-6" />
+            </div>
+            <span className="text-xs font-bold text-[#1D5D85] bg-[#EAF4FA] px-2.5 py-1 rounded-full">Themes</span>
+          </div>
+          <div className="text-2xl sm:text-3xl font-black text-[#123B5D] tracking-tight group-hover:text-[#F28C45] transition-colors">10 Themes</div>
+          <div className="text-xs sm:text-sm font-semibold text-[#718096] mt-0.5">Beaches to Forts</div>
+        </div>
       </div>
 
       {/* Modern Search & Dropdown Filter Panel */}
-      <div className="bg-white dark:bg-[#0F172A] rounded-3xl p-5 sm:p-6 shadow-xl border border-amber-900/10 dark:border-amber-500/20 space-y-4">
+      <div className="bg-white rounded-3xl p-5 sm:p-6 shadow-md border border-[#E5EAF0] space-y-4">
         
         {/* Top Search Bar */}
         <div className="relative w-full">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-amber-700/60 dark:text-amber-400" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[#1D5D85]" />
           <input
             type="text"
             placeholder="Search by city, monument name, heritage site or keywords..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-12 pr-4 py-3.5 rounded-2xl bg-amber-50/50 dark:bg-slate-800/80 border border-amber-200 dark:border-amber-500/30 focus:bg-white dark:focus:bg-slate-900 focus:border-amber-500 outline-hidden text-sm font-medium transition text-[#0A192F] dark:text-slate-100 placeholder:text-slate-400 shadow-2xs"
+            className="w-full pl-12 pr-4 py-3.5 rounded-2xl bg-[#F7F9FC] border border-[#E5EAF0] focus:bg-white focus:border-[#123B5D] outline-hidden text-sm font-semibold transition text-[#29445A] placeholder-[#718096]"
           />
         </div>
 
@@ -169,8 +225,8 @@ export default function ExploreDestinations() {
               onClick={() => setSelectedCategory(cat.value)}
               className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all duration-200 cursor-pointer ${
                 selectedCategory === cat.value
-                  ? 'gradient-saffron text-slate-950 shadow-sm font-bold'
-                  : 'bg-amber-50/60 dark:bg-slate-800/60 text-slate-700 dark:text-slate-300 hover:bg-amber-100 dark:hover:bg-slate-700 border border-amber-200/60 dark:border-slate-700'
+                  ? 'bg-[#123B5D] text-white shadow-sm'
+                  : 'bg-[#EAF4FA] text-[#123B5D] hover:bg-[#d6e9f5]'
               }`}
             >
               <span>{cat.label}</span>
@@ -179,18 +235,18 @@ export default function ExploreDestinations() {
         </div>
 
         {/* 5 Clean Dropdown Selects Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5 pt-2 border-t border-amber-100 dark:border-slate-800">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5 pt-2 border-t border-[#E5EAF0]">
           
           {/* 1. State / UT Dropdown */}
           <div className="space-y-1">
-            <label className="text-[11px] font-bold uppercase tracking-wider text-amber-800 dark:text-amber-400 flex items-center gap-1">
-              <MapPin className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+            <label className="text-[11px] font-bold uppercase tracking-wider text-[#123B5D] flex items-center gap-1">
+              <MapPin className="w-3.5 h-3.5 text-[#F28C45]" />
               <span>State / UT</span>
             </label>
             <select
               value={selectedState}
               onChange={(e) => setSelectedState(e.target.value)}
-              className="w-full px-3.5 py-3 rounded-xl bg-amber-50/50 dark:bg-slate-800/80 border border-amber-200 dark:border-amber-500/30 text-xs sm:text-sm font-bold text-[#0A192F] dark:text-slate-100 outline-hidden focus:border-amber-500 cursor-pointer"
+              className="w-full px-3.5 py-3 rounded-xl bg-[#F7F9FC] border border-[#E5EAF0] text-xs sm:text-sm font-bold text-[#29445A] outline-hidden focus:border-[#123B5D] cursor-pointer"
             >
               <option value="All">All States & UTs (22)</option>
               {states.filter(s => s !== 'All').map((state) => (
@@ -203,14 +259,14 @@ export default function ExploreDestinations() {
 
           {/* 2. Zone / Region Dropdown */}
           <div className="space-y-1">
-            <label className="text-[11px] font-bold uppercase tracking-wider text-amber-800 dark:text-amber-400 flex items-center gap-1">
-              <Layers className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+            <label className="text-[11px] font-bold uppercase tracking-wider text-[#123B5D] flex items-center gap-1">
+              <Layers className="w-3.5 h-3.5 text-[#F28C45]" />
               <span>Region / Zone</span>
             </label>
             <select
               value={selectedZone}
               onChange={(e) => setSelectedZone(e.target.value)}
-              className="w-full px-3.5 py-3 rounded-xl bg-amber-50/50 dark:bg-slate-800/80 border border-amber-200 dark:border-amber-500/30 text-xs sm:text-sm font-bold text-[#0A192F] dark:text-slate-100 outline-hidden focus:border-amber-500 cursor-pointer"
+              className="w-full px-3.5 py-3 rounded-xl bg-[#F7F9FC] border border-[#E5EAF0] text-xs sm:text-sm font-bold text-[#29445A] outline-hidden focus:border-[#123B5D] cursor-pointer"
             >
               {zones.map((z) => (
                 <option key={z.value} value={z.value}>
@@ -222,14 +278,14 @@ export default function ExploreDestinations() {
 
           {/* 3. Type / Category Dropdown */}
           <div className="space-y-1">
-            <label className="text-[11px] font-bold uppercase tracking-wider text-amber-800 dark:text-amber-400 flex items-center gap-1">
-              <Tag className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+            <label className="text-[11px] font-bold uppercase tracking-wider text-[#123B5D] flex items-center gap-1">
+              <Tag className="w-3.5 h-3.5 text-[#F28C45]" />
               <span>Destination Type</span>
             </label>
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="w-full px-3.5 py-3 rounded-xl bg-amber-50/50 dark:bg-slate-800/80 border border-amber-200 dark:border-amber-500/30 text-xs sm:text-sm font-bold text-[#0A192F] dark:text-slate-100 outline-hidden focus:border-amber-500 cursor-pointer truncate"
+              className="w-full px-3.5 py-3 rounded-xl bg-[#F7F9FC] border border-[#E5EAF0] text-xs sm:text-sm font-bold text-[#29445A] outline-hidden focus:border-[#123B5D] cursor-pointer truncate"
             >
               <option value="All">All Categories (10 Types)</option>
               {categories.filter(c => c !== 'All').map((cat) => (
@@ -240,16 +296,16 @@ export default function ExploreDestinations() {
             </select>
           </div>
 
-          {/* 3. Budget Level Dropdown */}
+          {/* 4. Budget Level Dropdown */}
           <div className="space-y-1">
-            <label className="text-[11px] font-bold uppercase tracking-wider text-amber-800 dark:text-amber-400 flex items-center gap-1">
-              <Wallet className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+            <label className="text-[11px] font-bold uppercase tracking-wider text-[#123B5D] flex items-center gap-1">
+              <Wallet className="w-3.5 h-3.5 text-[#F28C45]" />
               <span>Budget Tier</span>
             </label>
             <select
               value={selectedBudget}
               onChange={(e) => setSelectedBudget(e.target.value)}
-              className="w-full px-3.5 py-3 rounded-xl bg-amber-50/50 dark:bg-slate-800/80 border border-amber-200 dark:border-amber-500/30 text-xs sm:text-sm font-bold text-[#0A192F] dark:text-slate-100 outline-hidden focus:border-amber-500 cursor-pointer"
+              className="w-full px-3.5 py-3 rounded-xl bg-[#F7F9FC] border border-[#E5EAF0] text-xs sm:text-sm font-bold text-[#29445A] outline-hidden focus:border-[#123B5D] cursor-pointer"
             >
               {budgetTiers.map((b) => (
                 <option key={b.value} value={b.value}>
@@ -259,17 +315,17 @@ export default function ExploreDestinations() {
             </select>
           </div>
 
-          {/* 4. Sort By Dropdown & Reset */}
+          {/* 5. Sort Order Dropdown & Reset */}
           <div className="space-y-1">
-            <label className="text-[11px] font-bold uppercase tracking-wider text-amber-800 dark:text-amber-400 flex items-center justify-between">
+            <label className="text-[11px] font-bold uppercase tracking-wider text-[#123B5D] flex items-center justify-between">
               <span className="flex items-center gap-1">
-                <ArrowUpDown className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+                <ArrowUpDown className="w-3.5 h-3.5 text-[#F28C45]" />
                 <span>Sort Order</span>
               </span>
               {(searchTerm || selectedState !== 'All' || selectedZone !== 'All' || selectedCategory !== 'All' || selectedBudget !== 'All' || sortBy !== 'rating') && (
                 <button
                   onClick={handleReset}
-                  className="text-[10px] text-amber-600 hover:text-amber-800 dark:text-amber-400 font-bold flex items-center gap-0.5 cursor-pointer underline"
+                  className="text-[10px] text-[#F28C45] hover:underline font-bold flex items-center gap-0.5 cursor-pointer"
                 >
                   <RotateCcw className="w-3 h-3" />
                   <span>Reset</span>
@@ -279,7 +335,7 @@ export default function ExploreDestinations() {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="w-full px-3.5 py-3 rounded-xl bg-amber-50/50 dark:bg-slate-800/80 border border-amber-200 dark:border-amber-500/30 text-xs sm:text-sm font-bold text-[#0A192F] dark:text-slate-100 outline-hidden focus:border-amber-500 cursor-pointer"
+              className="w-full px-3.5 py-3 rounded-xl bg-[#F7F9FC] border border-[#E5EAF0] text-xs sm:text-sm font-bold text-[#29445A] outline-hidden focus:border-[#123B5D] cursor-pointer"
             >
               <option value="rating">Top Rated First ⭐</option>
               <option value="budget-low">Budget: Low to High ₹</option>
@@ -293,26 +349,26 @@ export default function ExploreDestinations() {
 
       {/* Results Header Meta */}
       <div className="flex items-center justify-between px-2 flex-wrap gap-2">
-        <div className="flex items-center gap-2 text-xs sm:text-sm font-bold text-[#0A192F] dark:text-slate-200 flex-wrap">
+        <div className="flex items-center gap-2 text-xs sm:text-sm font-bold text-[#123B5D] flex-wrap">
           <span>Explore Verified Destinations</span>
           {selectedState !== 'All' && (
-            <span className="px-2 py-0.5 bg-amber-100 dark:bg-amber-950 text-amber-900 dark:text-amber-300 rounded-md text-xs font-semibold">
+            <span className="px-2 py-0.5 bg-[#EAF4FA] text-[#123B5D] rounded-md text-xs font-semibold">
               in {selectedState}
             </span>
           )}
           {selectedZone !== 'All' && (
-            <span className="px-2 py-0.5 bg-amber-100 dark:bg-amber-950 text-amber-900 dark:text-amber-300 rounded-md text-xs font-semibold">
+            <span className="px-2 py-0.5 bg-[#EAF4FA] text-[#123B5D] rounded-md text-xs font-semibold">
               {selectedZone} Zone
             </span>
           )}
           {selectedCategory !== 'All' && (
-            <span className="px-2 py-0.5 bg-amber-100 dark:bg-amber-950 text-amber-900 dark:text-amber-300 rounded-md text-xs font-semibold truncate max-w-[200px]">
+            <span className="px-2 py-0.5 bg-[#EAF4FA] text-[#123B5D] rounded-md text-xs font-semibold truncate max-w-[200px]">
               {selectedCategory}
             </span>
           )}
         </div>
         {!loading && (
-          <span className="text-xs font-bold text-amber-700 dark:text-amber-400">
+          <span className="text-xs font-bold text-[#1D5D85]">
             {destinations.length} {destinations.length === 1 ? 'destination' : 'destinations'} found
           </span>
         )}
@@ -322,21 +378,21 @@ export default function ExploreDestinations() {
       {loading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {[...Array(6)].map((_, i) => (
-            <div key={i} className="bg-amber-50/50 dark:bg-slate-800/50 rounded-3xl h-96 animate-pulse border border-amber-100 dark:border-slate-800"></div>
+            <div key={i} className="bg-[#EAF4FA]/40 rounded-3xl h-96 animate-pulse border border-[#E5EAF0]"></div>
           ))}
         </div>
       ) : destinations.length === 0 ? (
-        <div className="bg-white dark:bg-slate-900 rounded-3xl p-12 text-center border border-amber-200 dark:border-slate-800 space-y-4 max-w-xl mx-auto shadow-md">
-          <div className="w-16 h-16 rounded-full bg-amber-50 dark:bg-slate-800 flex items-center justify-center mx-auto text-amber-600 dark:text-amber-400">
-            <Compass className="w-8 h-8" />
+        <div className="bg-white rounded-3xl p-12 text-center border border-[#E5EAF0] space-y-4 max-w-xl mx-auto shadow-md">
+          <div className="w-16 h-16 rounded-full bg-[#EAF4FA] flex items-center justify-center mx-auto text-[#123B5D]">
+            <Compass className="w-8 h-8 text-[#F28C45]" />
           </div>
-          <h3 className="text-xl font-bold text-[#0A192F] dark:text-white">No destinations found</h3>
-          <p className="text-sm text-slate-500 dark:text-slate-400">
+          <h3 className="text-xl font-bold text-[#123B5D]">No destinations found</h3>
+          <p className="text-sm text-[#718096]">
             Try adjusting your search query, State filter, or Category dropdown to find matching destinations.
           </p>
           <button
             onClick={handleReset}
-            className="px-6 py-2.5 rounded-xl gradient-saffron text-slate-950 font-bold text-xs shadow-md cursor-pointer"
+            className="px-6 py-2.5 rounded-xl bg-[#F28C45] hover:bg-[#d97736] text-white font-bold text-xs shadow-md cursor-pointer transition-colors"
           >
             Clear All Filters
           </button>
@@ -348,6 +404,34 @@ export default function ExploreDestinations() {
           ))}
         </div>
       )}
+
+      {/* Bottom Call to Action */}
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#123B5D] via-[#1D5D85] to-[#123B5D] p-8 sm:p-12 text-center text-white shadow-2xl">
+        <div className="relative z-10 max-w-2xl mx-auto space-y-4">
+          <h2 className="text-2xl sm:text-4xl font-black text-white tracking-tight">
+            Can't Decide Where to Go? Let AI Plan Your Journey.
+          </h2>
+          <p className="text-white/80 text-sm sm:text-base font-medium">
+            Get an instant custom day-by-day itinerary with exact timings, budget calculations, and hotel recommendations tailored for you.
+          </p>
+          <div className="pt-2 flex flex-wrap justify-center gap-4">
+            <Link
+              to="/ai-planner"
+              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-[#F28C45] hover:bg-[#d97736] text-white font-bold text-sm shadow-lg hover:shadow-xl transition-all cursor-pointer"
+            >
+              <Sparkles className="w-4 h-4" />
+              <span>Launch AI Trip Planner</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+            <Link
+              to="/budget-calculator"
+              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/25 text-white font-bold text-sm transition-all"
+            >
+              <span>Calculate Travel Budget</span>
+            </Link>
+          </div>
+        </div>
+      </div>
 
     </div>
   );

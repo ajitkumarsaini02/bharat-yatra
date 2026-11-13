@@ -240,9 +240,9 @@ export default function DestinationDetail() {
   if (!destination) {
     return (
       <div className="min-h-[60vh] flex flex-col items-center justify-center text-center px-4 space-y-4">
-        <h2 className="text-2xl font-bold text-slate-800">Destination Not Found</h2>
-        <p className="text-sm text-slate-600">The destination you are looking for does not exist or has been moved.</p>
-        <Link to="/explore" className="px-5 py-2.5 rounded-xl gradient-saffron text-slate-950 font-bold text-sm">
+        <h2 className="text-2xl font-bold text-[#123B5D]">Destination Not Found</h2>
+        <p className="text-sm text-[#718096]">The destination you are looking for does not exist or has been moved.</p>
+        <Link to="/explore" className="px-5 py-2.5 rounded-xl bg-[#F28C45] hover:bg-[#d97736] text-white font-bold text-sm">
           Browse Destinations
         </Link>
       </div>
@@ -262,20 +262,20 @@ export default function DestinationDetail() {
     <div className="pb-24 space-y-12">
       
       {/* 1. Hero Banner with Image & Meta */}
-      <div className="relative h-[440px] sm:h-[540px] w-full overflow-hidden bg-[#0A192F]">
+      <div className="relative h-[440px] sm:h-[540px] w-full overflow-hidden bg-[#123B5D]">
         <img
           src={heroImg || destination.heroImage}
           alt={destination.name}
           onError={handleHeroImageError}
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0A192F] via-[#0A192F]/60 to-transparent"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-[#123B5D] via-[#123B5D]/60 to-transparent"></div>
 
         {/* Back Link */}
         <div className="absolute top-6 left-4 sm:left-8 z-10">
           <Link
             to="/explore"
-            className="px-4 py-2 rounded-full bg-slate-950/70 backdrop-blur-md text-white border border-amber-400/30 text-xs font-bold hover:bg-black transition flex items-center gap-1.5 shadow-lg"
+            className="px-4 py-2 rounded-full bg-black/50 backdrop-blur-md text-white border border-white/20 text-xs font-bold hover:bg-black transition flex items-center gap-1.5 shadow-lg"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             <span>Back to Explorer</span>
@@ -288,8 +288,8 @@ export default function DestinationDetail() {
             onClick={() => toggleFavorite(activeDestId)}
             className={`p-3 rounded-full backdrop-blur-md transition-transform duration-200 active:scale-90 cursor-pointer ${
               isFav 
-                ? 'bg-rose-500 text-white shadow-lg shadow-rose-500/40' 
-                : 'bg-white/80 text-[#0A192F] hover:bg-white hover:text-rose-500'
+                ? 'bg-[#F28C45] text-white shadow-lg shadow-[#F28C45]/40' 
+                : 'bg-white/90 text-[#123B5D] hover:bg-white hover:text-[#F28C45]'
             }`}
             title={isFav ? "Remove from wishlist" : "Add to wishlist"}
           >
@@ -300,20 +300,20 @@ export default function DestinationDetail() {
         {/* Hero Title & Badges */}
         <div className="absolute bottom-8 left-4 sm:left-8 right-4 sm:right-8 max-w-5xl space-y-3">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="px-3 py-1 rounded-full text-xs font-bold bg-amber-500 text-slate-950 shadow-md">
+            <span className="px-3 py-1 rounded-full text-xs font-bold bg-[#F28C45] text-white shadow-md">
               {destination.category}
             </span>
             <span className="px-3 py-1 rounded-full text-xs font-semibold bg-white/20 text-white backdrop-blur-md border border-white/20">
               {destination.zone} India
             </span>
             {heritage?.isUnescoHeritage && (
-              <span className="px-3 py-1 rounded-full text-xs font-bold bg-blue-600 text-white backdrop-blur-md flex items-center gap-1 shadow-md">
+              <span className="px-3 py-1 rounded-full text-xs font-bold bg-[#1D5D85] text-white backdrop-blur-md flex items-center gap-1 shadow-md">
                 <Landmark className="w-3.5 h-3.5" />
                 <span>UNESCO World Heritage</span>
               </span>
             )}
-            <span className="px-3 py-1 rounded-full text-xs font-semibold bg-amber-400/20 text-amber-200 backdrop-blur-md border border-amber-400/30 flex items-center gap-1">
-              <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
+            <span className="px-3 py-1 rounded-full text-xs font-semibold bg-[#EAF4FA]/20 text-white backdrop-blur-md border border-white/20 flex items-center gap-1">
+              <Star className="w-3.5 h-3.5 text-[#FFB36B] fill-[#FFB36B]" />
               {destination.rating || 4.8} ({destination.reviewsCount || reviews.length} Reviews)
             </span>
           </div>
@@ -322,11 +322,11 @@ export default function DestinationDetail() {
             {destination.name}
           </h1>
 
-          <div className="flex items-center gap-2 text-amber-300 text-sm sm:text-base font-medium">
-            <MapPin className="w-4 h-4 text-amber-400" />
+          <div className="flex items-center gap-2 text-[#FFB36B] text-sm sm:text-base font-medium">
+            <MapPin className="w-4 h-4 text-[#F28C45]" />
             <span>{destination.state}, India</span>
             {heritage?.inceptionYear && (
-              <span className="text-xs text-slate-300 ml-2">• Est. ~{heritage.inceptionYear} CE</span>
+              <span className="text-xs text-white/80 ml-2">• Est. ~{heritage.inceptionYear} CE</span>
             )}
           </div>
         </div>
@@ -337,43 +337,43 @@ export default function DestinationDetail() {
         
         {/* Quick Info & Live Weather Strip */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-amber-900/10 dark:border-amber-500/20 shadow-xs flex items-center gap-3">
-            <div className="p-3 rounded-xl bg-amber-50 dark:bg-amber-950/80 text-amber-800 dark:text-amber-400">
-              <Calendar className="w-5 h-5" />
+          <div className="p-4 rounded-2xl bg-white border border-[#E5EAF0] shadow-xs flex items-center gap-3">
+            <div className="p-3 rounded-xl bg-[#EAF4FA] text-[#123B5D]">
+              <Calendar className="w-5 h-5 text-[#F28C45]" />
             </div>
             <div>
-              <span className="text-[10px] uppercase font-bold text-amber-800 dark:text-amber-400 block">Best Season</span>
-              <span className="text-xs sm:text-sm font-extrabold text-slate-900 dark:text-slate-100">{destination.bestTimeToVisit || 'Oct - March'}</span>
+              <span className="text-[10px] uppercase font-bold text-[#718096] block">Best Season</span>
+              <span className="text-xs sm:text-sm font-extrabold text-[#123B5D]">{destination.bestTimeToVisit || 'Oct - March'}</span>
             </div>
           </div>
 
-          <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-amber-900/10 dark:border-amber-500/20 shadow-xs flex items-center gap-3">
-            <div className="p-3 rounded-xl bg-amber-50 dark:bg-amber-950/80 text-amber-800 dark:text-amber-400">
-              <Clock className="w-5 h-5" />
+          <div className="p-4 rounded-2xl bg-white border border-[#E5EAF0] shadow-xs flex items-center gap-3">
+            <div className="p-3 rounded-xl bg-[#EAF4FA] text-[#123B5D]">
+              <Clock className="w-5 h-5 text-[#F28C45]" />
             </div>
             <div>
-              <span className="text-[10px] uppercase font-bold text-amber-800 dark:text-amber-400 block">Ideal Stay</span>
-              <span className="text-xs sm:text-sm font-extrabold text-slate-900 dark:text-slate-100">{destination.idealDuration || '2 - 3 Days'}</span>
+              <span className="text-[10px] uppercase font-bold text-[#718096] block">Ideal Stay</span>
+              <span className="text-xs sm:text-sm font-extrabold text-[#123B5D]">{destination.idealDuration || '2 - 3 Days'}</span>
             </div>
           </div>
 
-          <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-amber-900/10 dark:border-amber-500/20 shadow-xs flex items-center gap-3">
-            <div className="p-3 rounded-xl bg-amber-50 dark:bg-amber-950/80 text-amber-800 dark:text-amber-400">
-              <span className="text-lg font-black text-amber-800 dark:text-amber-400">₹</span>
+          <div className="p-4 rounded-2xl bg-white border border-[#E5EAF0] shadow-xs flex items-center gap-3">
+            <div className="p-3 rounded-xl bg-[#EAF4FA] text-[#123B5D]">
+              <span className="text-lg font-black text-[#F28C45]">₹</span>
             </div>
             <div>
-              <span className="text-[10px] uppercase font-bold text-amber-800 dark:text-amber-400 block">Avg Daily Cost</span>
-              <span className="text-xs sm:text-sm font-extrabold text-slate-900 dark:text-slate-100">₹{destination.avgDailyExpense?.toLocaleString('en-IN') || 2000}</span>
+              <span className="text-[10px] uppercase font-bold text-[#718096] block">Avg Daily Cost</span>
+              <span className="text-xs sm:text-sm font-extrabold text-[#123B5D]">₹{destination.avgDailyExpense?.toLocaleString('en-IN') || 2000}</span>
             </div>
           </div>
 
           {/* Open-Meteo Live Weather Card */}
-          <div className="p-4 rounded-2xl bg-gradient-to-br from-blue-900 to-[#0A192F] text-white border border-blue-400/30 shadow-md flex items-center gap-3">
+          <div className="p-4 rounded-2xl bg-gradient-to-br from-[#123B5D] to-[#1D5D85] text-white border border-white/10 shadow-md flex items-center gap-3">
             <div className="p-2.5 rounded-xl bg-white/15 text-yellow-300 backdrop-blur-md text-2xl">
               {weather?.icon || '🌤️'}
             </div>
             <div>
-              <div className="text-[10px] uppercase font-bold text-amber-300 flex items-center gap-1">
+              <div className="text-[10px] uppercase font-bold text-[#FFB36B] flex items-center gap-1">
                 <span>Live Weather</span>
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
               </div>
@@ -385,17 +385,17 @@ export default function DestinationDetail() {
         </div>
 
         {/* Plan Trip From Here Banner */}
-        <div className="bg-gradient-to-r from-[#0A192F] via-[#112240] to-[#0A192F] rounded-3xl p-6 sm:p-8 text-white flex flex-col sm:flex-row items-center justify-between gap-6 border border-amber-400/20 shadow-xl">
+        <div className="bg-gradient-to-r from-[#123B5D] via-[#1D5D85] to-[#123B5D] rounded-3xl p-6 sm:p-8 text-white flex flex-col sm:flex-row items-center justify-between gap-6 border border-white/10 shadow-xl">
           <div className="space-y-1">
-            <span className="text-[10px] font-black uppercase text-amber-400 tracking-wider">Complete Journey Planner</span>
+            <span className="text-[10px] font-black uppercase text-[#FFB36B] tracking-wider">Complete Journey Planner</span>
             <h3 className="text-xl sm:text-2xl font-black text-white">Plan Your Complete Trip To {destination.name}</h3>
-            <p className="text-xs text-slate-300">Compare Rail, Bus, Flight, Hotel & Local commute options from your origin city.</p>
+            <p className="text-xs text-[#EAF4FA]/80 font-medium">Compare Rail, Bus, Flight, Hotel & Local commute options from your origin city.</p>
           </div>
           <Link
             to={`/travel-planner?destination=${encodeURIComponent(destination.name)}`}
-            className="w-full sm:w-auto px-8 py-3.5 rounded-2xl gradient-saffron text-slate-950 font-black text-xs sm:text-sm uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-amber-500/25 hover:scale-105 transition cursor-pointer shrink-0"
+            className="w-full sm:w-auto px-8 py-3.5 rounded-2xl bg-gradient-to-r from-[#F28C45] to-[#FFB36B] hover:from-[#e0752f] hover:to-[#f29c4b] text-white font-black text-xs sm:text-sm uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-[#F28C45]/25 hover:scale-105 transition cursor-pointer shrink-0"
           >
-            <Navigation className="w-4 h-4 text-slate-950" />
+            <Navigation className="w-4 h-4 text-white" />
             <span>Plan Trip From Here</span>
           </Link>
         </div>
@@ -407,10 +407,10 @@ export default function DestinationDetail() {
           <div className="lg:col-span-2 space-y-10">
             
             {/* Overview & Wikipedia Verified Summary */}
-            <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-slate-900 border border-amber-900/10 dark:border-slate-800 shadow-xs space-y-4">
+            <div className="p-6 sm:p-8 rounded-3xl bg-white border border-[#E5EAF0] shadow-xs space-y-4">
               <div className="flex items-center justify-between">
-                <h2 className="text-xl sm:text-2xl font-black text-[#0A192F] dark:text-slate-100 flex items-center gap-2">
-                  <BookOpen className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+                <h2 className="text-xl sm:text-2xl font-black text-[#123B5D] flex items-center gap-2">
+                  <BookOpen className="w-5 h-5 text-[#F28C45]" />
                   <span>About & Historical Overview</span>
                 </h2>
                 {wiki?.wikipediaUrl && (
@@ -418,7 +418,7 @@ export default function DestinationDetail() {
                     href={wiki.wikipediaUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-xs text-amber-700 dark:text-amber-400 hover:text-amber-900 dark:hover:text-amber-300 flex items-center gap-1 font-semibold underline"
+                    className="text-xs text-[#123B5D] hover:text-[#F28C45] flex items-center gap-1 font-semibold underline"
                   >
                     <span>Wikipedia</span>
                     <ExternalLink className="w-3 h-3" />
@@ -426,17 +426,17 @@ export default function DestinationDetail() {
                 )}
               </div>
 
-              <p className="text-sm sm:text-base text-slate-700 dark:text-slate-300 leading-relaxed font-normal">
+              <p className="text-sm sm:text-base text-[#718096] leading-relaxed font-medium">
                 {wiki?.extract || destination.description}
               </p>
 
               {/* Highlights Chips */}
               {destination.highlights && destination.highlights.length > 0 && (
-                <div className="pt-4 border-t border-amber-100/60 dark:border-slate-800 space-y-2">
-                  <span className="text-xs font-bold text-amber-800 dark:text-amber-400 uppercase tracking-wider block">Key Highlights:</span>
+                <div className="pt-4 border-t border-[#E5EAF0] space-y-2">
+                  <span className="text-xs font-bold text-[#123B5D] uppercase tracking-wider block">Key Highlights:</span>
                   <div className="flex flex-wrap gap-2">
                     {destination.highlights.map((h, i) => (
-                      <span key={i} className="px-3.5 py-1.5 rounded-xl bg-amber-50/80 dark:bg-amber-950/50 border border-amber-300/60 dark:border-amber-500/30 text-xs font-semibold text-amber-900 dark:text-amber-300 shadow-xs">
+                      <span key={i} className="px-3.5 py-1.5 rounded-xl bg-[#EAF4FA] border border-[#123B5D]/15 text-xs font-semibold text-[#123B5D] shadow-xs">
                         ✨ {h}
                       </span>
                     ))}
@@ -447,25 +447,25 @@ export default function DestinationDetail() {
 
             {/* Live Open-Meteo 3-Day Forecast Section */}
             {weather?.forecast && weather.forecast.length > 0 && (
-              <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-blue-950 via-[#0A192F] to-slate-900 text-white border border-blue-400/20 shadow-md space-y-4">
+              <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-[#123B5D] via-[#1D5D85] to-[#123B5D] text-white border border-white/15 shadow-md space-y-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <CloudSun className="w-5 h-5 text-amber-400" />
+                    <CloudSun className="w-5 h-5 text-[#FFB36B]" />
                     <h3 className="text-lg font-bold">Live Weather Forecast (Open-Meteo)</h3>
                   </div>
-                  <div className="flex items-center gap-3 text-xs text-slate-300">
-                    <span className="flex items-center gap-1"><Droplets className="w-3.5 h-3.5 text-blue-400" /> Humidity {weather.humidity}%</span>
-                    <span className="flex items-center gap-1"><Wind className="w-3.5 h-3.5 text-emerald-400" /> {weather.windSpeed} km/h</span>
+                  <div className="flex items-center gap-3 text-xs text-[#EAF4FA]/80 font-medium">
+                    <span className="flex items-center gap-1"><Droplets className="w-3.5 h-3.5 text-sky-300" /> Humidity {weather.humidity}%</span>
+                    <span className="flex items-center gap-1"><Wind className="w-3.5 h-3.5 text-emerald-300" /> {weather.windSpeed} km/h</span>
                   </div>
                 </div>
 
                 <div className="grid grid-cols-3 gap-3 pt-2">
                   {weather.forecast.map((f, i) => (
                     <div key={i} className="p-3.5 rounded-2xl bg-white/10 backdrop-blur-md border border-white/10 text-center space-y-1">
-                      <span className="text-xs font-bold text-amber-300 block">{f.dayName}</span>
+                      <span className="text-xs font-bold text-[#FFB36B] block">{f.dayName}</span>
                       <span className="text-2xl block">{f.icon}</span>
                       <span className="text-sm font-extrabold block">{f.maxTemp}° / {f.minTemp}°</span>
-                      <span className="text-[10px] text-slate-300 block">{f.condition}</span>
+                      <span className="text-[10px] text-[#EAF4FA]/80 block">{f.condition}</span>
                     </div>
                   ))}
                 </div>
@@ -474,13 +474,13 @@ export default function DestinationDetail() {
 
             {/* Wikimedia Commons Verified Photo Gallery */}
             {gallery && gallery.length > 0 && (
-              <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-slate-900 border border-amber-900/10 dark:border-slate-800 shadow-xs space-y-4">
+              <div className="p-6 sm:p-8 rounded-3xl bg-white border border-[#E5EAF0] shadow-xs space-y-4">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-xl font-bold text-[#0A192F] dark:text-slate-100 flex items-center gap-2">
-                    <Eye className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+                  <h3 className="text-xl font-bold text-[#123B5D] flex items-center gap-2">
+                    <Eye className="w-5 h-5 text-[#F28C45]" />
                     <span>Verified Tourism Photography</span>
                   </h3>
-                  <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">Source: Wikimedia Commons</span>
+                  <span className="text-[11px] font-semibold text-[#718096]">Source: Wikimedia Commons</span>
                 </div>
 
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
@@ -488,7 +488,7 @@ export default function DestinationDetail() {
                     <div
                       key={idx}
                       onClick={() => setSelectedGalleryImg(img)}
-                      className="group relative h-36 rounded-2xl overflow-hidden cursor-pointer border border-amber-200/60 dark:border-slate-700 bg-amber-50 dark:bg-slate-800 hover:shadow-md transition"
+                      className="group relative h-36 rounded-2xl overflow-hidden cursor-pointer border border-[#E5EAF0] bg-[#F7F9FC] hover:shadow-md transition"
                     >
                       <img
                         src={img.imageUrl}
@@ -507,25 +507,25 @@ export default function DestinationDetail() {
 
             {/* Nearby Tourist Attractions (Geoapify / OpenStreetMap) */}
             {nearby && nearby.length > 0 && (
-              <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-slate-900 border border-amber-900/10 dark:border-slate-800 shadow-xs space-y-4">
+              <div className="p-6 sm:p-8 rounded-3xl bg-white border border-[#E5EAF0] shadow-xs space-y-4">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-xl font-bold text-[#0A192F] dark:text-slate-100 flex items-center gap-2">
-                    <Compass className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+                  <h3 className="text-xl font-bold text-[#123B5D] flex items-center gap-2">
+                    <Compass className="w-5 h-5 text-[#F28C45]" />
                     <span>Nearby Tourist Attractions (~25 km)</span>
                   </h3>
-                  <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">Geoapify Places API</span>
+                  <span className="text-[11px] font-semibold text-[#718096]">Geoapify Places API</span>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {nearby.slice(0, 6).map((item, idx) => (
-                    <div key={idx} className="p-3.5 rounded-2xl bg-amber-50/60 dark:bg-slate-800/60 border border-amber-200/60 dark:border-slate-700 flex items-start justify-between gap-2">
+                    <div key={idx} className="p-3.5 rounded-2xl bg-[#F7F9FC] border border-[#E5EAF0] flex items-start justify-between gap-2">
                       <div>
-                        <h4 className="text-xs font-bold text-slate-900 dark:text-slate-100 line-clamp-1">{item.name}</h4>
-                        <span className="text-[11px] font-medium text-amber-800 dark:text-amber-400 block">{item.category}</span>
-                        {item.address && <p className="text-[10px] text-slate-600 dark:text-slate-400 line-clamp-1 mt-0.5">{item.address}</p>}
+                        <h4 className="text-xs font-bold text-[#123B5D] line-clamp-1">{item.name}</h4>
+                        <span className="text-[11px] font-medium text-[#1D5D85] block">{item.category}</span>
+                        {item.address && <p className="text-[10px] text-[#718096] line-clamp-1 mt-0.5 font-medium">{item.address}</p>}
                       </div>
                       {item.distanceKm && (
-                        <span className="px-2 py-0.5 rounded-full bg-amber-200/80 dark:bg-amber-950 text-amber-950 dark:text-amber-300 font-mono text-[10px] font-bold flex-shrink-0 border dark:border-amber-500/30">
+                        <span className="px-2 py-0.5 rounded-full bg-[#EAF4FA] text-[#123B5D] font-mono text-[10px] font-bold flex-shrink-0 border border-[#123B5D]/15">
                           {item.distanceKm}
                         </span>
                       )}
@@ -537,24 +537,24 @@ export default function DestinationDetail() {
 
             {/* Live Interactive Map Section */}
             {((destination.lat || destination.coordinates?.lat) && (destination.lng || destination.coordinates?.lng)) && (
-              <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-slate-900 border border-amber-900/10 dark:border-slate-800 shadow-xs space-y-4">
+              <div className="p-6 sm:p-8 rounded-3xl bg-white border border-[#E5EAF0] shadow-xs space-y-4">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-xl font-bold text-[#0A192F] dark:text-slate-100 flex items-center gap-2">
-                    <Navigation className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+                  <h3 className="text-xl font-bold text-[#123B5D] flex items-center gap-2">
+                    <Navigation className="w-5 h-5 text-[#F28C45]" />
                     <span>Geographic Location & Live Map</span>
                   </h3>
                   <a
                     href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(destination.name + ', ' + destination.state + ', India')}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="px-3 py-1.5 rounded-xl bg-amber-50 dark:bg-slate-800 hover:bg-amber-100 dark:hover:bg-slate-700 text-amber-900 dark:text-amber-300 text-xs font-bold transition flex items-center gap-1.5 border border-amber-200/60 dark:border-slate-700"
+                    className="px-3 py-1.5 rounded-xl bg-[#EAF4FA] hover:bg-[#d6e9f5] text-[#123B5D] text-xs font-bold transition flex items-center gap-1.5 border border-[#123B5D]/15"
                   >
                     <span>Google Maps Directions</span>
-                    <ExternalLink className="w-3.5 h-3.5" />
+                    <ExternalLink className="w-3 h-3" />
                   </a>
                 </div>
 
-                <div className="h-72 w-full rounded-2xl overflow-hidden border border-amber-900/10 dark:border-slate-800 relative z-10">
+                <div className="h-72 w-full rounded-2xl overflow-hidden border border-[#E5EAF0] relative z-10">
                   <MapContainer
                     center={[
                       Number(destination.lat || destination.coordinates?.lat || 22.9734),
@@ -577,7 +577,7 @@ export default function DestinationDetail() {
                         className: 'custom-map-pin',
                         html: `
                           <div style="
-                            background: #D97706;
+                            background: #F28C45;
                             width: 36px;
                             height: 36px;
                             border-radius: 50% 50% 50% 0;
@@ -586,12 +586,12 @@ export default function DestinationDetail() {
                             align-items: center;
                             justify-content: center;
                             border: 3px solid white;
-                            box-shadow: 0 4px 14px rgba(10,25,47,0.5);
+                            box-shadow: 0 4px 14px rgba(18,59,93,0.35);
                           ">
                             <div style="
                               width: 12px;
                               height: 12px;
-                              background: #FEF08A;
+                              background: #FFFFFF;
                               border-radius: 50%;
                               transform: rotate(45deg);
                             "></div>
@@ -604,9 +604,9 @@ export default function DestinationDetail() {
                     >
                       <Popup className="custom-leaflet-popup">
                         <div className="p-1 space-y-1">
-                          <h4 className="font-bold text-sm text-[#0A192F]">{destination.name}</h4>
-                          <p className="text-xs text-slate-600">{destination.state}, India</p>
-                          <p className="text-[11px] font-mono text-amber-700">
+                          <h4 className="font-bold text-sm text-[#123B5D]">{destination.name}</h4>
+                          <p className="text-xs text-[#718096]">{destination.state}, India</p>
+                          <p className="text-[11px] font-mono text-[#F28C45]">
                             Lat: {(destination.lat || destination.coordinates?.lat)?.toFixed(4)}, Lng: {(destination.lng || destination.coordinates?.lng)?.toFixed(4)}
                           </p>
                         </div>
@@ -619,29 +619,29 @@ export default function DestinationDetail() {
 
             {/* Attractions & Entry Tickets Table */}
             {destination.attractions && destination.attractions.length > 0 && (
-              <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-slate-900 border border-amber-900/10 dark:border-slate-800 shadow-xs space-y-4">
-                <h3 className="text-xl font-bold text-[#0A192F] dark:text-slate-100 flex items-center gap-2">
-                  <Landmark className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+              <div className="p-6 sm:p-8 rounded-3xl bg-white border border-[#E5EAF0] shadow-xs space-y-4">
+                <h3 className="text-xl font-bold text-[#123B5D] flex items-center gap-2">
+                  <Landmark className="w-5 h-5 text-[#F28C45]" />
                   <span>Key Monuments & Ticket Prices</span>
                 </h3>
 
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-xs border-collapse">
                     <thead>
-                      <tr className="border-b border-amber-200 dark:border-slate-800 text-amber-900 dark:text-amber-300">
+                      <tr className="border-b border-[#E5EAF0] text-[#123B5D]">
                         <th className="py-2.5 font-bold">Attraction</th>
                         <th className="py-2.5 font-bold">Type</th>
                         <th className="py-2.5 font-bold">Time Needed</th>
                         <th className="py-2.5 font-bold text-right">Entry Fee</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-amber-100/70 dark:divide-slate-800">
+                    <tbody className="divide-y divide-[#E5EAF0]">
                       {destination.attractions.map((att, i) => (
-                        <tr key={i} className="hover:bg-amber-50/40 dark:hover:bg-slate-800/40">
-                          <td className="py-2.5 font-bold text-slate-800 dark:text-slate-200">{att.name}</td>
-                          <td className="py-2.5 text-slate-600 dark:text-slate-400">{att.type}</td>
-                          <td className="py-2.5 text-slate-600 dark:text-slate-400">{att.timeNeeded}</td>
-                          <td className="py-2.5 font-extrabold text-[#0A192F] dark:text-amber-300 text-right">
+                        <tr key={i} className="hover:bg-[#F7F9FC]">
+                          <td className="py-2.5 font-bold text-[#123B5D]">{att.name}</td>
+                          <td className="py-2.5 text-[#718096]">{att.type}</td>
+                          <td className="py-2.5 text-[#718096]">{att.timeNeeded}</td>
+                          <td className="py-2.5 font-extrabold text-[#123B5D] text-right">
                             {att.entryFee === 0 ? 'Free' : `₹${att.entryFee}`}
                           </td>
                         </tr>
@@ -654,21 +654,21 @@ export default function DestinationDetail() {
 
             {/* Regional Cuisine & Iconic Street Food Spots */}
             {destination.famousFood && destination.famousFood.length > 0 && (
-              <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-slate-900 border border-amber-900/10 dark:border-slate-800 shadow-xs space-y-4">
-                <h3 className="text-xl font-bold text-[#0A192F] dark:text-slate-100 flex items-center gap-2">
-                  <UtensilsCrossed className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+              <div className="p-6 sm:p-8 rounded-3xl bg-white border border-[#E5EAF0] shadow-xs space-y-4">
+                <h3 className="text-xl font-bold text-[#123B5D] flex items-center gap-2">
+                  <UtensilsCrossed className="w-5 h-5 text-[#F28C45]" />
                   <span>Famous Food & Iconic Eateries</span>
                 </h3>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {destination.famousFood.map((food, i) => (
-                    <div key={i} className="p-4 rounded-2xl bg-amber-50/50 dark:bg-slate-800/60 border border-amber-200/60 dark:border-slate-700 space-y-1">
+                    <div key={i} className="p-4 rounded-2xl bg-[#F7F9FC] border border-[#E5EAF0] space-y-1">
                       <div className="flex items-center justify-between">
-                        <span className="text-sm font-bold text-slate-900 dark:text-slate-100">{food.name}</span>
-                        <span className="text-[11px] px-2 py-0.5 rounded-full bg-amber-200 dark:bg-amber-950 text-amber-900 dark:text-amber-300 font-semibold border dark:border-amber-500/30">Must Try</span>
+                        <span className="text-sm font-bold text-[#123B5D]">{food.name}</span>
+                        <span className="text-[11px] px-2 py-0.5 rounded-full bg-[#EAF4FA] text-[#123B5D] font-semibold border border-[#123B5D]/15">Must Try</span>
                       </div>
-                      <p className="text-xs text-amber-800 dark:text-amber-400 font-medium">📍 {food.place}</p>
-                      <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">{food.desc}</p>
+                      <p className="text-xs text-[#1D5D85] font-medium">📍 {food.place}</p>
+                      <p className="text-xs text-[#718096] leading-relaxed font-medium">{food.desc}</p>
                     </div>
                   ))}
                 </div>
@@ -676,13 +676,13 @@ export default function DestinationDetail() {
             )}
 
             {/* Recommended Hotels & Accommodations Section */}
-            <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-slate-900 border border-amber-900/10 dark:border-slate-800 shadow-xs space-y-6">
+            <div className="p-6 sm:p-8 rounded-3xl bg-white border border-[#E5EAF0] shadow-xs space-y-6">
               <div className="flex items-center justify-between">
-                <h3 className="text-xl font-bold text-[#0A192F] dark:text-slate-100 flex items-center gap-2">
-                  <Hotel className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+                <h3 className="text-xl font-bold text-[#123B5D] flex items-center gap-2">
+                  <Hotel className="w-5 h-5 text-[#F28C45]" />
                   <span>Recommended Hotels & Heritage Stays</span>
                 </h3>
-                <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">Verified Hospitality Partners</span>
+                <span className="text-[11px] font-semibold text-[#718096]">Verified Hospitality Partners</span>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -718,7 +718,7 @@ export default function DestinationDetail() {
                     bookingUrl: `https://www.google.com/travel/hotels?q=${encodeURIComponent(destination.name + ' budget homestays')}`
                   }
                 ]).map((hotel, idx) => (
-                  <div key={idx} className="group rounded-2xl overflow-hidden border border-amber-200/70 dark:border-slate-800 bg-amber-50/40 dark:bg-slate-800/50 flex flex-col justify-between hover:shadow-lg transition">
+                  <div key={idx} className="group rounded-2xl overflow-hidden border border-[#E5EAF0] bg-[#F7F9FC] flex flex-col justify-between hover:shadow-lg transition">
                     <div>
                       <div className="relative h-36 w-full overflow-hidden bg-slate-950">
                         <img
@@ -727,23 +727,23 @@ export default function DestinationDetail() {
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                           loading="lazy"
                         />
-                        <span className="absolute top-2 left-2 px-2 py-0.5 rounded-md text-[10px] font-bold bg-black/80 text-amber-300 backdrop-blur-xs">
+                        <span className="absolute top-2 left-2 px-2 py-0.5 rounded-md text-[10px] font-bold bg-black/80 text-[#FFB36B] backdrop-blur-xs">
                           {hotel.type || 'Hotel'}
                         </span>
-                        <span className="absolute top-2 right-2 px-2 py-0.5 rounded-md text-[10px] font-bold bg-black/80 text-amber-300 backdrop-blur-xs flex items-center gap-1">
-                          <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
+                        <span className="absolute top-2 right-2 px-2 py-0.5 rounded-md text-[10px] font-bold bg-black/80 text-[#FFB36B] backdrop-blur-xs flex items-center gap-1">
+                          <Star className="w-3 h-3 fill-[#F28C45] text-[#F28C45]" />
                           {hotel.rating || 4.7}
                         </span>
                       </div>
 
                       <div className="p-4 space-y-2">
-                        <h4 className="font-extrabold text-sm text-slate-900 dark:text-slate-100 line-clamp-1">{hotel.name}</h4>
+                        <h4 className="font-extrabold text-sm text-[#123B5D] line-clamp-1">{hotel.name}</h4>
                         {hotel.address && (
-                          <p className="text-[11px] text-slate-600 dark:text-slate-400 line-clamp-1">📍 {hotel.address}</p>
+                          <p className="text-[11px] text-[#718096] line-clamp-1">📍 {hotel.address}</p>
                         )}
                         <div className="flex flex-wrap gap-1 pt-1">
                           {(hotel.amenities || ['Free Wi-Fi', 'Breakfast', 'Air Conditioning']).slice(0, 3).map((am, i) => (
-                            <span key={i} className="px-2 py-0.5 rounded-md bg-white dark:bg-slate-900 text-[10px] font-medium text-slate-700 dark:text-slate-300 border border-amber-200/50 dark:border-slate-700">
+                            <span key={i} className="px-2 py-0.5 rounded-md bg-[#F7F9FC] text-[10px] font-medium text-[#718096] border border-[#E5EAF0]">
                               ✓ {am}
                             </span>
                           ))}
@@ -751,10 +751,10 @@ export default function DestinationDetail() {
                       </div>
                     </div>
 
-                    <div className="p-4 pt-2 border-t border-amber-200/50 dark:border-slate-700/60 flex items-center justify-between">
+                    <div className="p-4 pt-2 border-t border-[#E5EAF0] flex items-center justify-between">
                       <div>
-                        <span className="text-[10px] text-slate-500 dark:text-slate-400 block font-medium">Est. Price</span>
-                        <span className="text-xs font-black text-amber-900 dark:text-amber-300 font-mono">
+                        <span className="text-[10px] text-[#718096] block font-medium">Est. Price</span>
+                        <span className="text-xs font-black text-[#123B5D] font-mono">
                           {hotel.priceRange || `₹${(hotel.pricePerNight || 3200).toLocaleString('en-IN')}/nt`}
                         </span>
                       </div>
@@ -762,7 +762,7 @@ export default function DestinationDetail() {
                         href={hotel.bookingUrl || `https://www.google.com/travel/hotels?q=${encodeURIComponent(hotel.name + ' ' + destination.state)}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="px-3 py-1.5 rounded-xl gradient-saffron text-slate-950 text-xs font-bold transition flex items-center gap-1 shadow-xs cursor-pointer"
+                        className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-[#F28C45] to-[#FFB36B] hover:from-[#e0752f] hover:to-[#f29c4b] text-white text-xs font-bold transition flex items-center gap-1 shadow-xs cursor-pointer"
                       >
                         <span>Book Stay</span>
                         <ExternalLink className="w-3 h-3" />
@@ -774,26 +774,26 @@ export default function DestinationDetail() {
             </div>
 
             {/* User Reviews Section */}
-            <div className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-slate-900 border border-amber-900/10 dark:border-slate-800 shadow-xs space-y-6">
+            <div className="p-6 sm:p-8 rounded-3xl bg-white border border-[#E5EAF0] shadow-xs space-y-6">
               <div className="flex items-center justify-between">
-                <h3 className="text-xl font-bold text-[#0A192F] dark:text-slate-100 flex items-center gap-2">
-                  <Star className="w-5 h-5 text-amber-500 fill-amber-500" />
+                <h3 className="text-xl font-bold text-[#123B5D] flex items-center gap-2">
+                  <Star className="w-5 h-5 text-[#F28C45] fill-[#F28C45]" />
                   <span>Traveler Reviews ({reviews.length})</span>
                 </h3>
               </div>
 
               {/* Review Submission Form — only for signed-in travelers */}
               {isAuthenticated ? (
-              <form onSubmit={handleReviewSubmit} className="p-5 rounded-2xl bg-amber-50/50 dark:bg-slate-800/60 border border-amber-200 dark:border-slate-700 space-y-4">
-                <h4 className="text-xs font-bold text-amber-900 dark:text-amber-300 uppercase tracking-wider">Leave your travel review:</h4>
+              <form onSubmit={handleReviewSubmit} className="p-5 rounded-2xl bg-[#F7F9FC] border border-[#E5EAF0] space-y-4">
+                <h4 className="text-xs font-bold text-[#123B5D] uppercase tracking-wider">Leave your travel review:</h4>
                 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <div>
-                    <label className="text-[11px] font-semibold text-slate-700 dark:text-slate-300 block mb-1">Rating</label>
+                    <label className="text-[11px] font-semibold text-[#718096] block mb-1">Rating</label>
                     <select
                       value={newRating}
                       onChange={(e) => setNewRating(Number(e.target.value))}
-                      className="w-full p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-amber-300 dark:border-slate-700 text-xs font-semibold outline-hidden text-[#0A192F] dark:text-slate-100"
+                      className="w-full p-2.5 rounded-xl bg-white border border-[#E5EAF0] text-xs font-semibold outline-hidden text-[#29445A]"
                     >
                       <option value={5}>⭐⭐⭐⭐⭐ (5/5 Excellent)</option>
                       <option value={4}>⭐⭐⭐⭐ (4/5 Very Good)</option>
@@ -804,11 +804,11 @@ export default function DestinationDetail() {
                   </div>
 
                   <div>
-                    <label className="text-[11px] font-semibold text-slate-700 dark:text-slate-300 block mb-1">Traveler Persona</label>
+                    <label className="text-[11px] font-semibold text-[#718096] block mb-1">Traveler Persona</label>
                     <select
                       value={travelerType}
                       onChange={(e) => setTravelerType(e.target.value)}
-                      className="w-full p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-amber-300 dark:border-slate-700 text-xs font-semibold outline-hidden text-[#0A192F] dark:text-slate-100"
+                      className="w-full p-2.5 rounded-xl bg-white border border-[#E5EAF0] text-xs font-semibold outline-hidden text-[#29445A]"
                     >
                       <option value="Solo Traveler">Solo Traveler</option>
                       <option value="Couples Trip">Couples Trip</option>
@@ -818,13 +818,13 @@ export default function DestinationDetail() {
                   </div>
 
                   <div>
-                    <label className="text-[11px] font-semibold text-slate-700 dark:text-slate-300 block mb-1">Visit Period</label>
+                    <label className="text-[11px] font-semibold text-[#718096] block mb-1">Visit Period</label>
                     <input
                       type="text"
                       value={travelMonth}
                       onChange={(e) => setTravelMonth(e.target.value)}
                       placeholder="e.g. Dec 2025"
-                      className="w-full p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-amber-300 dark:border-slate-700 text-xs font-semibold outline-hidden text-[#0A192F] dark:text-slate-100"
+                      className="w-full p-2.5 rounded-xl bg-white border border-[#E5EAF0] text-xs font-semibold outline-hidden text-[#29445A]"
                     />
                   </div>
                 </div>
@@ -835,14 +835,14 @@ export default function DestinationDetail() {
                     value={newComment}
                     onChange={(e) => setNewComment(e.target.value)}
                     placeholder="Share your insider tips, entry timing tricks, or photography spots..."
-                    className="w-full p-3 rounded-xl bg-white dark:bg-slate-900 border border-amber-300 dark:border-slate-700 text-xs text-slate-800 dark:text-slate-100 outline-hidden"
+                    className="w-full p-3 rounded-xl bg-white border border-[#E5EAF0] text-xs text-[#29445A] outline-hidden"
                     required
                   />
                 </div>
 
                 <div className="flex items-center justify-between">
                   {reviewSuccess ? (
-                    <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+                    <span className="text-xs font-bold text-emerald-600 flex items-center gap-1">
                       <CheckCircle className="w-4 h-4" />
                       <span>Review submitted successfully!</span>
                     </span>
@@ -851,7 +851,7 @@ export default function DestinationDetail() {
                   <button
                     type="submit"
                     disabled={submittingReview}
-                    className="px-5 py-2.5 rounded-xl gradient-saffron text-slate-950 font-black text-xs flex items-center gap-1.5 shadow-md hover:opacity-95 transition"
+                    className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#F28C45] to-[#FFB36B] hover:from-[#e0752f] hover:to-[#f29c4b] text-white font-black text-xs flex items-center gap-1.5 shadow-md hover:opacity-95 transition cursor-pointer"
                   >
                     <Send className="w-3.5 h-3.5" />
                     <span>{submittingReview ? 'Submitting...' : 'Post Review'}</span>
@@ -859,17 +859,17 @@ export default function DestinationDetail() {
                 </div>
               </form>
               ) : (
-                <div className="p-6 rounded-2xl bg-amber-50/50 dark:bg-slate-800/60 border border-amber-200 dark:border-slate-700 text-center space-y-3">
-                  <div className="w-11 h-11 rounded-2xl gradient-saffron flex items-center justify-center mx-auto shadow-md">
-                    <LogIn className="w-5 h-5 text-slate-950" />
+                <div className="p-6 rounded-2xl bg-[#EAF4FA] border border-[#123B5D]/15 text-center space-y-3">
+                  <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#123B5D] to-[#1D5D85] flex items-center justify-center mx-auto shadow-md">
+                    <LogIn className="w-5 h-5 text-white" />
                   </div>
-                  <h4 className="text-sm font-bold text-[#0A192F] dark:text-slate-100">Sign in to share your review</h4>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto">
+                  <h4 className="text-sm font-bold text-[#123B5D]">Sign in to share your review</h4>
+                  <p className="text-xs text-[#718096] max-w-sm mx-auto font-medium">
                     Only verified travelers can post reviews. Sign in or create a free account to share your experience.
                   </p>
                   <Link
                     to="/login"
-                    className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl gradient-saffron text-slate-950 font-black text-xs shadow-md hover:opacity-95 transition"
+                    className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#F28C45] to-[#FFB36B] text-white font-black text-xs shadow-md hover:opacity-95 transition"
                   >
                     <LogIn className="w-3.5 h-3.5" />
                     <span>Sign In to Write a Review</span>
@@ -880,30 +880,30 @@ export default function DestinationDetail() {
               {/* Reviews List */}
               <div className="space-y-3">
                 {reviews.map((rev, idx) => (
-                  <div key={rev._id || idx} className="p-4 rounded-2xl border border-amber-100 dark:border-slate-800 bg-white dark:bg-slate-900 space-y-1.5">
+                  <div key={rev._id || idx} className="p-4 rounded-2xl border border-[#E5EAF0] bg-white space-y-1.5">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-slate-900 dark:text-slate-100">{rev.userName}</span>
-                      <div className="flex items-center gap-1 text-amber-500">
+                      <span className="text-xs font-bold text-[#123B5D]">{rev.userName}</span>
+                      <div className="flex items-center gap-1 text-[#F28C45]">
                         {Array.from({ length: rev.rating || 5 }).map((_, i) => (
-                          <Star key={i} className="w-3 h-3 fill-amber-400" />
+                          <Star key={i} className="w-3 h-3 fill-[#F28C45]" />
                         ))}
                       </div>
                     </div>
-                    <div className="flex items-center gap-2 text-[10px] text-slate-600 dark:text-slate-400 font-medium">
+                    <div className="flex items-center gap-2 text-[10px] text-[#718096] font-medium">
                       <span>{rev.travelerType || 'Traveler'}</span>
                       <span>•</span>
                       <span>{rev.travelMonth || 'Recent'}</span>
                     </div>
-                    <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed pt-1">{rev.comment}</p>
+                    <p className="text-xs text-[#29445A] leading-relaxed pt-1 font-medium">{rev.comment}</p>
                     <div className="pt-2 flex justify-end">
                       <button
                         type="button"
                         onClick={() => handleLikeReview(rev._id)}
-                        className="text-[11px] font-bold text-slate-500 hover:text-amber-600 dark:text-slate-400 dark:hover:text-amber-400 flex items-center gap-1.5 transition cursor-pointer"
+                        className="text-[11px] font-bold text-[#718096] hover:text-[#F28C45] flex items-center gap-1.5 transition cursor-pointer"
                       >
                         <span>👍 Helpful</span>
                         {rev.likes > 0 && (
-                          <span className="px-1.5 py-0.5 rounded-full bg-amber-100 dark:bg-slate-800 text-amber-900 dark:text-amber-300 font-mono text-[10px]">
+                          <span className="px-1.5 py-0.5 rounded-full bg-[#EAF4FA] text-[#123B5D] font-mono text-[10px]">
                             {rev.likes}
                           </span>
                         )}
@@ -920,9 +920,9 @@ export default function DestinationDetail() {
           <div className="space-y-6">
             
             {/* AI Trip Planner Action Box */}
-            <div className="p-6 rounded-3xl bg-[#0A192F] text-white border border-amber-400/30 shadow-xl space-y-4">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 text-xs font-bold border border-amber-400/30">
-                <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+            <div className="p-6 rounded-3xl bg-gradient-to-br from-[#123B5D] to-[#1D5D85] text-white border border-white/10 shadow-xl space-y-4">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 text-[#FFB36B] text-xs font-bold border border-white/20">
+                <Sparkles className="w-3.5 h-3.5 text-[#FFB36B]" />
                 <span>AI Travel Assistant</span>
               </div>
 
@@ -930,53 +930,53 @@ export default function DestinationDetail() {
                 Plan Your Trip to {destination.name}
               </h3>
 
-              <p className="text-xs text-slate-300 leading-relaxed font-medium">
+              <p className="text-xs text-[#EAF4FA]/80 leading-relaxed font-medium">
                 Get an automated hour-by-hour day-wise travel itinerary with morning, afternoon, and sunset slots tailored to your budget.
               </p>
 
               <Link
                 to={`/ai-planner?destination=${encodeURIComponent(destination.name)}`}
-                className="w-full py-3.5 rounded-2xl gradient-saffron text-slate-950 font-black text-sm flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20 hover:opacity-95 transition"
+                className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#F28C45] to-[#FFB36B] hover:from-[#e0752f] hover:to-[#f29c4b] text-white font-black text-sm flex items-center justify-center gap-2 shadow-lg shadow-[#F28C45]/25 hover:opacity-95 transition"
               >
-                <Sparkles className="w-4 h-4 text-slate-950" />
+                <Sparkles className="w-4 h-4 text-white" />
                 <span>Generate Custom Itinerary</span>
               </Link>
             </div>
 
             {/* Transit & Commute Info */}
-            <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-amber-900/10 dark:border-slate-800 shadow-xs space-y-4">
-              <h4 className="text-sm font-bold text-slate-900 dark:text-slate-100 uppercase tracking-wider flex items-center gap-2">
-                <Train className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+            <div className="p-6 rounded-3xl bg-white border border-[#E5EAF0] shadow-xs space-y-4">
+              <h4 className="text-sm font-bold text-[#123B5D] uppercase tracking-wider flex items-center gap-2">
+                <Train className="w-4 h-4 text-[#F28C45]" />
                 <span>How to Reach</span>
               </h4>
 
               <div className="space-y-3 text-xs">
                 {destination.transportation?.nearestAirport && (
                   <div className="flex items-start gap-2.5">
-                    <Plane className="w-4 h-4 text-slate-500 dark:text-slate-400 mt-0.5 flex-shrink-0" />
+                    <Plane className="w-4 h-4 text-[#718096] mt-0.5 flex-shrink-0" />
                     <div>
-                      <span className="font-bold text-slate-800 dark:text-slate-200 block">Airport</span>
-                      <span className="text-slate-600 dark:text-slate-400">{destination.transportation.nearestAirport}</span>
+                      <span className="font-bold text-[#123B5D] block">Airport</span>
+                      <span className="text-[#718096]">{destination.transportation.nearestAirport}</span>
                     </div>
                   </div>
                 )}
 
                 {destination.transportation?.nearestRailway && (
                   <div className="flex items-start gap-2.5">
-                    <Train className="w-4 h-4 text-slate-500 dark:text-slate-400 mt-0.5 flex-shrink-0" />
+                    <Train className="w-4 h-4 text-[#718096] mt-0.5 flex-shrink-0" />
                     <div>
-                      <span className="font-bold text-slate-800 dark:text-slate-200 block">Railway</span>
-                      <span className="text-slate-600 dark:text-slate-400">{destination.transportation.nearestRailway}</span>
+                      <span className="font-bold text-[#123B5D] block">Railway</span>
+                      <span className="text-[#718096]">{destination.transportation.nearestRailway}</span>
                     </div>
                   </div>
                 )}
 
                 {destination.transportation?.localCommute && (
                   <div className="flex items-start gap-2.5">
-                    <Car className="w-4 h-4 text-slate-500 dark:text-slate-400 mt-0.5 flex-shrink-0" />
+                    <Car className="w-4 h-4 text-[#718096] mt-0.5 flex-shrink-0" />
                     <div>
-                      <span className="font-bold text-slate-800 dark:text-slate-200 block">Local Commute</span>
-                      <span className="text-slate-600 dark:text-slate-400">{destination.transportation.localCommute}</span>
+                      <span className="font-bold text-[#123B5D] block">Local Commute</span>
+                      <span className="text-[#718096]">{destination.transportation.localCommute}</span>
                     </div>
                   </div>
                 )}
@@ -985,14 +985,14 @@ export default function DestinationDetail() {
 
             {/* Shopping & Local Crafts */}
             {destination.shoppingSpecialties && destination.shoppingSpecialties.length > 0 && (
-              <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-amber-900/10 dark:border-slate-800 shadow-xs space-y-3">
-                <h4 className="text-sm font-bold text-slate-900 dark:text-slate-100 uppercase tracking-wider flex items-center gap-2">
-                  <ShoppingBag className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+              <div className="p-6 rounded-3xl bg-white border border-[#E5EAF0] shadow-xs space-y-3">
+                <h4 className="text-sm font-bold text-[#123B5D] uppercase tracking-wider flex items-center gap-2">
+                  <ShoppingBag className="w-4 h-4 text-[#F28C45]" />
                   <span>Souvenirs & Crafts</span>
                 </h4>
                 <div className="flex flex-wrap gap-1.5">
                   {destination.shoppingSpecialties.map((shop, i) => (
-                    <span key={i} className="px-2.5 py-1 rounded-xl bg-amber-50 dark:bg-amber-950/50 border border-amber-200 dark:border-amber-500/30 text-xs font-semibold text-amber-900 dark:text-amber-300">
+                    <span key={i} className="px-2.5 py-1 rounded-xl bg-[#EAF4FA] border border-[#123B5D]/15 text-xs font-semibold text-[#123B5D]">
                       🛍️ {shop}
                     </span>
                   ))}
@@ -1004,6 +1004,33 @@ export default function DestinationDetail() {
 
         </div>
 
+        {/* Bottom Call to Action Banner */}
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#123B5D] via-[#1D5D85] to-[#123B5D] p-8 sm:p-12 text-center text-white shadow-2xl">
+          <div className="relative z-10 max-w-2xl mx-auto space-y-4">
+            <h2 className="text-2xl sm:text-4xl font-black text-white tracking-tight">
+              Ready to Experience {destination.name}?
+            </h2>
+            <p className="text-white/80 text-sm sm:text-base font-medium">
+              Create an hour-by-hour customized itinerary with verified monument opening hours, entry ticketing, and local dining spots.
+            </p>
+            <div className="pt-2 flex flex-wrap justify-center gap-4">
+              <Link
+                to={`/ai-planner?destination=${encodeURIComponent(destination.name)}`}
+                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-[#F28C45] hover:bg-[#d97736] text-white font-bold text-sm shadow-lg hover:shadow-xl transition-all cursor-pointer"
+              >
+                <Sparkles className="w-4 h-4" />
+                <span>Plan AI Trip to {destination.name}</span>
+              </Link>
+              <Link
+                to={`/budget-calculator?destination=${encodeURIComponent(destination.name)}`}
+                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/25 text-white font-bold text-sm transition-all"
+              >
+                <span>Calculate Travel Budget</span>
+              </Link>
+            </div>
+          </div>
+        </div>
+
       </div>
 
       {/* Gallery Modal Preview */}
@@ -1012,12 +1039,12 @@ export default function DestinationDetail() {
           className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4"
           onClick={() => setSelectedGalleryImg(null)}
         >
-          <div className="max-w-4xl w-full bg-slate-900 rounded-3xl overflow-hidden border border-amber-400/30 p-4 space-y-3" onClick={e => e.stopPropagation()}>
+          <div className="max-w-4xl w-full bg-[#123B5D] rounded-3xl overflow-hidden border border-white/20 p-4 space-y-3" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between text-white">
-              <h4 className="text-sm font-bold text-amber-300 line-clamp-1">{selectedGalleryImg.title}</h4>
+              <h4 className="text-sm font-bold text-[#FFB36B] line-clamp-1">{selectedGalleryImg.title}</h4>
               <button 
                 onClick={() => setSelectedGalleryImg(null)}
-                className="px-3 py-1 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-bold text-white"
+                className="px-3 py-1 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-bold text-white cursor-pointer"
               >
                 Close ✕
               </button>
@@ -1025,7 +1052,7 @@ export default function DestinationDetail() {
             <div className="relative h-[60vh] w-full rounded-2xl overflow-hidden bg-black flex items-center justify-center">
               <img src={selectedGalleryImg.fullUrl || selectedGalleryImg.imageUrl} alt={selectedGalleryImg.title} className="max-h-full max-w-full object-contain" />
             </div>
-            <div className="flex items-center justify-between text-[11px] text-slate-400 pt-2 border-t border-slate-800">
+            <div className="flex items-center justify-between text-[11px] text-white/70 pt-2 border-t border-white/15">
               <span>Photo by: {selectedGalleryImg.artist}</span>
               <span>License: {selectedGalleryImg.license}</span>
             </div>

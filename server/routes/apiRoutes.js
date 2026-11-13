@@ -97,6 +97,19 @@ router.post('/budget/calculate', calculateBudget);
 router.get('/cuisine', getCuisineData);
 router.get('/transport', getTransportGuide);
 
+// --- Contact Inquiries Route ---
+router.post('/contact', (req, res) => {
+  const { name, email, phone, subject, message } = req.body || {};
+  if (!name || !email || !message) {
+    return res.status(400).json({ success: false, message: 'Name, email, and message are required.' });
+  }
+  console.log(`📩 New Contact Inquiry received from ${name} (${email}): [${subject}]`);
+  return res.json({
+    success: true,
+    message: 'Thank you for reaching out to Bharat Yatra! Your inquiry has been logged successfully.'
+  });
+});
+
 // --- Review Routes ---
 router.get('/reviews/:destinationId', getReviewsByDestination);
 // Posting and liking reviews requires an authenticated account

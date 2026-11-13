@@ -15,75 +15,75 @@ export default function TravelDetailsModal({ option, query, onClose, onSavePlan 
 
   return (
     <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
-      <div className="bg-white dark:bg-slate-900 border border-amber-300/40 dark:border-slate-800 rounded-3xl max-w-xl w-full p-6 space-y-6 shadow-2xl relative animate-scale-in">
+      <div className="bg-white border border-[#E5EAF0] rounded-3xl max-w-xl w-full p-6 space-y-6 shadow-2xl relative animate-scale-in">
         
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-amber-100 dark:border-slate-800 pb-4">
+        <div className="flex items-center justify-between border-b border-[#E5EAF0] pb-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-amber-500/15 text-amber-600 dark:text-amber-400 flex items-center justify-center font-bold">
+            <div className="w-10 h-10 rounded-2xl bg-[#EAF4FA] text-[#123B5D] flex items-center justify-center font-bold">
               <Icon className="w-5 h-5" />
             </div>
             <div>
-              <span className="text-[10px] font-black uppercase text-amber-600 dark:text-amber-400 tracking-wider block">
+              <span className="text-[10px] font-black uppercase text-[#F28C45] tracking-wider block">
                 {option.mode.toUpperCase()} TRANSPORT DETAILS
               </span>
-              <h3 className="text-lg font-black text-slate-900 dark:text-slate-100">
+              <h3 className="text-lg font-black text-[#123B5D]">
                 {option.operator} • {option.number}
               </h3>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-2 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-900 dark:hover:text-white transition cursor-pointer"
+            className="p-2 rounded-full bg-[#F7F9FC] text-[#718096] hover:text-[#123B5D] transition cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Route Details Banner */}
-        <div className="p-4 rounded-2xl bg-amber-50/60 dark:bg-slate-800/60 border border-amber-200/60 dark:border-slate-700 space-y-3">
-          <div className="flex items-center justify-between text-xs font-bold text-slate-800 dark:text-slate-200">
+        <div className="p-4 rounded-2xl bg-[#F7F9FC] border border-[#E5EAF0] space-y-3">
+          <div className="flex items-center justify-between text-xs font-bold text-[#123B5D]">
             <span>{option.source?.name || query?.from}</span>
-            <ArrowRight className="w-4 h-4 text-amber-500" />
+            <ArrowRight className="w-4 h-4 text-[#F28C45]" />
             <span>{option.destination?.name || query?.destination}</span>
           </div>
 
-          <div className="grid grid-cols-3 gap-2 pt-2 border-t border-amber-200/50 dark:border-slate-700/60 text-center text-xs">
+          <div className="grid grid-cols-3 gap-2 pt-2 border-t border-[#E5EAF0] text-center text-xs">
             <div>
-              <span className="text-[10px] text-slate-500 dark:text-slate-400 block font-medium">Departure</span>
-              <span className="font-mono font-bold text-slate-900 dark:text-slate-100">{option.departure}</span>
+              <span className="text-[10px] text-[#718096] block font-medium">Departure</span>
+              <span className="font-mono font-bold text-[#123B5D]">{option.departure}</span>
             </div>
             <div>
-              <span className="text-[10px] text-slate-500 dark:text-slate-400 block font-medium">Duration</span>
-              <span className="font-mono font-bold text-amber-700 dark:text-amber-400">{option.duration}</span>
+              <span className="text-[10px] text-[#718096] block font-medium">Duration</span>
+              <span className="font-mono font-bold text-[#1D5D85]">{option.duration}</span>
             </div>
             <div>
-              <span className="text-[10px] text-slate-500 dark:text-slate-400 block font-medium">Arrival</span>
-              <span className="font-mono font-bold text-slate-900 dark:text-slate-100">{option.arrival}</span>
+              <span className="text-[10px] text-[#718096] block font-medium">Arrival</span>
+              <span className="font-mono font-bold text-[#123B5D]">{option.arrival}</span>
             </div>
           </div>
         </div>
 
         {/* Distance & Provider Badges */}
         <div className="grid grid-cols-2 gap-3 text-xs">
-          <div className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-1">
-            <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400 block uppercase">Distance Type</span>
-            <span className="font-extrabold text-slate-900 dark:text-slate-100">{option.distanceKm} km</span>
-            <span className="text-[9px] text-amber-600 dark:text-amber-400 block capitalize">{option.distanceType || 'Route'} Distance</span>
+          <div className="p-3 rounded-xl bg-white border border-[#E5EAF0] space-y-1">
+            <span className="text-[10px] font-bold text-[#718096] block uppercase">Distance Type</span>
+            <span className="font-extrabold text-[#123B5D]">{option.distanceKm} km</span>
+            <span className="text-[9px] text-[#F28C45] block capitalize">{option.distanceType || 'Route'} Distance</span>
           </div>
 
-          <div className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-1">
-            <span className="text-[10px] font-bold text-slate-500 dark:text-slate-400 block uppercase">Data Source Provider</span>
-            <span className="font-extrabold text-slate-900 dark:text-slate-100">{option.provider}</span>
-            <span className="text-[9px] text-emerald-600 dark:text-emerald-400 block">Server Provider Service</span>
+          <div className="p-3 rounded-xl bg-white border border-[#E5EAF0] space-y-1">
+            <span className="text-[10px] font-bold text-[#718096] block uppercase">Data Source Provider</span>
+            <span className="font-extrabold text-[#123B5D]">{option.provider}</span>
+            <span className="text-[9px] text-emerald-600 block">Server Provider Service</span>
           </div>
         </div>
 
         {/* Boarding & Dropping Points (for bus/flight/train) */}
         {option.boardingPoints && option.boardingPoints.length > 0 && (
           <div className="space-y-1 text-xs">
-            <span className="font-bold text-slate-700 dark:text-slate-300 block">Boarding Points:</span>
-            <ul className="list-disc list-inside text-slate-600 dark:text-slate-400 text-[11px] space-y-0.5">
+            <span className="font-bold text-[#123B5D] block">Boarding Points:</span>
+            <ul className="list-disc list-inside text-[#718096] text-[11px] space-y-0.5">
               {option.boardingPoints.map((bp, i) => (
                 <li key={i}>{bp}</li>
               ))}
@@ -92,15 +92,15 @@ export default function TravelDetailsModal({ option, query, onClose, onSavePlan 
         )}
 
         {/* Fare Breakdown */}
-        <div className="p-4 rounded-2xl bg-[#0A192F] text-white space-y-3 shadow-lg">
+        <div className="p-4 rounded-2xl bg-[#123B5D] text-white space-y-3 shadow-lg">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-300">Fare per person:</span>
+            <span className="text-xs font-bold text-white/80">Fare per person:</span>
             <FareDisplay fare={option.fare} label={option.fareLabel} />
           </div>
 
           <div className="flex items-center justify-between pt-2 border-t border-white/10 text-xs">
-            <span className="text-slate-300">Travellers ({numTravelers}):</span>
-            <span className="font-mono font-black text-amber-300 text-base">
+            <span className="text-white/80">Travellers ({numTravelers}):</span>
+            <span className="font-mono font-black text-[#FFB36B] text-base">
               ₹{totalFare.toLocaleString('en-IN')}
             </span>
           </div>
@@ -110,7 +110,7 @@ export default function TravelDetailsModal({ option, query, onClose, onSavePlan 
         <div className="flex items-center justify-end gap-3 pt-2">
           <button
             onClick={onClose}
-            className="px-5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
+            className="px-5 py-2.5 rounded-xl border border-[#E5EAF0] text-xs font-bold text-[#29445A] hover:bg-[#F7F9FC] transition cursor-pointer"
           >
             Close
           </button>
@@ -120,7 +120,7 @@ export default function TravelDetailsModal({ option, query, onClose, onSavePlan 
                 onSavePlan(option);
                 onClose();
               }}
-              className="px-6 py-2.5 rounded-xl gradient-saffron text-slate-950 font-black text-xs flex items-center gap-1.5 shadow-md hover:opacity-95 transition cursor-pointer"
+              className="px-6 py-2.5 rounded-xl bg-[#F28C45] hover:bg-[#d97736] text-white font-bold text-xs flex items-center gap-1.5 shadow-md transition cursor-pointer"
             >
               <CheckCircle2 className="w-4 h-4" />
               <span>Select Option & Save</span>

@@ -1,10 +1,8 @@
-# ==========================================
-# Bharat Yatra - Backend Server .gitignore
-# ==========================================
-
 # Environment Variables & Secrets
 .env
 .env.*
+.env.local
+.env.*.local
 !.env.example
 *.env
 *.pem
@@ -24,6 +22,7 @@ logs/
 *.tmp
 *.temp
 .cache/
+.eslintcache
 
 # OS & Editor Files
 .DS_Store
@@ -32,3 +31,4 @@ ehthumbs.db
 [Dd]esktop.ini
 .idea/
 .vscode/
+.cursor/

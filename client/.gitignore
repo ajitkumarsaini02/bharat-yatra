@@ -1,10 +1,8 @@
-# ==========================================
-# Bharat Yatra - Frontend Client .gitignore
-# ==========================================
-
 # Environment Variables & Secrets
 .env
-.env.*
+.env.*  
+.env.local
+.env.*.local
 !.env.example
 *.env
 *.local
@@ -17,11 +15,12 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-# Production Builds
+# Production Builds & Vite Cache
 dist/
 dist-ssr/
 build/
 .vite/
+*.tsbuildinfo
 
 # Logs & Diagnostics
 logs/
@@ -29,6 +28,7 @@ logs/
 *.tmp
 *.temp
 .cache/
+.eslintcache
 
 # OS & Editor Files
 .DS_Store
@@ -38,6 +38,7 @@ ehthumbs.db
 .idea/
 .vscode/*
 !.vscode/extensions.json
+.cursor/
 *.suo
 *.ntvs*
 *.njsproj

@@ -451,19 +451,19 @@ export default function AdminDashboard() {
   if (!isAdmin) {
     return (
       <div className="max-w-xl mx-auto px-4 py-20 text-center space-y-6">
-        <div className="w-16 h-16 rounded-3xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center mx-auto text-amber-600 dark:text-amber-400 shadow-lg">
-          <ShieldCheck className="w-8 h-8" />
+        <div className="w-16 h-16 rounded-3xl bg-[#EAF4FA] border border-[#123B5D]/20 flex items-center justify-center mx-auto text-[#123B5D] shadow-lg">
+          <ShieldCheck className="w-8 h-8 text-[#F28C45]" />
         </div>
         <div className="space-y-2">
-          <h2 className="text-2xl font-black text-[#0A192F] dark:text-white">Admin Access Restricted</h2>
-          <p className="text-xs text-slate-500 dark:text-slate-400 max-w-md mx-auto">
+          <h2 className="text-2xl font-black text-[#123B5D]">Admin Access Restricted</h2>
+          <p className="text-xs text-[#718096] max-w-md mx-auto">
             This dashboard controls all Indian monuments, admin accounts, and tourism management. Only registered Administrator accounts can access this page.
           </p>
         </div>
         <div className="flex justify-center gap-3">
           <a
             href="/login"
-            className="px-6 py-3 rounded-xl bg-[#0A192F] dark:bg-amber-500 text-amber-300 dark:text-slate-950 text-xs font-bold shadow-md hover:scale-105 transition"
+            className="px-6 py-3 rounded-xl bg-[#123B5D] hover:bg-[#1D5D85] text-white text-xs font-bold shadow-md hover:scale-105 transition"
           >
             Sign in as Admin
           </a>
@@ -482,29 +482,29 @@ export default function AdminDashboard() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
       
       {/* Header & Tabs */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-amber-100 dark:border-amber-500/20 pb-6">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#E5EAF0] pb-6">
         <div>
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 dark:bg-amber-950/60 border border-amber-300 dark:border-amber-500/40 text-amber-900 dark:text-amber-300 text-xs font-bold mb-1">
-            <ShieldCheck className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#EAF4FA] border border-[#123B5D]/20 text-[#123B5D] text-xs font-bold mb-1">
+            <ShieldCheck className="w-3.5 h-3.5 text-[#F28C45]" />
             <span>Administrator Control Center</span>
           </div>
-          <h1 className="text-2xl sm:text-4xl font-black text-[#0A192F] dark:text-white tracking-tight">
+          <h1 className="text-2xl sm:text-4xl font-black text-[#123B5D] tracking-tight">
             Bharat Yatra Content & Team Management
           </h1>
-          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
+          <p className="text-xs sm:text-sm text-[#718096]">
             Manage destinations, curate travel records, and oversee admin team members with strict creator-deletion policies.
           </p>
         </div>
 
         {/* Tab Switcher & Quick Actions */}
         <div className="flex flex-wrap items-center gap-3">
-          <div className="bg-amber-100/70 dark:bg-slate-800/90 p-1 rounded-2xl flex items-center border border-amber-200 dark:border-slate-700">
+          <div className="bg-[#EAF4FA] p-1 rounded-2xl flex items-center border border-[#E5EAF0]">
             <button
               onClick={() => setActiveTab('destinations')}
               className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
                 activeTab === 'destinations'
-                  ? 'bg-[#0A192F] text-amber-300 dark:bg-amber-500 dark:text-slate-950 shadow-sm'
-                  : 'text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
+                  ? 'bg-[#123B5D] text-white shadow-sm'
+                  : 'text-[#29445A] hover:text-[#123B5D]'
               }`}
             >
               <Database className="w-4 h-4" />
@@ -514,8 +514,8 @@ export default function AdminDashboard() {
               onClick={() => setActiveTab('admins')}
               className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
                 activeTab === 'admins'
-                  ? 'bg-[#0A192F] text-amber-300 dark:bg-amber-500 dark:text-slate-950 shadow-sm'
-                  : 'text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
+                  ? 'bg-[#123B5D] text-white shadow-sm'
+                  : 'text-[#29445A] hover:text-[#123B5D]'
               }`}
             >
               <Users className="w-4 h-4" />
@@ -528,8 +528,8 @@ export default function AdminDashboard() {
               }}
               className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
                 activeTab === 'accounts'
-                  ? 'bg-[#0A192F] text-amber-300 dark:bg-amber-500 dark:text-slate-950 shadow-sm'
-                  : 'text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
+                  ? 'bg-[#123B5D] text-white shadow-sm'
+                  : 'text-[#29445A] hover:text-[#123B5D]'
               }`}
             >
               <ShieldCheck className="w-4 h-4" />
@@ -539,16 +539,16 @@ export default function AdminDashboard() {
 
           <button
             onClick={() => setIsChangePasswordOpen(true)}
-            className="px-4 py-2.5 rounded-xl bg-[#0A192F] dark:bg-slate-800 hover:bg-slate-800 text-amber-300 dark:text-amber-400 border border-amber-500/30 text-xs font-bold transition flex items-center gap-1.5 shadow-sm cursor-pointer"
+            className="px-4 py-2.5 rounded-xl bg-white hover:bg-[#EAF4FA] text-[#123B5D] border border-[#E5EAF0] text-xs font-bold transition flex items-center gap-1.5 shadow-sm cursor-pointer"
           >
-            <Lock className="w-4 h-4 text-amber-400" />
+            <Lock className="w-4 h-4 text-[#F28C45]" />
             <span>Change Password</span>
           </button>
 
           {activeTab === 'destinations' ? (
             <button
               onClick={() => setIsAdding(!isAdding)}
-              className="px-4 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold transition flex items-center gap-2 shadow-xs cursor-pointer"
+              className="px-4 py-2.5 rounded-xl bg-[#F28C45] hover:bg-[#d97736] text-white text-xs font-bold transition flex items-center gap-2 shadow-xs cursor-pointer"
             >
               <PlusCircle className="w-4 h-4" />
               <span>{isAdding ? 'Close Form' : 'Add Destination'}</span>
@@ -556,7 +556,7 @@ export default function AdminDashboard() {
           ) : activeTab === 'admins' ? (
             <button
               onClick={() => setIsAddingAdmin(!isAddingAdmin)}
-              className="px-4 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold transition flex items-center gap-2 shadow-xs cursor-pointer"
+              className="px-4 py-2.5 rounded-xl bg-[#F28C45] hover:bg-[#d97736] text-white text-xs font-bold transition flex items-center gap-2 shadow-xs cursor-pointer"
             >
               <UserPlus className="w-4 h-4" />
               <span>{isAddingAdmin ? 'Close Form' : 'Add New Admin'}</span>
@@ -567,89 +567,79 @@ export default function AdminDashboard() {
 
       {/* Success Alert */}
       {successMsg && (
-        <div className="p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-950/80 border border-emerald-300 dark:border-emerald-500/50 text-emerald-900 dark:text-emerald-200 text-xs sm:text-sm font-bold flex items-center gap-2 animate-fade-in shadow-xs">
-          <CheckCircle className="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0" />
+        <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-300 text-emerald-900 text-xs sm:text-sm font-bold flex items-center gap-2 animate-fade-in shadow-xs">
+          <CheckCircle className="w-5 h-5 text-emerald-600 shrink-0" />
           <span>{successMsg}</span>
         </div>
       )}
 
-      {/* Security Policy Reminder Banner
-      <div className="p-4 rounded-2xl bg-amber-500/15 dark:bg-amber-500/10 border border-amber-400/60 dark:border-amber-500/30 text-amber-950 dark:text-amber-200 text-xs flex items-center gap-3 shadow-xs">
-        <ShieldAlert className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0" />
-        <div>
-          <span className="font-bold text-amber-900 dark:text-amber-300">Strict Ownership Deletion Rule Active:</span>{' '}
-          <span className="text-amber-900/90 dark:text-amber-200/90">
-            Aap Admin Dashboard me wahi record ya Admin account delete kar sakte hain jo aapne add/create kiya tha. Dusre Admin ke add kiye admin accounts deletion permissions locked zone me rahenge.
-          </span>
-        </div>
-      </div> */}
 
       {/* TAB 1: DESTINATIONS MANAGEMENT */}
       {activeTab === 'destinations' && (
         <>
           {/* Analytics Metric Cards */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="bg-white dark:bg-slate-900/90 p-5 rounded-2xl border border-amber-900/10 dark:border-amber-500/20 shadow-xs">
-              <div className="flex items-center justify-between text-slate-400 mb-2">
-                <span className="text-xs font-bold uppercase text-amber-800 dark:text-amber-400">Total Destinations</span>
-                <Database className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+            <div className="bg-white p-5 rounded-2xl border border-[#E5EAF0] shadow-xs">
+              <div className="flex items-center justify-between text-[#718096] mb-2">
+                <span className="text-xs font-bold uppercase text-[#123B5D]">Total Destinations</span>
+                <Database className="w-4 h-4 text-[#F28C45]" />
               </div>
-              <span className="text-2xl font-black text-[#0A192F] dark:text-white">{destinations.length}</span>
-              <span className="text-[11px] text-slate-500 dark:text-slate-400 block mt-0.5">Across All Zones</span>
+              <span className="text-2xl font-black text-[#123B5D]">{destinations.length}</span>
+              <span className="text-[11px] text-[#718096] block mt-0.5">Across All Zones</span>
             </div>
 
-            <div className="bg-white dark:bg-slate-900/90 p-5 rounded-2xl border border-amber-900/10 dark:border-amber-500/20 shadow-xs">
-              <div className="flex items-center justify-between text-slate-400 mb-2">
-                <span className="text-xs font-bold uppercase text-amber-800 dark:text-amber-400">Geographic Zones</span>
-                <MapPin className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+            <div className="bg-white p-5 rounded-2xl border border-[#E5EAF0] shadow-xs">
+              <div className="flex items-center justify-between text-[#718096] mb-2">
+                <span className="text-xs font-bold uppercase text-[#123B5D]">Geographic Zones</span>
+                <MapPin className="w-4 h-4 text-[#F28C45]" />
               </div>
-              <span className="text-2xl font-black text-[#0A192F] dark:text-white">5 Regions</span>
-              <span className="text-[11px] text-amber-700 dark:text-amber-400 block mt-0.5">North, South, West, East, NE</span>
+              <span className="text-2xl font-black text-[#123B5D]">5 Regions</span>
+              <span className="text-[11px] text-[#718096] block mt-0.5">North, South, West, East, NE</span>
             </div>
 
-            <div className="bg-white dark:bg-slate-900/90 p-5 rounded-2xl border border-amber-900/10 dark:border-amber-500/20 shadow-xs">
-              <div className="flex items-center justify-between text-slate-400 mb-2">
-                <span className="text-xs font-bold uppercase text-amber-800 dark:text-amber-400">AI Planner Engine</span>
-                <Sparkles className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+            <div className="bg-white p-5 rounded-2xl border border-[#E5EAF0] shadow-xs">
+              <div className="flex items-center justify-between text-[#718096] mb-2">
+                <span className="text-xs font-bold uppercase text-[#123B5D]">AI Planner Engine</span>
+                <Sparkles className="w-4 h-4 text-[#F28C45]" />
               </div>
-              <span className="text-2xl font-black text-[#0A192F] dark:text-white">Active</span>
-              <span className="text-[11px] text-slate-500 dark:text-slate-400 block mt-0.5">Day-Wise Generator</span>
+              <span className="text-2xl font-black text-[#123B5D]">Active</span>
+              <span className="text-[11px] text-[#718096] block mt-0.5">Day-Wise Generator</span>
             </div>
 
-            <div className="bg-white dark:bg-slate-900/90 p-5 rounded-2xl border border-amber-900/10 dark:border-amber-500/20 shadow-xs">
-              <div className="flex items-center justify-between text-slate-400 mb-2">
-                <span className="text-xs font-bold uppercase text-blue-800 dark:text-blue-400">Platform System</span>
-                <Layers className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+            <div className="bg-white p-5 rounded-2xl border border-[#E5EAF0] shadow-xs">
+              <div className="flex items-center justify-between text-[#718096] mb-2">
+                <span className="text-xs font-bold uppercase text-[#123B5D]">Platform System</span>
+                <Layers className="w-4 h-4 text-[#123B5D]" />
               </div>
-              <span className="text-lg font-black text-[#0A192F] dark:text-white">Operational</span>
-              <span className="text-[11px] text-slate-500 dark:text-slate-400 block mt-0.5">REST API & Leaflet GIS</span>
+              <span className="text-lg font-black text-[#123B5D]">Operational</span>
+              <span className="text-[11px] text-[#718096] block mt-0.5">REST API & Leaflet GIS</span>
             </div>
           </div>
 
           {/* Add New Destination Form Panel */}
           {isAdding && (
-            <form onSubmit={handleAddSubmit} className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-amber-200 dark:border-amber-500/30 shadow-xl space-y-6 animate-fade-in">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-amber-100 dark:border-slate-800 pb-4">
-                <h3 className="text-lg font-bold text-[#0A192F] dark:text-white flex items-center gap-2">
-                  <PlusCircle className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+            <form onSubmit={handleAddSubmit} className="bg-white rounded-3xl p-6 sm:p-8 border border-[#E5EAF0] shadow-xl space-y-6 animate-fade-in">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#E5EAF0] pb-4">
+                <h3 className="text-lg font-bold text-[#123B5D] flex items-center gap-2">
+                  <PlusCircle className="w-5 h-5 text-[#F28C45]" />
                   <span>Create New Destination Record</span>
                 </h3>
-                <span className="text-[11px] text-amber-800 dark:text-amber-300 font-semibold bg-amber-50 dark:bg-amber-950/60 px-3 py-1 rounded-full border border-amber-200 dark:border-amber-500/30">
+                <span className="text-[11px] text-[#123B5D] font-semibold bg-[#EAF4FA] px-3 py-1 rounded-full border border-[#E5EAF0]">
                   ⚡ Powered by Wikipedia & Tourism Knowledge Engine
                 </span>
               </div>
 
               {/* AI Auto-Fill Research Card */}
-              <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-amber-500/15 via-orange-500/10 to-amber-500/15 border border-amber-400/40 dark:border-amber-500/30 space-y-3 shadow-xs">
+              <div className="p-4 sm:p-5 rounded-2xl bg-[#EAF4FA] border border-[#123B5D]/20 space-y-3 shadow-xs">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-xl bg-amber-500 text-slate-950 flex items-center justify-center font-bold shadow-xs">
+                  <div className="w-8 h-8 rounded-xl bg-[#F28C45] text-white flex items-center justify-center font-bold shadow-xs">
                     <Sparkles className="w-4 h-4 animate-spin" style={{ animationDuration: '4s' }} />
                   </div>
                   <div>
-                    <h4 className="text-xs sm:text-sm font-black text-[#0A192F] dark:text-white">
+                    <h4 className="text-xs sm:text-sm font-black text-[#123B5D]">
                       AI Auto-Fill & Heritage Research Assistant
                     </h4>
-                    <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                    <p className="text-[11px] text-[#718096]">
                       Type any Indian monument or place name. AI will automatically research and fill Wikipedia details, photos, GPS coordinates, food, budget & transit!
                     </p>
                   </div>
@@ -661,14 +651,14 @@ export default function AdminDashboard() {
                     value={aiPrompt}
                     onChange={(e) => setAiPrompt(e.target.value)}
                     placeholder="Enter monument name (e.g. Statue of Unity, Somnath Temple, Hampi, Dhanushkodi, Chanderi Fort)..."
-                    className="flex-1 px-4 py-3 rounded-xl bg-white dark:bg-slate-800 border border-amber-300 dark:border-slate-700 text-xs font-semibold outline-hidden focus:border-amber-600 dark:focus:border-amber-400 text-[#0A192F] dark:text-white shadow-xs"
+                    className="flex-1 px-4 py-3 rounded-xl bg-white border border-[#E5EAF0] text-xs font-semibold outline-hidden focus:border-[#F28C45] text-[#29445A] shadow-xs"
                     onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleAIGenerate(); } }}
                   />
                   <button
                     type="button"
                     onClick={handleAIGenerate}
                     disabled={aiLoading || !aiPrompt.trim()}
-                    className="px-6 py-3 rounded-xl bg-amber-600 hover:bg-amber-700 dark:bg-amber-500 dark:hover:bg-amber-600 text-white dark:text-slate-950 text-xs font-black transition flex items-center justify-center gap-2 shadow-md disabled:opacity-50 cursor-pointer"
+                    className="px-6 py-3 rounded-xl bg-[#F28C45] hover:bg-[#e0752f] text-white text-xs font-black transition flex items-center justify-center gap-2 shadow-md disabled:opacity-50 cursor-pointer"
                   >
                     {aiLoading ? (
                       <>
@@ -687,35 +677,35 @@ export default function AdminDashboard() {
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label className="text-xs font-bold text-amber-800 dark:text-amber-400 uppercase block mb-1">Destination Name</label>
+                  <label className="text-xs font-bold text-[#123B5D] uppercase block mb-1">Destination Name</label>
                   <input
                     type="text"
                     required
                     value={newDest.name}
                     onChange={(e) => setNewDest({ ...newDest, name: e.target.value })}
                     placeholder="e.g. Rishikesh (Yoga Capital)"
-                    className="w-full p-3 rounded-xl bg-amber-50/40 dark:bg-slate-800 border border-amber-200 dark:border-slate-700 text-xs font-semibold outline-hidden text-[#0A192F] dark:text-white"
+                    className="w-full p-3 rounded-xl bg-[#F7F9FC] border border-[#E5EAF0] text-xs font-semibold outline-hidden text-[#29445A]"
                   />
                 </div>
 
                 <div>
-                  <label className="text-xs font-bold text-amber-800 dark:text-amber-400 uppercase block mb-1">State / UT</label>
+                  <label className="text-xs font-bold text-[#123B5D] uppercase block mb-1">State / UT</label>
                   <input
                     type="text"
                     required
                     value={newDest.state}
                     onChange={(e) => setNewDest({ ...newDest, state: e.target.value })}
                     placeholder="e.g. Uttarakhand"
-                    className="w-full p-3 rounded-xl bg-amber-50/40 dark:bg-slate-800 border border-amber-200 dark:border-slate-700 text-xs font-semibold outline-hidden text-[#0A192F] dark:text-white"
+                    className="w-full p-3 rounded-xl bg-[#F7F9FC] border border-[#E5EAF0] text-xs font-semibold outline-hidden text-[#29445A]"
                   />
                 </div>
 
                 <div>
-                  <label className="text-xs font-bold text-amber-800 dark:text-amber-400 uppercase block mb-1">Geographic Zone</label>
+                  <label className="text-xs font-bold text-[#123B5D] uppercase block mb-1">Geographic Zone</label>
                   <select
                     value={newDest.zone}
                     onChange={(e) => setNewDest({ ...newDest, zone: e.target.value })}
-                    className="w-full p-3 rounded-xl bg-amber-50/40 dark:bg-slate-800 border border-amber-200 dark:border-slate-700 text-xs font-semibold outline-hidden text-[#0A192F] dark:text-white"
+                    className="w-full p-3 rounded-xl bg-[#F7F9FC] border border-[#E5EAF0] text-xs font-semibold outline-hidden text-[#29445A]"
                   >
                     <option value="North">North India</option>
                     <option value="South">South India</option>
@@ -728,11 +718,11 @@ export default function AdminDashboard() {
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label className="text-xs font-bold text-amber-800 dark:text-amber-400 uppercase block mb-1">Category</label>
+                  <label className="text-xs font-bold text-[#123B5D] uppercase block mb-1">Category</label>
                   <select
                     value={newDest.category}
                     onChange={(e) => setNewDest({ ...newDest, category: e.target.value })}
-                    className="w-full p-3 rounded-xl bg-amber-50/40 dark:bg-slate-800 border border-amber-200 dark:border-slate-700 text-xs font-semibold outline-hidden text-[#0A192F] dark:text-white"
+                    className="w-full p-3 rounded-xl bg-[#F7F9FC] border border-[#E5EAF0] text-xs font-semibold outline-hidden text-[#29445A]"
                   >
                     <option value="UNESCO World Heritage & Iconic Monuments">UNESCO World Heritage & Iconic Monuments</option>
                     <option value="Historic Forts & Citadels">Historic Forts & Citadels</option>
@@ -748,118 +738,118 @@ export default function AdminDashboard() {
                 </div>
 
                 <div>
-                  <label className="text-xs font-bold text-amber-800 dark:text-amber-400 uppercase block mb-1">Avg Daily Cost (₹)</label>
+                  <label className="text-xs font-bold text-[#123B5D] uppercase block mb-1">Avg Daily Cost (₹)</label>
                   <input
                     type="number"
                     value={newDest.avgDailyExpense}
                     onChange={(e) => setNewDest({ ...newDest, avgDailyExpense: e.target.value })}
-                    className="w-full p-3 rounded-xl bg-amber-50/40 dark:bg-slate-800 border border-amber-200 dark:border-slate-700 text-xs font-semibold outline-hidden text-[#0A192F] dark:text-white"
+                    className="w-full p-3 rounded-xl bg-[#F7F9FC] border border-[#E5EAF0] text-xs font-semibold outline-hidden text-[#29445A]"
                   />
                 </div>
 
                 <div>
-                  <label className="text-xs font-bold text-amber-800 dark:text-amber-400 uppercase block mb-1">Hero Image URL</label>
+                  <label className="text-xs font-bold text-[#123B5D] uppercase block mb-1">Hero Image URL</label>
                   <input
                     type="url"
                     value={newDest.heroImage}
                     onChange={(e) => setNewDest({ ...newDest, heroImage: e.target.value })}
-                    className="w-full p-3 rounded-xl bg-amber-50/40 dark:bg-slate-800 border border-amber-200 dark:border-slate-700 text-xs font-semibold outline-hidden text-[#0A192F] dark:text-white"
+                    className="w-full p-3 rounded-xl bg-[#F7F9FC] border border-[#E5EAF0] text-xs font-semibold outline-hidden text-[#29445A]"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                  <label className="text-xs font-bold text-amber-800 dark:text-amber-400 uppercase block mb-1">Tagline</label>
+                  <label className="text-xs font-bold text-[#123B5D] uppercase block mb-1">Tagline</label>
                   <input
                     type="text"
                     value={newDest.tagline}
                     onChange={(e) => setNewDest({ ...newDest, tagline: e.target.value })}
                     placeholder="e.g. UNESCO World Heritage Fort"
-                    className="w-full p-3 rounded-xl bg-amber-50/40 dark:bg-slate-800 border border-amber-200 dark:border-slate-700 text-xs font-semibold outline-hidden text-[#0A192F] dark:text-white"
+                    className="w-full p-3 rounded-xl bg-[#F7F9FC] border border-[#E5EAF0] text-xs font-semibold outline-hidden text-[#29445A]"
                   />
                 </div>
 
                 <div>
-                  <label className="text-xs font-bold text-amber-800 dark:text-amber-400 uppercase block mb-1">Best Time to Visit</label>
+                  <label className="text-xs font-bold text-[#123B5D] uppercase block mb-1">Best Time to Visit</label>
                   <input
                     type="text"
                     value={newDest.bestTimeToVisit}
                     onChange={(e) => setNewDest({ ...newDest, bestTimeToVisit: e.target.value })}
                     placeholder="e.g. October to March"
-                    className="w-full p-3 rounded-xl bg-amber-50/40 dark:bg-slate-800 border border-amber-200 dark:border-slate-700 text-xs font-semibold outline-hidden text-[#0A192F] dark:text-white"
+                    className="w-full p-3 rounded-xl bg-[#F7F9FC] border border-[#E5EAF0] text-xs font-semibold outline-hidden text-[#29445A]"
                   />
                 </div>
 
                 <div>
-                  <label className="text-xs font-bold text-amber-800 dark:text-amber-400 uppercase block mb-1">Ideal Duration</label>
+                  <label className="text-xs font-bold text-[#123B5D] uppercase block mb-1">Ideal Duration</label>
                   <input
                     type="text"
                     value={newDest.idealDuration}
                     onChange={(e) => setNewDest({ ...newDest, idealDuration: e.target.value })}
                     placeholder="e.g. 2-3 Days"
-                    className="w-full p-3 rounded-xl bg-amber-50/40 dark:bg-slate-800 border border-amber-200 dark:border-slate-700 text-xs font-semibold outline-hidden text-[#0A192F] dark:text-white"
+                    className="w-full p-3 rounded-xl bg-[#F7F9FC] border border-[#E5EAF0] text-xs font-semibold outline-hidden text-[#29445A]"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-xs font-bold text-amber-800 dark:text-amber-400 uppercase block mb-1">Latitude (GPS Lat)</label>
+                  <label className="text-xs font-bold text-[#123B5D] uppercase block mb-1">Latitude (GPS Lat)</label>
                   <input
                     type="number"
                     step="any"
                     value={newDest.lat}
                     onChange={(e) => setNewDest({ ...newDest, lat: e.target.value })}
                     placeholder="e.g. 26.9124"
-                    className="w-full p-3 rounded-xl bg-amber-50/40 dark:bg-slate-800 border border-amber-200 dark:border-slate-700 text-xs font-semibold outline-hidden text-[#0A192F] dark:text-white"
+                    className="w-full p-3 rounded-xl bg-[#F7F9FC] border border-[#E5EAF0] text-xs font-semibold outline-hidden text-[#29445A]"
                   />
                 </div>
 
                 <div>
-                  <label className="text-xs font-bold text-amber-800 dark:text-amber-400 uppercase block mb-1">Longitude (GPS Lng)</label>
+                  <label className="text-xs font-bold text-[#123B5D] uppercase block mb-1">Longitude (GPS Lng)</label>
                   <input
                     type="number"
                     step="any"
                     value={newDest.lng}
                     onChange={(e) => setNewDest({ ...newDest, lng: e.target.value })}
                     placeholder="e.g. 75.7873"
-                    className="w-full p-3 rounded-xl bg-amber-50/40 dark:bg-slate-800 border border-amber-200 dark:border-slate-700 text-xs font-semibold outline-hidden text-[#0A192F] dark:text-white"
+                    className="w-full p-3 rounded-xl bg-[#F7F9FC] border border-[#E5EAF0] text-xs font-semibold outline-hidden text-[#29445A]"
                   />
                 </div>
               </div>
 
               {/* Hotels & Stays Management Section */}
-              <div className="p-4 sm:p-5 rounded-2xl bg-amber-50/50 dark:bg-slate-800/60 border border-amber-200 dark:border-slate-700 space-y-3">
+              <div className="p-4 sm:p-5 rounded-2xl bg-[#EAF4FA] border border-[#123B5D]/15 space-y-3">
                 <div className="flex items-center justify-between">
-                  <h4 className="text-xs font-bold text-amber-900 dark:text-amber-300 uppercase tracking-wider flex items-center gap-1.5">
-                    <Hotel className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+                  <h4 className="text-xs font-bold text-[#123B5D] uppercase tracking-wider flex items-center gap-1.5">
+                    <Hotel className="w-4 h-4 text-[#F28C45]" />
                     <span>Recommended Hotels & Stays ({newDest.hotels?.length || 0})</span>
                   </h4>
-                  <span className="text-[11px] text-slate-500 dark:text-slate-400">Auto-filled by AI or add manually</span>
+                  <span className="text-[11px] text-[#718096]">Auto-filled by AI or add manually</span>
                 </div>
 
                 {/* List of currently added hotels */}
                 {newDest.hotels && newDest.hotels.length > 0 ? (
                   <div className="space-y-2">
                     {newDest.hotels.map((hotel, idx) => (
-                      <div key={idx} className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-amber-200/80 dark:border-slate-700 flex items-center justify-between gap-3">
+                      <div key={idx} className="p-3 rounded-xl bg-white border border-[#E5EAF0] flex items-center justify-between gap-3">
                         <div className="flex-1">
                           <div className="flex items-center gap-2">
-                            <span className="font-bold text-xs text-slate-900 dark:text-slate-100">{hotel.name}</span>
-                            <span className="px-2 py-0.5 rounded-md bg-amber-100 dark:bg-amber-950 text-[10px] font-bold text-amber-900 dark:text-amber-300">
+                            <span className="font-bold text-xs text-[#123B5D]">{hotel.name}</span>
+                            <span className="px-2 py-0.5 rounded-md bg-[#EAF4FA] text-[10px] font-bold text-[#123B5D]">
                               {hotel.type}
                             </span>
-                            <span className="text-[11px] font-mono text-amber-700 dark:text-amber-400 font-bold">
+                            <span className="text-[11px] font-mono text-[#F28C45] font-bold">
                               {hotel.priceRange}
                             </span>
                           </div>
-                          <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate mt-0.5">📍 {hotel.address || 'Central Corridor'}</p>
+                          <p className="text-[11px] text-[#718096] truncate mt-0.5">📍 {hotel.address || 'Central Corridor'}</p>
                         </div>
                         <button
                           type="button"
                           onClick={() => handleRemoveHotel(idx)}
-                          className="p-1.5 rounded-lg text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950 transition cursor-pointer"
+                          className="p-1.5 rounded-lg text-rose-500 hover:bg-rose-50 transition cursor-pointer"
                           title="Remove hotel"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
@@ -868,33 +858,33 @@ export default function AdminDashboard() {
                     ))}
                   </div>
                 ) : (
-                  <p className="text-xs text-slate-500 dark:text-slate-400 italic">No hotels added yet. Use the inputs below or trigger AI generation above.</p>
+                  <p className="text-xs text-[#718096] italic">No hotels added yet. Use the inputs below or trigger AI generation above.</p>
                 )}
 
                 {/* Quick Add Hotel Form */}
-                <div className="pt-2 border-t border-amber-200/60 dark:border-slate-700 space-y-2">
-                  <span className="text-[11px] font-bold text-slate-700 dark:text-slate-300 block">+ Add Custom Hotel:</span>
+                <div className="pt-2 border-t border-[#123B5D]/15 space-y-2">
+                  <span className="text-[11px] font-bold text-[#123B5D] block">+ Add Custom Hotel:</span>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                     <input
                       type="text"
                       value={newHotelInput.name}
                       onChange={(e) => setNewHotelInput({ ...newHotelInput, name: e.target.value })}
                       placeholder="Hotel / Resort Name"
-                      className="p-2 rounded-xl bg-white dark:bg-slate-900 border border-amber-200 dark:border-slate-700 text-xs text-slate-800 dark:text-slate-100"
+                      className="p-2 rounded-xl bg-white border border-[#E5EAF0] text-xs text-[#29445A]"
                     />
                     <input
                       type="text"
                       value={newHotelInput.type}
                       onChange={(e) => setNewHotelInput({ ...newHotelInput, type: e.target.value })}
                       placeholder="Type (e.g. Luxury Resort / Homestay)"
-                      className="p-2 rounded-xl bg-white dark:bg-slate-900 border border-amber-200 dark:border-slate-700 text-xs text-slate-800 dark:text-slate-100"
+                      className="p-2 rounded-xl bg-white border border-[#E5EAF0] text-xs text-[#29445A]"
                     />
                     <input
                       type="text"
                       value={newHotelInput.priceRange}
                       onChange={(e) => setNewHotelInput({ ...newHotelInput, priceRange: e.target.value })}
                       placeholder="Price (e.g. ₹3,500/night)"
-                      className="p-2 rounded-xl bg-white dark:bg-slate-900 border border-amber-200 dark:border-slate-700 text-xs text-slate-800 dark:text-slate-100"
+                      className="p-2 rounded-xl bg-white border border-[#E5EAF0] text-xs text-[#29445A]"
                     />
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -903,7 +893,7 @@ export default function AdminDashboard() {
                       value={newHotelInput.address}
                       onChange={(e) => setNewHotelInput({ ...newHotelInput, address: e.target.value })}
                       placeholder="Hotel Address / Landmark"
-                      className="p-2 rounded-xl bg-white dark:bg-slate-900 border border-amber-200 dark:border-slate-700 text-xs text-slate-800 dark:text-slate-100"
+                      className="p-2 rounded-xl bg-white border border-[#E5EAF0] text-xs text-[#29445A]"
                     />
                     <div className="flex gap-2">
                       <input
@@ -911,12 +901,12 @@ export default function AdminDashboard() {
                         value={newHotelInput.amenities}
                         onChange={(e) => setNewHotelInput({ ...newHotelInput, amenities: e.target.value })}
                         placeholder="Amenities (comma-separated)"
-                        className="flex-1 p-2 rounded-xl bg-white dark:bg-slate-900 border border-amber-200 dark:border-slate-700 text-xs text-slate-800 dark:text-slate-100"
+                        className="flex-1 p-2 rounded-xl bg-white border border-[#E5EAF0] text-xs text-[#29445A]"
                       />
                       <button
                         type="button"
                         onClick={handleAddHotelToDestination}
-                        className="px-4 py-2 rounded-xl gradient-saffron text-slate-950 text-xs font-bold whitespace-nowrap cursor-pointer"
+                        className="px-4 py-2 rounded-xl bg-[#F28C45] hover:bg-[#d97736] text-white text-xs font-bold whitespace-nowrap cursor-pointer"
                       >
                         + Add Hotel
                       </button>
@@ -926,25 +916,25 @@ export default function AdminDashboard() {
               </div>
 
               <div>
-                <label className="text-xs font-bold text-amber-800 dark:text-amber-400 uppercase block mb-1">Highlights (Comma separated)</label>
+                <label className="text-xs font-bold text-[#123B5D] uppercase block mb-1">Highlights (Comma separated)</label>
                 <input
                   type="text"
                   value={newDest.highlights}
                   onChange={(e) => setNewDest({ ...newDest, highlights: e.target.value })}
                   placeholder="e.g. Sunrise view, Ancient architecture, Local food tasting"
-                  className="w-full p-3 rounded-xl bg-amber-50/40 dark:bg-slate-800 border border-amber-200 dark:border-slate-700 text-xs font-medium outline-hidden text-[#0A192F] dark:text-white"
+                  className="w-full p-3 rounded-xl bg-[#F7F9FC] border border-[#E5EAF0] text-xs font-medium outline-hidden text-[#29445A]"
                 />
               </div>
 
               <div>
-                <label className="text-xs font-bold text-amber-800 dark:text-amber-400 uppercase block mb-1">Description</label>
+                <label className="text-xs font-bold text-[#123B5D] uppercase block mb-1">Description</label>
                 <textarea
                   rows="3"
                   required
                   value={newDest.description}
                   onChange={(e) => setNewDest({ ...newDest, description: e.target.value })}
                   placeholder="Detailed description of destination, cultural significance, and travel appeal..."
-                  className="w-full p-3 rounded-xl bg-amber-50/40 dark:bg-slate-800 border border-amber-200 dark:border-slate-700 text-xs font-medium outline-hidden text-[#0A192F] dark:text-white"
+                  className="w-full p-3 rounded-xl bg-[#F7F9FC] border border-[#E5EAF0] text-xs font-medium outline-hidden text-[#29445A]"
                 ></textarea>
               </div>
 
@@ -952,13 +942,13 @@ export default function AdminDashboard() {
                 <button
                   type="button"
                   onClick={() => setIsAdding(false)}
-                  className="px-5 py-2.5 rounded-xl bg-amber-50 dark:bg-slate-800 text-amber-950 dark:text-slate-200 text-xs font-bold cursor-pointer"
+                  className="px-5 py-2.5 rounded-xl bg-[#EAF4FA] text-[#123B5D] text-xs font-bold cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2.5 rounded-xl bg-[#0A192F] dark:bg-amber-500 hover:bg-[#020C1B] dark:hover:bg-amber-600 text-amber-300 dark:text-slate-950 text-xs font-black shadow-md cursor-pointer"
+                  className="px-6 py-2.5 rounded-xl bg-[#F28C45] hover:bg-[#d97736] text-white text-xs font-black shadow-md cursor-pointer"
                 >
                   Save Destination to Database
                 </button>
@@ -967,26 +957,26 @@ export default function AdminDashboard() {
           )}
 
           {/* Active Destinations Table */}
-          <div className="bg-white dark:bg-slate-900/90 rounded-3xl p-6 sm:p-8 border border-amber-900/10 dark:border-amber-500/20 shadow-xs space-y-4">
+          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-[#E5EAF0] shadow-xs space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="text-lg font-bold text-[#0A192F] dark:text-white">Manage Active Destinations ({destinations.length})</h3>
-              <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">⚠️ Only the Admin who created a destination can remove it.</span>
+              <h3 className="text-lg font-bold text-[#123B5D]">Manage Active Destinations ({destinations.length})</h3>
+              <span className="text-xs text-[#718096] font-medium">⚠️ Only the Admin who created a destination can remove it.</span>
             </div>
 
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs text-slate-600 dark:text-slate-300">
-                <thead className="bg-amber-50/80 dark:bg-slate-800/90 text-[#0A192F] dark:text-amber-300 font-bold border-b border-amber-200 dark:border-slate-700">
+              <table className="w-full text-left text-xs text-[#718096]">
+                <thead className="bg-[#EAF4FA] text-[#123B5D] font-bold border-b border-[#E5EAF0]">
                   <tr>
-                    <th className="p-3.5 uppercase tracking-wider font-extrabold text-amber-950 dark:text-amber-300">Destination</th>
-                    <th className="p-3.5 uppercase tracking-wider font-extrabold text-amber-950 dark:text-amber-300">State & Zone</th>
-                    <th className="p-3.5 uppercase tracking-wider font-extrabold text-amber-950 dark:text-amber-300">Category</th>
-                    <th className="p-3.5 uppercase tracking-wider font-extrabold text-amber-950 dark:text-amber-300">Hotels</th>
-                    <th className="p-3.5 uppercase tracking-wider font-extrabold text-amber-950 dark:text-amber-300">Added By</th>
-                    <th className="p-3.5 uppercase tracking-wider font-extrabold text-amber-950 dark:text-amber-300">Daily Cost</th>
-                    <th className="p-3.5 uppercase tracking-wider font-extrabold text-amber-950 dark:text-amber-300 text-right">Action</th>
+                    <th className="p-3.5 uppercase tracking-wider font-extrabold text-[#123B5D]">Destination</th>
+                    <th className="p-3.5 uppercase tracking-wider font-extrabold text-[#123B5D]">State & Zone</th>
+                    <th className="p-3.5 uppercase tracking-wider font-extrabold text-[#123B5D]">Category</th>
+                    <th className="p-3.5 uppercase tracking-wider font-extrabold text-[#123B5D]">Hotels</th>
+                    <th className="p-3.5 uppercase tracking-wider font-extrabold text-[#123B5D]">Added By</th>
+                    <th className="p-3.5 uppercase tracking-wider font-extrabold text-[#123B5D]">Daily Cost</th>
+                    <th className="p-3.5 uppercase tracking-wider font-extrabold text-[#123B5D] text-right">Action</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-amber-100/60 dark:divide-slate-800">
+                <tbody className="divide-y divide-[#E5EAF0]">
                   {destinations.map((d) => {
                     const isMine = !d.createdByEmail || 
                                    (user?.email && d.createdByEmail.toLowerCase() === user.email.toLowerCase()) ||
@@ -994,39 +984,39 @@ export default function AdminDashboard() {
                                    (user?.email === 'admin@bharatyatra.com');
 
                     return (
-                      <tr key={d.id || d._id} className="hover:bg-amber-50/50 dark:hover:bg-slate-800/50 transition-colors">
-                        <td className="p-3.5 font-bold text-[#0A192F] dark:text-white flex items-center gap-2.5">
-                          <img src={d.heroImage} alt={d.name} className="w-9 h-9 rounded-xl object-cover border border-amber-300 dark:border-amber-500/30" />
-                          <span className="font-bold text-xs sm:text-sm text-[#0A192F] dark:text-slate-100">{d.name}</span>
+                      <tr key={d.id || d._id} className="hover:bg-[#F7F9FC] transition-colors">
+                        <td className="p-3.5 font-bold text-[#123B5D] flex items-center gap-2.5">
+                          <img src={d.heroImage} alt={d.name} className="w-9 h-9 rounded-xl object-cover border border-[#E5EAF0]" />
+                          <span className="font-bold text-xs sm:text-sm text-[#123B5D]">{d.name}</span>
                         </td>
-                        <td className="p-3.5 text-slate-700 dark:text-slate-300">{d.state} ({d.zone})</td>
+                        <td className="p-3.5 text-[#29445A]">{d.state} ({d.zone})</td>
                         <td className="p-3.5">
-                          <span className="px-2.5 py-1 rounded-md bg-amber-50 dark:bg-amber-950/70 text-amber-900 dark:text-amber-300 font-semibold border border-amber-200 dark:border-amber-500/30">
+                          <span className="px-2.5 py-1 rounded-md bg-[#EAF4FA] text-[#123B5D] font-semibold border border-[#E5EAF0]">
                             {d.category}
                           </span>
                         </td>
                         <td className="p-3.5">
-                          <span className="px-2.5 py-1 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 font-mono font-bold">
+                          <span className="px-2.5 py-1 rounded-md bg-[#F7F9FC] text-[#29445A] font-mono font-bold border border-[#E5EAF0]">
                             {d.hotels?.length || 0} Stays
                           </span>
                         </td>
                         <td className="p-3.5">
                           {isMine ? (
-                            <span className="px-3 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950/70 text-emerald-800 dark:text-emerald-300 font-bold text-[10px] border border-emerald-300 dark:border-emerald-500/40">
+                            <span className="px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 font-bold text-[10px] border border-emerald-200">
                               Added by You
                             </span>
                           ) : (
-                            <span className="px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold text-[10px] border border-slate-300 dark:border-slate-700">
+                            <span className="px-3 py-1 rounded-full bg-[#F7F9FC] text-[#718096] font-semibold text-[10px] border border-[#E5EAF0]">
                               {d.createdByName || d.createdByEmail || 'System Seed'}
                             </span>
                           )}
                         </td>
-                        <td className="p-3.5 font-mono font-bold text-[#0A192F] dark:text-white">₹{d.avgDailyExpense}</td>
+                        <td className="p-3.5 font-mono font-bold text-[#123B5D]">₹{d.avgDailyExpense}</td>
                         <td className="p-3.5 text-right">
                           {isMine ? (
                             <button
                               onClick={() => handleDelete(d)}
-                              className="p-1.5 rounded-lg text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950 transition cursor-pointer"
+                              className="p-1.5 rounded-lg text-rose-600 hover:bg-rose-50 transition cursor-pointer"
                               title="Delete destination"
                             >
                               <Trash2 className="w-4 h-4" />
@@ -1035,7 +1025,7 @@ export default function AdminDashboard() {
                             <button
                               disabled
                               onClick={() => handleDelete(d)}
-                              className="p-1.5 rounded-lg text-slate-300 dark:text-slate-600 cursor-not-allowed opacity-40"
+                              className="p-1.5 rounded-lg text-slate-300 cursor-not-allowed opacity-40"
                               title={`Only ${d.createdByName || d.createdByEmail || 'creator admin'} can remove this`}
                             >
                               <Lock className="w-4 h-4" />
@@ -1058,106 +1048,106 @@ export default function AdminDashboard() {
           
           {/* Admin Team Metrics Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="bg-white dark:bg-slate-900/90 p-5 rounded-2xl border border-amber-900/10 dark:border-amber-500/20 shadow-xs">
-              <div className="flex items-center justify-between text-slate-400 mb-2">
-                <span className="text-xs font-bold uppercase text-amber-800 dark:text-amber-400">Total Admin Accounts</span>
-                <Users className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+            <div className="bg-white p-5 rounded-2xl border border-[#E5EAF0] shadow-xs">
+              <div className="flex items-center justify-between text-[#718096] mb-2">
+                <span className="text-xs font-bold uppercase text-[#123B5D]">Total Admin Accounts</span>
+                <Users className="w-4 h-4 text-[#F28C45]" />
               </div>
-              <span className="text-2xl font-black text-[#0A192F] dark:text-white">{admins.length}</span>
-              <span className="text-[11px] text-slate-500 dark:text-slate-400 block mt-0.5">Active Admin Privileges</span>
+              <span className="text-2xl font-black text-[#123B5D]">{admins.length}</span>
+              <span className="text-[11px] text-[#718096] block mt-0.5">Active Admin Privileges</span>
             </div>
 
-            <div className="bg-white dark:bg-slate-900/90 p-5 rounded-2xl border border-amber-900/10 dark:border-amber-500/20 shadow-xs">
-              <div className="flex items-center justify-between text-slate-400 mb-2">
-                <span className="text-xs font-bold uppercase text-amber-800 dark:text-amber-400">Created By You</span>
-                <UserCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+            <div className="bg-white p-5 rounded-2xl border border-[#E5EAF0] shadow-xs">
+              <div className="flex items-center justify-between text-[#718096] mb-2">
+                <span className="text-xs font-bold uppercase text-[#123B5D]">Created By You</span>
+                <UserCheck className="w-4 h-4 text-emerald-600" />
               </div>
-              <span className="text-2xl font-black text-emerald-600 dark:text-emerald-400">
+              <span className="text-2xl font-black text-emerald-600">
                 {admins.filter(a => 
                   (user?.email && a.createdByEmail && a.createdByEmail.toLowerCase() === user.email.toLowerCase()) ||
                   (user?.id && a.createdBy && String(a.createdBy) === String(user.id)) ||
                   (user?.email === 'admin@bharatyatra.com')
                 ).length}
               </span>
-              <span className="text-[11px] text-slate-500 dark:text-slate-400 block mt-0.5">Deletable by your account</span>
+              <span className="text-[11px] text-[#718096] block mt-0.5">Deletable by your account</span>
             </div>
 
-            <div className="bg-white dark:bg-slate-900/90 p-5 rounded-2xl border border-amber-900/10 dark:border-amber-500/20 shadow-xs">
-              <div className="flex items-center justify-between text-slate-400 mb-2">
-                <span className="text-xs font-bold uppercase text-amber-800 dark:text-amber-400">Deletion Policy</span>
-                <Lock className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+            <div className="bg-white p-5 rounded-2xl border border-[#E5EAF0] shadow-xs">
+              <div className="flex items-center justify-between text-[#718096] mb-2">
+                <span className="text-xs font-bold uppercase text-[#123B5D]">Deletion Policy</span>
+                <Lock className="w-4 h-4 text-[#F28C45]" />
               </div>
-              <span className="text-lg font-black text-[#0A192F] dark:text-white">Creator-Only</span>
-              <span className="text-[11px] text-amber-800 dark:text-amber-400 font-semibold block mt-0.5">Strict Permission Guard</span>
+              <span className="text-lg font-black text-[#123B5D]">Creator-Only</span>
+              <span className="text-[11px] text-[#718096] font-semibold block mt-0.5">Strict Permission Guard</span>
             </div>
           </div>
 
           {/* Add New Admin Form Panel */}
           {isAddingAdmin && (
-            <form onSubmit={handleAddAdminSubmit} className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-amber-200 dark:border-amber-500/30 shadow-xl space-y-6 animate-fade-in">
-              <div className="flex items-center justify-between border-b border-amber-100 dark:border-slate-800 pb-4">
-                <h3 className="text-lg font-bold text-[#0A192F] dark:text-white flex items-center gap-2">
-                  <UserPlus className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+            <form onSubmit={handleAddAdminSubmit} className="bg-white rounded-3xl p-6 sm:p-8 border border-[#E5EAF0] shadow-xl space-y-6 animate-fade-in">
+              <div className="flex items-center justify-between border-b border-[#E5EAF0] pb-4">
+                <h3 className="text-lg font-bold text-[#123B5D] flex items-center gap-2">
+                  <UserPlus className="w-5 h-5 text-[#F28C45]" />
                   <span>Register New Administrator Account</span>
                 </h3>
-                <span className="text-xs text-amber-800 dark:text-amber-300 font-semibold bg-amber-50 dark:bg-amber-950/60 px-3 py-1 rounded-full border border-amber-200 dark:border-amber-500/30">
+                <span className="text-xs text-[#123B5D] font-semibold bg-[#EAF4FA] px-3 py-1 rounded-full border border-[#E5EAF0]">
                   🔒 You will be recorded as Creator ({user?.name || user?.email})
                 </span>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-xs font-bold text-amber-800 dark:text-amber-400 uppercase block mb-1">Admin Full Name</label>
+                  <label className="text-xs font-bold text-[#123B5D] uppercase block mb-1">Admin Full Name</label>
                   <input
                     type="text"
                     required
                     value={newAdminInput.name}
                     onChange={(e) => setNewAdminInput({ ...newAdminInput, name: e.target.value })}
                     placeholder="e.g. Vikramaditya Sharma"
-                    className="w-full p-3 rounded-xl bg-amber-50/40 dark:bg-slate-800 border border-amber-200 dark:border-slate-700 text-xs font-semibold outline-hidden text-[#0A192F] dark:text-white"
+                    className="w-full p-3 rounded-xl bg-[#F7F9FC] border border-[#E5EAF0] text-xs font-semibold outline-hidden text-[#29445A]"
                   />
                 </div>
 
                 <div>
-                  <label className="text-xs font-bold text-amber-800 dark:text-amber-400 uppercase block mb-1">Admin Email Address</label>
+                  <label className="text-xs font-bold text-[#123B5D] uppercase block mb-1">Admin Email Address</label>
                   <input
                     type="email"
                     required
                     value={newAdminInput.email}
                     onChange={(e) => setNewAdminInput({ ...newAdminInput, email: e.target.value })}
                     placeholder="e.g. vikram.admin@bharatyatra.com"
-                    className="w-full p-3 rounded-xl bg-amber-50/40 dark:bg-slate-800 border border-amber-200 dark:border-slate-700 text-xs font-semibold outline-hidden text-[#0A192F] dark:text-white"
+                    className="w-full p-3 rounded-xl bg-[#F7F9FC] border border-[#E5EAF0] text-xs font-semibold outline-hidden text-[#29445A]"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-xs font-bold text-amber-800 dark:text-amber-400 uppercase block mb-1">Password</label>
+                  <label className="text-xs font-bold text-[#123B5D] uppercase block mb-1">Password</label>
                   <input
                     type="password"
                     required
                     value={newAdminInput.password}
                     onChange={(e) => setNewAdminInput({ ...newAdminInput, password: e.target.value })}
                     placeholder="Set secure password..."
-                    className="w-full p-3 rounded-xl bg-amber-50/40 dark:bg-slate-800 border border-amber-200 dark:border-slate-700 text-xs font-semibold outline-hidden text-[#0A192F] dark:text-white"
+                    className="w-full p-3 rounded-xl bg-[#F7F9FC] border border-[#E5EAF0] text-xs font-semibold outline-hidden text-[#29445A]"
                   />
                 </div>
 
                 <div>
-                  <label className="text-xs font-bold text-amber-800 dark:text-amber-400 uppercase block mb-1">Department / Role</label>
+                  <label className="text-xs font-bold text-[#123B5D] uppercase block mb-1">Department / Role</label>
                   <input
                     type="text"
                     required
                     value={newAdminInput.department}
                     onChange={(e) => setNewAdminInput({ ...newAdminInput, department: e.target.value })}
                     placeholder="e.g. Tourism Content & Regional Curator"
-                    className="w-full p-3 rounded-xl bg-amber-50/40 dark:bg-slate-800 border border-amber-200 dark:border-slate-700 text-xs font-semibold outline-hidden text-[#0A192F] dark:text-white"
+                    className="w-full p-3 rounded-xl bg-[#F7F9FC] border border-[#E5EAF0] text-xs font-semibold outline-hidden text-[#29445A]"
                   />
                 </div>
               </div>
 
-              <div className="p-3 rounded-xl bg-amber-50 dark:bg-slate-800/90 border border-amber-200 dark:border-slate-700 text-amber-900 dark:text-amber-300 text-xs">
+              <div className="p-3 rounded-xl bg-[#EAF4FA] border border-[#123B5D]/20 text-[#123B5D] text-xs">
                 💡 <strong>Important Note:</strong> App me wahi Admin is naye Admin account ko delete kar sakega jiske dwara ye account add/create hua hai (`{user?.email}`).
               </div>
 
@@ -1165,13 +1155,13 @@ export default function AdminDashboard() {
                 <button
                   type="button"
                   onClick={() => setIsAddingAdmin(false)}
-                  className="px-5 py-2.5 rounded-xl bg-amber-50 dark:bg-slate-800 text-amber-950 dark:text-slate-200 text-xs font-bold cursor-pointer"
+                  className="px-5 py-2.5 rounded-xl bg-[#EAF4FA] text-[#123B5D] text-xs font-bold cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2.5 rounded-xl bg-[#0A192F] dark:bg-amber-500 hover:bg-[#020C1B] dark:hover:bg-amber-600 text-amber-300 dark:text-slate-950 text-xs font-black shadow-md cursor-pointer"
+                  className="px-6 py-2.5 rounded-xl bg-[#F28C45] hover:bg-[#d97736] text-white text-xs font-black shadow-md cursor-pointer"
                 >
                   Create & Register Admin
                 </button>
@@ -1180,26 +1170,26 @@ export default function AdminDashboard() {
           )}
 
           {/* Admins Accounts Table */}
-          <div className="bg-white dark:bg-slate-900/90 rounded-3xl p-6 sm:p-8 border border-amber-900/10 dark:border-amber-500/20 shadow-xs space-y-4">
+          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-[#E5EAF0] shadow-xs space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="text-lg font-bold text-[#0A192F] dark:text-white">Active Admin Accounts ({admins.length})</h3>
-              <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+              <h3 className="text-lg font-bold text-[#123B5D]">Active Admin Accounts ({admins.length})</h3>
+              <span className="text-xs text-[#718096] font-medium">
                 🛡️ Jo Admin add karega, wahi Admin delete kar sakega.
               </span>
             </div>
 
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs text-slate-600 dark:text-slate-300">
-                <thead className="bg-amber-50/80 dark:bg-slate-800/90 text-[#0A192F] dark:text-amber-300 font-bold border-b border-amber-200 dark:border-slate-700">
+              <table className="w-full text-left text-xs text-[#718096]">
+                <thead className="bg-[#EAF4FA] text-[#123B5D] font-bold border-b border-[#E5EAF0]">
                   <tr>
-                    <th className="p-3.5 uppercase tracking-wider font-extrabold text-amber-950 dark:text-amber-300">Administrator</th>
-                    <th className="p-3.5 uppercase tracking-wider font-extrabold text-amber-950 dark:text-amber-300">Email Address</th>
-                    <th className="p-3.5 uppercase tracking-wider font-extrabold text-amber-950 dark:text-amber-300">Department</th>
-                    <th className="p-3.5 uppercase tracking-wider font-extrabold text-amber-950 dark:text-amber-300">Added By (Creator Admin)</th>
-                    <th className="p-3.5 uppercase tracking-wider font-extrabold text-amber-950 dark:text-amber-300 text-right">Action (Delete)</th>
+                    <th className="p-3.5 uppercase tracking-wider font-extrabold text-[#123B5D]">Administrator</th>
+                    <th className="p-3.5 uppercase tracking-wider font-extrabold text-[#123B5D]">Email Address</th>
+                    <th className="p-3.5 uppercase tracking-wider font-extrabold text-[#123B5D]">Department</th>
+                    <th className="p-3.5 uppercase tracking-wider font-extrabold text-[#123B5D]">Added By (Creator Admin)</th>
+                    <th className="p-3.5 uppercase tracking-wider font-extrabold text-[#123B5D] text-right">Action (Delete)</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-amber-100/60 dark:divide-slate-800">
+                <tbody className="divide-y divide-[#E5EAF0]">
                   {admins.map((adm) => {
                     const admId = adm.id || adm._id;
                     const isCreator = (user?.email && adm.createdByEmail && adm.createdByEmail.toLowerCase() === user.email.toLowerCase()) ||
@@ -1207,36 +1197,36 @@ export default function AdminDashboard() {
                                       (user?.email === 'admin@bharatyatra.com');
 
                     return (
-                      <tr key={admId} className="hover:bg-amber-50/50 dark:hover:bg-slate-800/50 transition-colors">
-                        <td className="p-3.5 font-bold text-[#0A192F] dark:text-white flex items-center gap-3">
+                      <tr key={admId} className="hover:bg-[#F7F9FC] transition-colors">
+                        <td className="p-3.5 font-bold text-[#123B5D] flex items-center gap-3">
                           <div className="relative group shrink-0">
-                            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-amber-400 via-orange-500 to-amber-600 text-slate-950 font-black text-base flex items-center justify-center shadow-md shadow-amber-500/25 border-2 border-amber-300 dark:border-amber-400 uppercase tracking-wider">
+                            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#F28C45] to-[#FFB36B] text-white font-black text-base flex items-center justify-center shadow-md border-2 border-white uppercase tracking-wider">
                               {getAdminInitial(adm.name)}
                             </div>
-                            <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-white dark:border-slate-900 shadow-xs" title="Active Admin Account"></span>
+                            <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-white shadow-xs" title="Active Admin Account"></span>
                           </div>
                           <div>
-                            <span className="block font-bold text-xs sm:text-sm text-[#0A192F] dark:text-slate-100">{adm.name}</span>
-                            <span className="inline-block text-[10px] text-amber-800 dark:text-amber-400 font-mono font-bold uppercase tracking-wider">{adm.role || 'Admin'}</span>
+                            <span className="block font-bold text-xs sm:text-sm text-[#123B5D]">{adm.name}</span>
+                            <span className="inline-block text-[10px] text-[#F28C45] font-mono font-bold uppercase tracking-wider">{adm.role || 'Admin'}</span>
                           </div>
                         </td>
 
-                        <td className="p-3.5 font-mono font-semibold text-xs text-slate-700 dark:text-slate-300">{adm.email}</td>
+                        <td className="p-3.5 font-mono font-semibold text-xs text-[#29445A]">{adm.email}</td>
 
                         <td className="p-3.5">
-                          <span className="px-2.5 py-1 rounded-lg bg-amber-50 dark:bg-amber-950/70 text-amber-900 dark:text-amber-300 font-semibold text-xs border border-amber-200 dark:border-amber-500/30">
+                          <span className="px-2.5 py-1 rounded-lg bg-[#EAF4FA] text-[#123B5D] font-semibold text-xs border border-[#E5EAF0]">
                             {adm.department || 'Tourism Operations'}
                           </span>
                         </td>
 
                         <td className="p-3.5">
                           {isCreator ? (
-                            <span className="px-3 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950/70 text-emerald-800 dark:text-emerald-300 font-bold text-[10px] border border-emerald-300 dark:border-emerald-500/40 flex items-center gap-1.5 w-fit shadow-2xs">
-                              <UserCheck className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+                            <span className="px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 font-bold text-[10px] border border-emerald-200 flex items-center gap-1.5 w-fit shadow-2xs">
+                              <UserCheck className="w-3.5 h-3.5 text-emerald-600" />
                               Added by You
                             </span>
                           ) : (
-                            <span className="px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold text-[10px] border border-slate-300 dark:border-slate-700 block w-fit">
+                            <span className="px-3 py-1 rounded-full bg-[#F7F9FC] text-[#718096] font-semibold text-[10px] border border-[#E5EAF0] block w-fit">
                               Added by: {adm.createdByName || adm.createdByEmail || 'System Seed'}
                             </span>
                           )}
@@ -1246,7 +1236,7 @@ export default function AdminDashboard() {
                           {isCreator ? (
                             <button
                               onClick={() => handleDeleteAdmin(adm)}
-                              className="px-3.5 py-1.5 rounded-xl bg-rose-50 dark:bg-rose-950/60 hover:bg-rose-100 dark:hover:bg-rose-900/80 text-rose-700 dark:text-rose-300 border border-rose-300 dark:border-rose-500/40 font-bold text-xs transition flex items-center gap-1.5 ml-auto cursor-pointer shadow-2xs"
+                              className="px-3.5 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-300 font-bold text-xs transition flex items-center gap-1.5 ml-auto cursor-pointer shadow-2xs"
                               title="Delete this admin account (Allowed because you created it)"
                             >
                               <Trash2 className="w-3.5 h-3.5" />
@@ -1255,10 +1245,10 @@ export default function AdminDashboard() {
                           ) : (
                             <button
                               onClick={() => handleDeleteAdmin(adm)}
-                              className="px-3.5 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800/80 text-slate-400 dark:text-slate-500 border border-slate-200 dark:border-slate-700 font-medium text-xs cursor-not-allowed opacity-70 flex items-center gap-1.5 ml-auto"
+                              className="px-3.5 py-1.5 rounded-xl bg-slate-100 text-slate-400 border border-slate-200 font-medium text-xs cursor-not-allowed opacity-70 flex items-center gap-1.5 ml-auto"
                               title={`Permission Locked: Only ${adm.createdByName || adm.createdByEmail || 'creator admin'} can delete this account`}
                             >
-                              <Lock className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500" />
+                              <Lock className="w-3.5 h-3.5 text-slate-400" />
                               <span>Locked</span>
                             </button>
                           )}
@@ -1280,44 +1270,44 @@ export default function AdminDashboard() {
           
           {/* User Metrics Summary Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="bg-white dark:bg-slate-900/90 p-5 rounded-2xl border border-amber-900/10 dark:border-amber-500/20 shadow-xs">
-              <div className="flex items-center justify-between text-slate-400 mb-2">
-                <span className="text-xs font-bold uppercase text-amber-800 dark:text-amber-400">Total Registered Accounts</span>
-                <Users className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+            <div className="bg-white p-5 rounded-2xl border border-[#E5EAF0] shadow-xs">
+              <div className="flex items-center justify-between text-[#718096] mb-2">
+                <span className="text-xs font-bold uppercase text-[#123B5D]">Total Registered Accounts</span>
+                <Users className="w-4 h-4 text-[#F28C45]" />
               </div>
-              <span className="text-2xl font-black text-[#0A192F] dark:text-white">{allAccounts.length}</span>
-              <span className="text-[11px] text-slate-500 dark:text-slate-400 block mt-0.5">Travelers & Administrators</span>
+              <span className="text-2xl font-black text-[#123B5D]">{allAccounts.length}</span>
+              <span className="text-[11px] text-[#718096] block mt-0.5">Travelers & Administrators</span>
             </div>
 
-            <div className="bg-white dark:bg-slate-900/90 p-5 rounded-2xl border border-amber-900/10 dark:border-amber-500/20 shadow-xs">
-              <div className="flex items-center justify-between text-slate-400 mb-2">
-                <span className="text-xs font-bold uppercase text-[#0A192F] dark:text-amber-300">Registered Travelers</span>
-                <Compass className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+            <div className="bg-white p-5 rounded-2xl border border-[#E5EAF0] shadow-xs">
+              <div className="flex items-center justify-between text-[#718096] mb-2">
+                <span className="text-xs font-bold uppercase text-[#123B5D]">Registered Travelers</span>
+                <Compass className="w-4 h-4 text-emerald-600" />
               </div>
-              <span className="text-2xl font-black text-emerald-600 dark:text-emerald-400">
+              <span className="text-2xl font-black text-emerald-600">
                 {allAccounts.filter(a => a.role === 'user' || a.accountType === 'Traveler').length}
               </span>
-              <span className="text-[11px] text-slate-500 dark:text-slate-400 block mt-0.5">Public Traveler Accounts</span>
+              <span className="text-[11px] text-[#718096] block mt-0.5">Public Traveler Accounts</span>
             </div>
 
-            <div className="bg-white dark:bg-slate-900/90 p-5 rounded-2xl border border-amber-900/10 dark:border-amber-500/20 shadow-xs">
-              <div className="flex items-center justify-between text-slate-400 mb-2">
-                <span className="text-xs font-bold uppercase text-amber-800 dark:text-amber-400">Primary Super Admin</span>
-                <ShieldCheck className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+            <div className="bg-white p-5 rounded-2xl border border-[#E5EAF0] shadow-xs">
+              <div className="flex items-center justify-between text-[#718096] mb-2">
+                <span className="text-xs font-bold uppercase text-[#123B5D]">Primary Super Admin</span>
+                <ShieldCheck className="w-4 h-4 text-[#F28C45]" />
               </div>
-              <span className="text-xs font-mono font-black text-amber-600 dark:text-amber-400 block truncate">
+              <span className="text-xs font-mono font-black text-[#123B5D] block truncate">
                 {superAdminEmail}
               </span>
-              <span className="text-[11px] text-amber-700 dark:text-amber-400 font-bold block mt-0.5">👑 Master Authority</span>
+              <span className="text-[11px] text-[#F28C45] font-bold block mt-0.5">👑 Master Authority</span>
             </div>
           </div>
 
           {/* User Search & Filters Bar */}
-          <div className="bg-white dark:bg-slate-900/90 rounded-3xl p-6 sm:p-8 border border-amber-900/10 dark:border-amber-500/20 shadow-xs space-y-4">
+          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-[#E5EAF0] shadow-xs space-y-4">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div>
-                <h3 className="text-lg font-bold text-[#0A192F] dark:text-white">Registered Accounts & Access Privileges ({allAccounts.length})</h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                <h3 className="text-lg font-bold text-[#123B5D]">Registered Accounts & Access Privileges ({allAccounts.length})</h3>
+                <p className="text-xs text-[#718096] mt-0.5">
                   View traveler details, grant admin access, or revoke admin privileges across the platform.
                 </p>
               </div>
@@ -1328,24 +1318,24 @@ export default function AdminDashboard() {
                   value={accountSearchQuery}
                   onChange={(e) => setAccountSearchQuery(e.target.value)}
                   placeholder="Search user by name or email..."
-                  className="w-full px-4 py-2.5 rounded-xl bg-amber-50/50 dark:bg-slate-800 border border-amber-200 dark:border-slate-700 text-xs font-semibold outline-hidden focus:border-amber-600 text-[#0A192F] dark:text-white"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#F7F9FC] border border-[#E5EAF0] text-xs font-semibold outline-hidden focus:border-[#F28C45] text-[#29445A]"
                 />
               </div>
             </div>
 
             {/* User Accounts Table */}
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs text-slate-600 dark:text-slate-300">
-                <thead className="bg-amber-50/80 dark:bg-slate-800/90 text-[#0A192F] dark:text-amber-300 font-bold border-b border-amber-200 dark:border-slate-700">
+              <table className="w-full text-left text-xs text-[#718096]">
+                <thead className="bg-[#EAF4FA] text-[#123B5D] font-bold border-b border-[#E5EAF0]">
                   <tr>
-                    <th className="p-3.5 uppercase tracking-wider font-extrabold text-amber-950 dark:text-amber-300">User / Account Holder</th>
-                    <th className="p-3.5 uppercase tracking-wider font-extrabold text-amber-950 dark:text-amber-300">Email Address</th>
-                    <th className="p-3.5 uppercase tracking-wider font-extrabold text-amber-950 dark:text-amber-300">Current Role</th>
-                    <th className="p-3.5 uppercase tracking-wider font-extrabold text-amber-950 dark:text-amber-300">Privilege Status</th>
-                    <th className="p-3.5 uppercase tracking-wider font-extrabold text-amber-950 dark:text-amber-300 text-right">Role Action</th>
+                    <th className="p-3.5 uppercase tracking-wider font-extrabold text-[#123B5D]">User / Account Holder</th>
+                    <th className="p-3.5 uppercase tracking-wider font-extrabold text-[#123B5D]">Email Address</th>
+                    <th className="p-3.5 uppercase tracking-wider font-extrabold text-[#123B5D]">Current Role</th>
+                    <th className="p-3.5 uppercase tracking-wider font-extrabold text-[#123B5D]">Privilege Status</th>
+                    <th className="p-3.5 uppercase tracking-wider font-extrabold text-[#123B5D] text-right">Role Action</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-amber-100/60 dark:divide-slate-800">
+                <tbody className="divide-y divide-[#E5EAF0]">
                   {(Array.isArray(allAccounts) ? allAccounts : [])
                     .filter(acc => {
                       if (!acc) return false;
@@ -1359,40 +1349,40 @@ export default function AdminDashboard() {
                       const isAdminAccount = acc.role === 'admin' || acc.accountType === 'Admin';
 
                       return (
-                        <tr key={accId} className="hover:bg-amber-50/50 dark:hover:bg-slate-800/50 transition-colors">
-                          <td className="p-3.5 font-bold text-[#0A192F] dark:text-white flex items-center gap-3">
-                            <div className="w-9 h-9 rounded-xl bg-amber-500 text-slate-950 font-black text-sm flex items-center justify-center shrink-0 uppercase shadow-xs">
+                        <tr key={accId} className="hover:bg-[#F7F9FC] transition-colors">
+                          <td className="p-3.5 font-bold text-[#123B5D] flex items-center gap-3">
+                            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#F28C45] to-[#FFB36B] text-white font-black text-sm flex items-center justify-center shrink-0 uppercase shadow-xs">
                               {getAdminInitial(acc.name)}
                             </div>
                             <div>
-                              <span className="block font-bold text-xs sm:text-sm text-[#0A192F] dark:text-slate-100 flex items-center gap-1.5">
+                              <span className="block font-bold text-xs sm:text-sm text-[#123B5D] flex items-center gap-1.5">
                                 {acc.name || 'Registered Account'}
                                 {isSuper && <span className="text-xs" title="Super Admin">👑</span>}
                               </span>
-                              <span className="text-[10px] text-slate-400 font-medium">ID: {String(accId).slice(-8)}</span>
+                              <span className="text-[10px] text-[#718096] font-medium">ID: {String(accId).slice(-8)}</span>
                             </div>
                           </td>
 
-                          <td className="p-3.5 font-mono font-semibold text-xs text-slate-700 dark:text-slate-300">{acc.email}</td>
+                          <td className="p-3.5 font-mono font-semibold text-xs text-[#29445A]">{acc.email}</td>
 
                           <td className="p-3.5">
                             {isSuper ? (
-                              <span className="px-3 py-1 rounded-full bg-amber-400/20 text-amber-900 dark:text-amber-300 font-black text-[10px] border border-amber-400/50 flex items-center gap-1 w-fit shadow-xs">
+                              <span className="px-3 py-1 rounded-full bg-amber-400/20 text-amber-900 font-black text-[10px] border border-amber-400/50 flex items-center gap-1 w-fit shadow-xs">
                                 👑 Primary Super Admin
                               </span>
                             ) : isAdminAccount ? (
-                              <span className="px-3 py-1 rounded-full bg-amber-100 dark:bg-amber-950/70 text-amber-900 dark:text-amber-300 font-bold text-[10px] border border-amber-300 dark:border-amber-500/40 w-fit block">
+                              <span className="px-3 py-1 rounded-full bg-[#EAF4FA] text-[#123B5D] font-bold text-[10px] border border-[#123B5D]/20 w-fit block">
                                 Administrator
                               </span>
                             ) : (
-                              <span className="px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 font-semibold text-[10px] border border-emerald-200 dark:border-emerald-500/30 w-fit block">
+                              <span className="px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 font-semibold text-[10px] border border-emerald-200 w-fit block">
                                 Traveler (User)
                               </span>
                             )}
                           </td>
 
                           <td className="p-3.5">
-                            <span className="text-xs text-slate-500 dark:text-slate-400">
+                            <span className="text-xs text-[#718096]">
                               {isSuper
                                 ? 'Full System & Security Access'
                                 : isAdminAccount
@@ -1404,19 +1394,19 @@ export default function AdminDashboard() {
                           <td className="p-3.5 text-right">
                             <div className="flex items-center justify-end gap-2">
                               {isSuper ? (
-                                <span className="text-[10px] text-amber-700 dark:text-amber-400 font-bold italic">Master System Root</span>
+                                <span className="text-[10px] text-[#F28C45] font-bold italic">Master System Root</span>
                               ) : isAdminAccount ? (
                                 <>
                                   <button
                                     onClick={() => handleToggleRole(acc, 'user')}
-                                    className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs transition border border-slate-300 dark:border-slate-700 cursor-pointer"
+                                    className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition border border-slate-300 cursor-pointer"
                                     title="Revoke Admin status and set role back to Traveler"
                                   >
                                     Revoke Admin Access
                                   </button>
                                   <button
                                     onClick={() => handleDeleteUserAccount(acc)}
-                                    className="p-1.5 rounded-lg text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950 transition cursor-pointer"
+                                    className="p-1.5 rounded-lg text-rose-500 hover:bg-rose-50 transition cursor-pointer"
                                     title="Delete account"
                                   >
                                     <Trash2 className="w-4 h-4" />
@@ -1426,14 +1416,14 @@ export default function AdminDashboard() {
                                 <>
                                   <button
                                     onClick={() => handleToggleRole(acc, 'admin')}
-                                    className="px-3 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs transition shadow-xs cursor-pointer"
+                                    className="px-3 py-1.5 rounded-xl bg-[#F28C45] hover:bg-[#d97736] text-white font-bold text-xs transition shadow-xs cursor-pointer"
                                     title="Grant Admin privileges to this user"
                                   >
                                     Grant Admin Access
                                   </button>
                                   <button
                                     onClick={() => handleDeleteUserAccount(acc)}
-                                    className="p-1.5 rounded-lg text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950 transition cursor-pointer"
+                                    className="p-1.5 rounded-lg text-rose-500 hover:bg-rose-50 transition cursor-pointer"
                                     title="Delete user account"
                                   >
                                     <Trash2 className="w-4 h-4" />
@@ -1456,20 +1446,20 @@ export default function AdminDashboard() {
       {/* Change Password Modal */}
       {isChangePasswordOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-fade-in">
-          <div className="bg-white dark:bg-slate-900 border border-amber-500/30 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-5">
-            <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-4">
+          <div className="bg-white border border-[#E5EAF0] rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-5">
+            <div className="flex items-center justify-between border-b border-[#E5EAF0] pb-4">
               <div className="flex items-center gap-2.5">
-                <div className="p-2.5 rounded-xl bg-amber-500/10 text-amber-500 border border-amber-500/20">
-                  <Lock className="w-5 h-5" />
+                <div className="p-2.5 rounded-xl bg-[#EAF4FA] text-[#123B5D] border border-[#E5EAF0]">
+                  <Lock className="w-5 h-5 text-[#F28C45]" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-slate-900 dark:text-white">Change Admin Password</h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">Apna secret password secure tarike se update karein</p>
+                  <h3 className="text-lg font-bold text-[#123B5D]">Change Admin Password</h3>
+                  <p className="text-xs text-[#718096]">Apna secret password secure tarike se update karein</p>
                 </div>
               </div>
               <button
                 onClick={() => setIsChangePasswordOpen(false)}
-                className="text-slate-400 hover:text-slate-600 dark:hover:text-white font-bold text-lg p-1 cursor-pointer"
+                className="text-[#718096] hover:text-[#123B5D] font-bold text-lg p-1 cursor-pointer"
               >
                 ✕
               </button>
@@ -1478,8 +1468,8 @@ export default function AdminDashboard() {
             {passMsg.text && (
               <div className={`p-3.5 rounded-xl text-xs font-bold ${
                 passMsg.type === 'error'
-                  ? 'bg-rose-500/10 border border-rose-500/30 text-rose-600 dark:text-rose-400'
-                  : 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400'
+                  ? 'bg-rose-50 border border-rose-200 text-rose-600'
+                  : 'bg-emerald-50 border border-emerald-200 text-emerald-600'
               }`}>
                 {passMsg.text}
               </div>
@@ -1487,7 +1477,7 @@ export default function AdminDashboard() {
 
             <form onSubmit={handleChangePasswordSubmit} className="space-y-4">
               <div>
-                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                <label className="block text-xs font-bold text-[#123B5D] mb-1">
                   Current Password *
                 </label>
                 <input
@@ -1496,12 +1486,12 @@ export default function AdminDashboard() {
                   value={passForm.currentPassword}
                   onChange={e => setPassForm({ ...passForm, currentPassword: e.target.value })}
                   placeholder="Purana password enter karein"
-                  className="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-medium text-slate-900 dark:text-white focus:outline-none focus:border-amber-500"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#F7F9FC] border border-[#E5EAF0] text-xs font-medium text-[#29445A] focus:outline-none focus:border-[#F28C45]"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                <label className="block text-xs font-bold text-[#123B5D] mb-1">
                   New Password *
                 </label>
                 <input
@@ -1510,12 +1500,12 @@ export default function AdminDashboard() {
                   value={passForm.newPassword}
                   onChange={e => setPassForm({ ...passForm, newPassword: e.target.value })}
                   placeholder="Min 6 characters"
-                  className="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-medium text-slate-900 dark:text-white focus:outline-none focus:border-amber-500"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#F7F9FC] border border-[#E5EAF0] text-xs font-medium text-[#29445A] focus:outline-none focus:border-[#F28C45]"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
+                <label className="block text-xs font-bold text-[#123B5D] mb-1">
                   Confirm Password *
                 </label>
                 <input
@@ -1524,7 +1514,7 @@ export default function AdminDashboard() {
                   value={passForm.confirmPassword}
                   onChange={e => setPassForm({ ...passForm, confirmPassword: e.target.value })}
                   placeholder="Naya password phir se likhein"
-                  className="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-medium text-slate-900 dark:text-white focus:outline-none focus:border-amber-500"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#F7F9FC] border border-[#E5EAF0] text-xs font-medium text-[#29445A] focus:outline-none focus:border-[#F28C45]"
                 />
               </div>
 
@@ -1532,14 +1522,14 @@ export default function AdminDashboard() {
                 <button
                   type="button"
                   onClick={() => setIsChangePasswordOpen(false)}
-                  className="flex-1 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
+                  className="flex-1 py-2.5 rounded-xl border border-[#E5EAF0] text-[#718096] font-bold text-xs hover:bg-[#F7F9FC] transition cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={passLoading}
-                  className="flex-1 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs shadow-md transition disabled:opacity-50 cursor-pointer"
+                  className="flex-1 py-2.5 rounded-xl bg-[#F28C45] hover:bg-[#d97736] text-white font-bold text-xs shadow-md transition disabled:opacity-50 cursor-pointer"
                 >
                   {passLoading ? 'Updating...' : 'Update Password'}
                 </button>

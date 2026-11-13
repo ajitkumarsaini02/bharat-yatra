@@ -181,20 +181,20 @@ export default function InteractiveMap({ destinations: initialDestinations }) {
   };
 
   return (
-    <div className="w-full bg-white dark:bg-[#0C1526] rounded-3xl border border-amber-900/10 dark:border-slate-800 shadow-xl overflow-hidden flex flex-col transition-colors">
+    <div className="w-full bg-white rounded-3xl border border-[#E5EAF0] shadow-xl overflow-hidden flex flex-col transition-colors">
       
       {/* Top Map Control Bar */}
-      <div className="p-4 sm:p-6 bg-[#0A192F] text-white flex flex-col gap-4 border-b border-slate-800">
+      <div className="p-4 sm:p-6 bg-[#123B5D] text-white flex flex-col gap-4 border-b border-white/10">
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
           <div>
             <h3 className="text-xl font-black flex items-center gap-2 text-white tracking-tight">
-              <MapPin className="w-6 h-6 text-amber-400" />
+              <MapPin className="w-6 h-6 text-[#FFB36B]" />
               <span>Interactive GIS Heritage Explorer</span>
-              <span className="ml-2 px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-xs font-mono border border-amber-400/30">
+              <span className="ml-2 px-2.5 py-0.5 rounded-full bg-[#FFB36B]/20 text-[#FFB36B] text-xs font-mono border border-[#FFB36B]/30">
                 {filtered.length} Live Monuments
               </span>
             </h3>
-            <p className="text-xs text-slate-300 mt-1">
+            <p className="text-xs text-white/80 mt-1">
               Explore geotagged monuments, sacred temples, beaches, and national parks across all 28 states of India.
             </p>
           </div>
@@ -202,19 +202,19 @@ export default function InteractiveMap({ destinations: initialDestinations }) {
           {/* Search Input & Reset */}
           <div className="flex items-center gap-2 w-full lg:w-auto">
             <div className="relative flex-1 lg:w-72">
-              <Search className="w-4 h-4 text-amber-400 absolute left-3 top-1/2 -translate-y-1/2" />
+              <Search className="w-4 h-4 text-[#FFB36B] absolute left-3 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search monument, temple, city..."
-                className="w-full pl-9 pr-3 py-2 rounded-xl bg-slate-900/90 text-xs text-slate-100 placeholder-slate-400 border border-slate-700 focus:border-amber-400 focus:outline-none"
+                className="w-full pl-9 pr-3 py-2 rounded-xl bg-[#1D5D85]/80 text-xs text-white placeholder-white/60 border border-white/20 focus:border-[#FFB36B] focus:outline-none"
               />
             </div>
 
             <button
               onClick={handleResetView}
-              className="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-300 text-xs font-bold transition flex items-center gap-1 border border-slate-700 cursor-pointer"
+              className="px-3 py-2 rounded-xl bg-[#1D5D85] hover:bg-[#1D5D85]/80 text-[#FFB36B] text-xs font-bold transition flex items-center gap-1 border border-white/20 cursor-pointer"
               title="Reset Map to All India"
             >
               <Compass className="w-3.5 h-3.5" />
@@ -224,19 +224,19 @@ export default function InteractiveMap({ destinations: initialDestinations }) {
         </div>
 
         {/* Filter Rows: Zone & Tile Layer Switcher */}
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 pt-2 border-t border-slate-800">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 pt-2 border-t border-white/10">
           
           {/* Zone Selector */}
           <div className="flex flex-wrap items-center gap-1.5">
-            <span className="text-[11px] font-bold text-amber-400/80 mr-1 uppercase">Zone:</span>
+            <span className="text-[11px] font-bold text-[#FFB36B] mr-1 uppercase">Zone:</span>
             {zones.map((zone) => (
               <button
                 key={zone}
                 onClick={() => setSelectedZone(zone)}
                 className={`px-3 py-1 text-xs font-bold rounded-xl transition cursor-pointer ${
                   selectedZone === zone 
-                    ? 'gradient-saffron text-slate-950 shadow-sm' 
-                    : 'bg-slate-900/80 text-slate-300 hover:text-white hover:bg-slate-800 border border-slate-700/60'
+                    ? 'bg-[#F28C45] text-white shadow-sm' 
+                    : 'bg-[#1D5D85]/70 text-white hover:bg-[#1D5D85] border border-white/15'
                 }`}
               >
                 {zone}
@@ -245,17 +245,17 @@ export default function InteractiveMap({ destinations: initialDestinations }) {
           </div>
 
           {/* Map Layer Switcher */}
-          <div className="flex items-center gap-1.5 bg-slate-900/90 p-1 rounded-xl border border-slate-700">
-            <Layers className="w-3.5 h-3.5 text-amber-400 ml-1.5" />
-            <span className="text-[11px] font-bold text-slate-300 pr-1">Layer:</span>
+          <div className="flex items-center gap-1.5 bg-[#1D5D85]/70 p-1 rounded-xl border border-white/20">
+            <Layers className="w-3.5 h-3.5 text-[#FFB36B] ml-1.5" />
+            <span className="text-[11px] font-bold text-white/80 pr-1">Layer:</span>
             {Object.keys(MAP_LAYERS).map((layerKey) => (
               <button
                 key={layerKey}
                 onClick={() => setActiveTileLayer(layerKey)}
                 className={`px-2.5 py-1 text-[11px] font-bold rounded-lg transition cursor-pointer ${
                   activeTileLayer === layerKey
-                    ? 'bg-amber-500 text-slate-950 font-black'
-                    : 'text-slate-400 hover:text-white'
+                    ? 'bg-[#F28C45] text-white font-black'
+                    : 'text-white/70 hover:text-white'
                 }`}
               >
                 {MAP_LAYERS[layerKey].name.split(' ')[0]}
@@ -269,9 +269,9 @@ export default function InteractiveMap({ destinations: initialDestinations }) {
       {/* Map Canvas */}
       <div className="h-[560px] w-full relative z-10">
         {loading ? (
-          <div className="h-full w-full flex flex-col items-center justify-center bg-slate-950 text-white space-y-3">
-            <div className="w-10 h-10 border-3 border-amber-400 border-t-transparent rounded-full animate-spin"></div>
-            <p className="text-xs font-bold text-amber-300">Loading All-India Geocoded Monuments...</p>
+          <div className="h-full w-full flex flex-col items-center justify-center bg-[#123B5D] text-white space-y-3">
+            <div className="w-10 h-10 border-3 border-[#F28C45] border-t-transparent rounded-full animate-spin"></div>
+            <p className="text-xs font-bold text-[#FFB36B]">Loading All-India Geocoded Monuments...</p>
           </div>
         ) : (
           <MapContainer
@@ -302,41 +302,41 @@ export default function InteractiveMap({ destinations: initialDestinations }) {
                         className="w-full h-full object-cover"
                         loading="lazy"
                       />
-                      <span className="absolute top-2 left-2 px-2 py-0.5 rounded-md text-[10px] font-bold bg-black/80 text-amber-300 backdrop-blur-xs border border-amber-400/30">
+                      <span className="absolute top-2 left-2 px-2 py-0.5 rounded-md text-[10px] font-bold bg-[#123B5D]/90 text-[#FFB36B] backdrop-blur-xs border border-white/20">
                         {dest.category?.split('&')[0] || 'Monument'}
                       </span>
                     </div>
 
                     <div className="flex items-center justify-between">
-                      <h4 className="font-extrabold text-[#0A192F] text-sm line-clamp-1">{dest.name}</h4>
-                      <span className="flex items-center text-amber-600 font-bold text-xs flex-shrink-0">
-                        <Star className="w-3 h-3 fill-amber-500 text-amber-500 mr-0.5" />
+                      <h4 className="font-extrabold text-[#123B5D] text-sm line-clamp-1">{dest.name}</h4>
+                      <span className="flex items-center text-[#F28C45] font-bold text-xs flex-shrink-0">
+                        <Star className="w-3 h-3 fill-[#F28C45] text-[#F28C45] mr-0.5" />
                         {dest.rating || 4.8}
                       </span>
                     </div>
 
-                    <div className="flex items-center gap-1.5 text-[11px] text-slate-600 font-semibold">
-                      <MapPin className="w-3 h-3 text-amber-600 flex-shrink-0" />
+                    <div className="flex items-center gap-1.5 text-[11px] text-[#718096] font-semibold">
+                      <MapPin className="w-3 h-3 text-[#F28C45] flex-shrink-0" />
                       <span>{dest.state} • {dest.zone} India</span>
                     </div>
 
-                    <p className="text-[11px] text-slate-700 line-clamp-2 leading-tight">
+                    <p className="text-[11px] text-[#29445A] line-clamp-2 leading-tight">
                       {dest.tagline || dest.description}
                     </p>
 
-                    <div className="pt-2 border-t border-amber-100 flex items-center gap-2">
+                    <div className="pt-2 border-t border-[#E5EAF0] flex items-center gap-2">
                       <Link
                         to={`/destination/${dest.id || dest._id}`}
-                        className="flex-1 py-1.5 bg-[#0A192F] hover:bg-[#020C1B] text-amber-300 text-xs font-bold text-center rounded-xl flex items-center justify-center gap-1 cursor-pointer"
+                        className="flex-1 py-1.5 bg-[#123B5D] hover:bg-[#1D5D85] text-white text-xs font-bold text-center rounded-xl flex items-center justify-center gap-1 cursor-pointer transition-colors"
                       >
                         <span>Explore</span>
                         <ArrowRight className="w-3 h-3" />
                       </Link>
                       <Link
                         to={`/ai-planner?destination=${encodeURIComponent(dest.name)}`}
-                        className="px-3 py-1.5 gradient-saffron text-slate-950 text-xs font-black rounded-xl flex items-center gap-1 shadow-xs cursor-pointer"
+                        className="px-3 py-1.5 bg-[#F28C45] hover:bg-[#d97736] text-white text-xs font-bold rounded-xl flex items-center gap-1 shadow-xs cursor-pointer transition-colors"
                       >
-                        <Sparkles className="w-3 h-3 text-slate-950" />
+                        <Sparkles className="w-3 h-3 text-white" />
                         <span>Plan</span>
                       </Link>
                     </div>
@@ -350,13 +350,13 @@ export default function InteractiveMap({ destinations: initialDestinations }) {
 
       {/* Bottom Quick Ticker with Click-to-Center */}
       {filtered.length > 0 && (
-        <div className="p-3 bg-slate-900 border-t border-slate-800 overflow-x-auto flex items-center gap-2 text-xs">
-          <span className="text-[11px] font-bold text-amber-400 uppercase tracking-wider flex-shrink-0 px-2">Quick Jump:</span>
+        <div className="p-3 bg-[#123B5D] border-t border-white/10 overflow-x-auto flex items-center gap-2 text-xs">
+          <span className="text-[11px] font-bold text-[#FFB36B] uppercase tracking-wider flex-shrink-0 px-2">Quick Jump:</span>
           {filtered.slice(0, 8).map((dest) => (
             <button
               key={dest.id || dest._id}
               onClick={() => handleSelectMonument(dest)}
-              className="px-3 py-1 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-amber-300 font-semibold whitespace-nowrap transition cursor-pointer border border-slate-700/60"
+              className="px-3 py-1 rounded-xl bg-[#1D5D85]/70 hover:bg-[#1D5D85] text-white hover:text-[#FFB36B] font-semibold whitespace-nowrap transition cursor-pointer border border-white/15"
             >
               {dest.name}
             </button>

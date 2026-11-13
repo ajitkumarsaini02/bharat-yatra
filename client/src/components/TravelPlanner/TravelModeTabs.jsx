@@ -26,8 +26,8 @@ export default function TravelModeTabs({ activeTab, onSelectTab }) {
             onClick={() => onSelectTab(tab.id)}
             className={`px-4 py-2 rounded-2xl text-xs font-bold transition-all duration-200 cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${
               isActive
-                ? 'bg-[#0A192F] dark:bg-amber-500 text-amber-300 dark:text-slate-950 shadow-md font-extrabold'
-                : 'bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:bg-amber-50 dark:hover:bg-slate-800 border border-amber-200/60 dark:border-slate-800'
+                ? 'bg-[#123B5D] text-white shadow-md font-extrabold'
+                : 'bg-white text-[#29445A] hover:text-[#123B5D] hover:bg-[#EAF4FA] border border-[#E5EAF0]'
             }`}
           >
             <Icon className="w-3.5 h-3.5" />

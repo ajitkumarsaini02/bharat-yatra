@@ -15,7 +15,8 @@ import {
   ChevronDown,
   MapPin,
   Compass as CompassIcon,
-  Phone
+  Phone,
+  LayoutDashboard
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
@@ -189,6 +190,15 @@ export default function Navbar() {
                     </div>
 
                     <div className="py-1">
+                      <Link
+                        to="/dashboard"
+                        onClick={() => setIsProfileOpen(false)}
+                        className="flex items-center space-x-2 px-4 py-2 text-xs text-[#29445A] hover:text-[#123B5D] hover:bg-[#EAF4FA] font-bold"
+                      >
+                        <LayoutDashboard className="w-4 h-4 text-[#F28C45]" />
+                        <span>Traveler Dashboard</span>
+                      </Link>
+
                       {isAdmin && (
                         <Link
                           to="/admin"
@@ -297,17 +307,30 @@ export default function Navbar() {
             </Link>
 
             {user ? (
-              <div className="flex items-center justify-between p-3 bg-[#EAF4FA] rounded-xl">
-                <span className="text-xs font-bold text-[#123B5D] truncate">{user.name}</span>
-                <button
-                  onClick={() => {
-                    logoutUser();
-                    setIsMobileMenuOpen(false);
-                  }}
-                  className="text-xs font-bold text-rose-600 hover:underline"
+              <div className="space-y-2">
+                <Link
+                  to="/dashboard"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="flex items-center justify-between p-3 bg-[#EAF4FA] rounded-xl hover:bg-[#dbeaf5] transition"
                 >
-                  Logout
-                </button>
+                  <div className="flex items-center gap-2">
+                    <LayoutDashboard className="w-4 h-4 text-[#F28C45]" />
+                    <span className="text-xs font-bold text-[#123B5D] truncate">{user.name} (Dashboard)</span>
+                  </div>
+                  <ChevronDown className="w-3.5 h-3.5 text-[#123B5D] -rotate-90" />
+                </Link>
+                <div className="flex items-center justify-between px-2 text-xs">
+                  <span className="text-[#718096] truncate">{user.email}</span>
+                  <button
+                    onClick={() => {
+                      logoutUser();
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className="text-xs font-bold text-rose-600 hover:underline cursor-pointer"
+                  >
+                    Logout
+                  </button>
+                </div>
               </div>
             ) : (
               <Link

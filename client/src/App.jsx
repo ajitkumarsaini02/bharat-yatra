@@ -18,6 +18,7 @@ import BudgetPlannerPage from './pages/BudgetPlannerPage';
 import CuisineExplorer from './pages/CuisineExplorer';
 import FavoritesWishlist from './pages/FavoritesWishlist';
 import AdminDashboard from './pages/AdminDashboard';
+import UserDashboard from './pages/UserDashboard';
 import LoginRegister from './pages/LoginRegister';
 import TravelPlanner from './pages/TravelPlanner';
 import InteractiveMap from './components/InteractiveMap';
@@ -51,6 +52,8 @@ export default function App() {
               <Route path="/cuisine" element={<ProtectedRoute><CuisineExplorer /></ProtectedRoute>} />
               <Route path="/transport" element={<Navigate to="/travel-planner" replace />} />
               <Route path="/favorites" element={<ProtectedRoute><FavoritesWishlist /></ProtectedRoute>} />
+              <Route path="/dashboard" element={<ProtectedRoute><UserDashboard /></ProtectedRoute>} />
+              <Route path="/user-dashboard" element={<Navigate to="/dashboard" replace />} />
               <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
 
               {/* Standalone Live Map Route */}

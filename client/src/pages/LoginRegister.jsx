@@ -18,7 +18,7 @@ export default function LoginRegister() {
   const { loginUser, registerUser } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const redirectTo = location.state?.from || '/';
+  const redirectTo = location.state?.from || '/dashboard';
 
   // Handle registration without OTP
   const handleRegisterSubmit = async (e) => {

@@ -867,6 +867,22 @@ export const api = {
     return { success: true, favorites: localFavs };
   },
 
+  // Get Current User / Admin Profile
+  getProfile: async () => {
+    if (API_BASE) {
+      try {
+        const res = await apiClient.get('/auth/profile');
+        if (res.data && typeof res.data !== 'string' && res.data.success) {
+          return res.data;
+        }
+      } catch (err) {
+        // Fallback
+      }
+    }
+    const localUser = JSON.parse(localStorage.getItem('bharat_yatra_user') || 'null');
+    return { success: true, user: localUser };
+  },
+
   // Reviews
   getReviews: async (destinationId) => {
     if (API_BASE) {

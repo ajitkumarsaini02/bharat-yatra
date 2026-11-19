@@ -13,7 +13,7 @@
 
 ## 🎯 2. Platform Navigation & Modules
 
-The platform is structured into **8 core navigation modules**:
+The platform is structured into **9 core navigation modules**:
 
 1. 🏛️ **Destinations Directory (`/destinations` & `/explore`)**: Browse 114+ handpicked monuments with multi-criteria filters (State, Category, Zone, Budget, Search Query) and verified photography.
 2. 🤖 **AI Trip Planner (`/ai-planner`)**: Generate custom **1 to 7 day itineraries** tailored by destination, traveler persona, interests, transit fare, and budget.
@@ -21,8 +21,9 @@ The platform is structured into **8 core navigation modules**:
 4. 🚍 **Travel Planner (`/travel-planner`)**: Comprehensive intercity and local transport distance & fare comparison matrix covering **Train, Bus, Flight, Cab/Taxi, and Auto**.
 5. 🍱 **Regional Cuisine (`/cuisine`)**: Discover state-wise traditional thalis, street foods, and regional food specialties.
 6. 🗺️ **Live Map (`/map`)**: Standalone GIS Explorer mapping heritage monuments, beaches, high-altitude mountain circuits, and transit hubs across India.
-7. ℹ️ **About Us (`/about`)**: Cultural heritage and tourism platform mission.
-8. 📞 **Contact Us (`/contact`)**: Dedicated contact page with verified 24x7 tourist helplines (1363, 139, 112) and traveler inquiry form.
+7. 👤 **Traveler Dashboard (`/dashboard`)**: Unified traveler profile, explorer achievement tier, bookmarked bucket list, day-by-day AI itineraries, planned journeys, and account security management.
+8. ℹ️ **About Us (`/about`)**: Cultural heritage and tourism platform mission.
+9. 📞 **Contact Us (`/contact`)**: Dedicated contact page with verified 24x7 tourist helplines (1363, 139, 112) and traveler inquiry form.
 
 ---
 
@@ -107,8 +108,19 @@ To ensure authentic travel information, every price and distance clearly identif
 | `POST` | `/api/travel/save-plan` | Save selected transport option to user profile | Public / Auth |
 | `GET` | `/api/destinations` | List all 112+ destinations with filters | Public |
 | `POST` | `/api/planner/generate` | Generate personalized day-wise AI itinerary | Public |
+| `POST` | `/api/planner/save` | Save generated itinerary to traveler account | Auth |
+| `GET` | `/api/planner/saved` | Retrieve user's saved itineraries | Auth |
+| `DELETE` | `/api/planner/saved/:id` | Delete saved itinerary | Auth |
 | `POST` | `/api/budget/calculate` | Calculate customized travel budget breakdown | Public |
 | `POST` | `/api/contact` | Submit traveler inquiry or support message | Public |
+| `POST` | `/api/auth/register` | Register new user account (Direct sign-up) | Public |
+| `POST` | `/api/auth/login` | Sign in as traveler or admin with JWT | Public |
+| `GET` | `/api/auth/profile` | Get authenticated user profile data | Auth |
+| `POST` | `/api/auth/change-password` | Update account password securely | Auth |
+| `POST` | `/api/auth/favorites/toggle` | Bookmark or remove destination from wishlist | Auth |
+| `GET` | `/api/auth/favorites` | Get authenticated user's wishlist | Auth |
+| `GET` | `/api/admin/all-accounts` | View registered user & admin accounts | Admin |
+| `PUT` | `/api/admin/users/:userId/role` | Modify user account permissions | Admin |
 
 ---
 
@@ -143,7 +155,7 @@ bharat-yatra/
 │   │   ├── context/       # AuthContext, ThemeContext
 │   │   ├── pages/         # Home, AboutUs, Contact, ExploreDestinations, DestinationDetail,
 │   │   │                  # TravelPlanner, AiTripPlanner, BudgetPlannerPage, CuisineExplorer,
-│   │   │                  # FavoritesWishlist, AdminDashboard, LoginRegister
+│   │   │                  # FavoritesWishlist, UserDashboard, AdminDashboard, LoginRegister
 │   │   ├── services/      # api.js (Axios client with automatic server & local fallback)
 │   │   ├── App.jsx        # Clean React router definitions (No hash /# links)
 │   │   └── index.css      # Ocean Blue (#123B5D) & Sunset Orange (#F28C45) design system

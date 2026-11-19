@@ -7,7 +7,7 @@ Backend service and travel intelligence engine for **Bharat Yatra (भारत 
 - **Runtime**: Node.js (ES Modules)
 - **Framework**: Express.js
 - **Database**: MongoDB with Mongoose ODM (includes in-memory fallback for zero-config mode)
-- **Authentication**: JWT (`jsonwebtoken`) + Password Hashing (`bcryptjs`) + 6-Digit Email OTP
+- **Authentication**: JWT (`jsonwebtoken`) + Password Hashing (`bcryptjs`) + Direct Traveler Registration
 
 ---
 
@@ -46,15 +46,15 @@ Backend service and travel intelligence engine for **Bharat Yatra (भारत 
 - `POST /api/contact` — Log and process traveler inquiries and feedback messages.
 
 ### 7. Authentication & User Management
-- `POST /api/auth/register` — Register a new traveler account.
-- `POST /api/auth/send-otp` — Generate and send a 6-digit registration OTP to user's email.
-- `POST /api/auth/verify-otp` — Verify OTP code.
-- `POST /api/auth/verify-otp-register` — Complete user registration upon verified OTP.
+- `POST /api/auth/register` — Direct registration for new traveler accounts (No OTP required).
 - `POST /api/auth/login` — Sign in as traveler or admin with JWT issuance.
 - `GET /api/auth/profile` — Get profile for authenticated user.
 - `POST /api/auth/change-password` — Change password for authenticated user.
 - `POST /api/auth/favorites/toggle` — Add or remove destination from wishlist.
 - `GET /api/auth/favorites` — Get saved favorites.
+- `POST /api/auth/send-otp` — Generate and send a 6-digit registration OTP to user's email (legacy/optional).
+- `POST /api/auth/verify-otp` — Verify OTP code.
+- `POST /api/auth/verify-otp-register` — Complete user registration upon verified OTP.
 
 ### 8. Admin Control Center (`/api/admin`)
 - `GET /api/admin/users` — Get list of administrative staff.

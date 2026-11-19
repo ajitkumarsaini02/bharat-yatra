@@ -1,14 +1,30 @@
 {
   "name": "bharat-yatra-fullstack",
   "version": "1.0.0",
-  "description": "Bharat Yatra - Centralized Indian Tourism & AI Trip Planning Platform",
+  "description": "Bharat Yatra - Centralized Indian Tourism, AI-Assisted Trip Planner & Transport Comparison Platform",
+  "homepage": "https://bharatyatra-india.vercel.app",
   "scripts": {
     "server": "cd server && npm start",
     "server:dev": "cd server && npm run dev",
     "client": "cd client && npm run dev",
     "build": "cd client && npm run build"
   },
-  "keywords": ["mern", "tourism", "india", "ai-planner", "leaflet", "react", "express", "mongodb"],
+  "keywords": [
+    "bharat-yatra",
+    "india-tourism",
+    "incredible-india",
+    "ai-trip-planner",
+    "indian-travel-planner",
+    "budget-calculator",
+    "tourism-india",
+    "travel-planner",
+    "mern",
+    "react",
+    "express",
+    "mongodb",
+    "leaflet",
+    "gis-map"
+  ],
   "author": "Bharat Yatra Team",
   "license": "MIT"
 }

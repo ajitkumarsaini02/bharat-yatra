@@ -46,10 +46,11 @@ Every section has an independent, clean route:
 | `/cuisine` | `CuisineExplorer.jsx` | Regional Indian food showcase, iconic delicacies & heritage sweetshops |
 | `/about` | `AboutUs.jsx` | Mission, core pillars, impact metrics, and pan-India coverage |
 | `/contact` | `Contact.jsx` | 24x7 verified tourist helplines (1363, 139, 112) and traveler inquiry form |
-| `/favorites` | `FavoritesWishlist.jsx` | Personal traveler dashboard for saved destinations & itineraries |
+| `/favorites` | `FavoritesWishlist.jsx` | Dedicated saved destinations wishlist & transit trips |
+| `/dashboard` | `UserDashboard.jsx` | Comprehensive traveler hub for explorer tier, AI itineraries, wishlist, and security |
 | `/map` | `InteractiveMap.jsx` | Fullscreen interactive OpenStreetMap GIS explorer |
 | `/admin` | `AdminDashboard.jsx` | Role-protected admin content & team management portal |
-| `/login` | `LoginRegister.jsx` | Traveler authentication with 6-digit OTP verification |
+| `/login` | `LoginRegister.jsx` | Traveler authentication & direct registration |
 
 ---
 
